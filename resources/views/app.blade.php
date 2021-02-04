@@ -139,9 +139,13 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void">
-                    <i class="fas fa-door-closed"></i>
-                    <span>Logout</span></a>
+                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
+                              document.getElementById('logout-form').submit();">
+                    <i class=" fas fa-door-closed"></i>
+                    <span> {{ __('Logout') }}</span></a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
             </li>
 
             <!-- Divider -->
