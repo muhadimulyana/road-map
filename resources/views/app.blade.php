@@ -49,22 +49,57 @@
             height: 100vh;
         }
 
+        .menu-btn {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            top: 10px;
+            right: 10px;
+            pointer-events: auto;
+        }
+
         .add {
             position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 30px;
-            right: 30px;
+            width: 40px;
+            height: 40px;
+            bottom: 20px;
+            right: 10px;
             pointer-events: auto;
         }
 
         .location {
             position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 100px;
-            right: 30px;
+            width: 40px;
+            height: 40px;
+            bottom: 80px;
+            right: 10px;
             pointer-events: auto;
+        }
+
+        .btn-group-xs>.btn,
+        .btn-xs {
+            padding: .35rem .4rem;
+            font-size: .675rem;
+            line-height: .5;
+            border-radius: .2rem;
+        }
+
+        .modal.right.fade .modal-dialog {
+            right: -320px;
+            -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+            -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+            -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+            transition: opacity 0.3s linear, right 0.3s ease-out;
+        }
+
+        .modal.right.fade.in .modal-dialog {
+            right: 0;
+        }
+
+        @media (min-width: 768px) {
+            .menu-btn {
+                display: none;
+            }
         }
     </style>
 
@@ -95,6 +130,19 @@
                     <i class="fas fa-fw fa-home"></i>
                     <span>Beranda</span></a>
             </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                User
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void">
+                    <i class="fas fa-door-closed"></i>
+                    <span>Logout</span></a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -103,10 +151,6 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle">
-                <i class="fa fa-bars"></i>
-            </button>
 
         </ul>
         <!-- End of Sidebar -->
@@ -120,12 +164,17 @@
                 <div class="">
                     <!-- Page Heading -->
                     <div id="mapid"></div>
+                    <div class="leaflet-top leaflet-right">
+                        <a id="sidebarToggleTop" href="javascript:void" class="menu-btn btn btn-primary btn-circle">
+                            <i style="font-size: 15px;" class="fa fa-bars"></i>
+                        </a>
+                    </div>
                     <div class="leaflet-bottom leaflet-right">
                         <a href="javascript:void" class="location btn btn-light btn-circle btn-lg">
-                            <i style="font-size: 35px;" class="fa fa-compass"></i>
+                            <i style="font-size: 25px;" class="fa fa-compass"></i>
                         </a>
-                        <a href="javascript:void" class="add btn btn-primary btn-circle btn-lg">
-                            <i style="font-size: 35px;" class="fas fa-plus"></i>
+                        <a href="javascript:void" class="add btn btn-success btn-circle btn-lg">
+                            <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
                     </div>
                 </div>
@@ -215,40 +264,90 @@
 
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
+            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=UyiGFyFAZELpBWUZ6VQd', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(mymap);
+            var manIcon = L.icon({
+                iconUrl: 'assets/img/placeholder2.png',
+                iconSize: [35, 35], // size of the icon
+                iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+                popupAnchor: [0, -
+                    35
+                ] // point from which the popup should open relative to the iconAnchor
+            });
+            var newIcon = L.icon({
+                iconUrl: 'assets/img/new.png',
+                iconSize: [35, 35], // size of the icon
+                iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+                popupAnchor: [0, -
+                    35
+                ] // point from which the popup should open relative to the iconAnchor
+            });
+            var foundIcon = L.icon({
+                iconUrl: 'assets/img/found-marker.png',
+                iconSize: [35, 35], // size of the icon
+                iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+                popupAnchor: [0, -
+                    35
+                ] // point from which the popup should open relative to the iconAnchor
+            });
+            var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+            var results = L.layerGroup().addTo(mymap);
+            var circle;
+            var manMarker;
+            var newMarker;
+            var foundMarker;
 
-            // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            //     subdomains: ['a', 'b', 'c'],
-            //     maxZoom: 19,
-            //     minZoom: 5
-            // }).addTo(mymap);
+            //L.esri.basemapLayer('Gray').addTo(mymap);
+            //L.esri.basemapLayer('GrayLabels').addTo(mymap);
 
-            L.esri.basemapLayer('Gray').addTo(mymap);
-            L.esri.basemapLayer('GrayLabels').addTo(mymap);
-
-            mymap.setMaxZoom(16);
-            mymap.setMinZoom(5);
+            mymap.setMaxZoom(18);
+            mymap.setMinZoom(3);
 
             function mapMarker(data, show = false) {
                 for (var i = 0; i < data.length; i++) {
                     var marker = L.marker([data[i].lat, data[i].lng]).addTo(mymap);
                     if (show) {
+                        mymap.setView([data[i].lat, data[i].lng], 18);
                         marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
                     } else {
                         marker.bindPopup(data[i].place);
                     }
                 }
+                // marker.on('click', function (e) {
+                //     map.setView(e.latlng, 13);
+                // });
             }
 
-            mymap.on('click', function (e) {
-                // var popLocation = e.latlng;
-                // var popup = L.popup()
-                //     .setLatLng(popLocation)
-                //     .setContent('Info lat:' + e.latlng.lat + ', lng:' + e.latlng.lng)
-                //     .openOn(mymap);
+            // marker.on('click', function (e) {
+            //     map.setView(e.latlng, 13);
+            // });
+
+            mymap.on('contextmenu', function (e) {
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+                newMarker = L.marker(e.latlng, {
+                        icon: newIcon
+                    }).addTo(mymap)
+                    .bindPopup(
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
+                    ).openPopup();
+                $('#place').val('');
                 $('#lat').val(e.latlng.lat);
                 $('#lng').val(e.latlng.lng);
-                $('#addMarkerModal').modal('show');
+                $('.btnAdd').on('click', function () {
+                    $('#addMarkerModal').modal('show');
+                });
             });
 
 
@@ -258,16 +357,49 @@
                 $('#addMarkerModal').modal('show');
             }
 
+            function onLocationFound(e) {
+                var radius = e.accuracy / 2;
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+                manMarker = L.marker(e.latlng, {
+                        icon: manIcon
+                    }).addTo(mymap)
+                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
+                    ).openPopup();
+                circle = L.circle(e.latlng, radius, {
+                    color: 'red',
+                    opacity: 0.1
+                }).addTo(mymap);
+                $('#place').val('');
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+
+                $('.btnAdd').on('click', function () {
+                    $('#addMarkerModal').modal('show');
+                });
+            }
+
             function onLocationError(e) {
                 alert(e.message);
             }
 
             $('.add').on('click', function () {
-                mymap.on('locationfound', onLocationInput);
+                mymap.on('locationfound', onLocationFound);
                 mymap.on('locationerror', onLocationError);
 
                 mymap.locate({
-                    setView: false
+                    setView: true
                 });
             });
 
@@ -286,6 +418,18 @@
             $("#formCoord").submit(function (e) {
                 e.preventDefault();
                 $("#addMarkerModal").modal('hide');
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
                 $.ajax({
                     url: "{{ route('addCoord') }}",
                     data: $(this).serialize(),
@@ -298,17 +442,37 @@
                 });
             });
 
-            var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
-
-            var results = L.layerGroup().addTo(mymap);
-
-            searchControl.on('results', function (data) {
+            function searchGeo(data) {
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
                 results.clearLayers();
                 for (var i = data.results.length - 1; i >= 0; i--) {
-                    results.addLayer(L.marker(data.results[i].latlng));
+                    foundMarker = L.marker(data.results[i].latlng, {
+                        icon: foundIcon,
+                        opacity: 0
+                    });
                 }
+                results.addLayer(foundMarker);
+            }
+
+            searchControl.on('results', function (data) {
+                // results.clearLayers();
+                // for (var i = data.results.length - 1; i >= 0; i--) {
+                //     results.addLayer(L.marker(data.results[i].latlng));
+                // }
+                searchGeo(data);
             });
 
+            $('#addMarkerModal').on('shown.bs.modal', function (e) {
+                $("#place").focus();
+            })
 
         })
 

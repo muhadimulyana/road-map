@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/esri', function () {
-    return view('esri');
+    return view('welcome');
 });
 
 Route::post('/getCoord', [CoordController::class, 'getCoordinates'])->name('getCoord');
