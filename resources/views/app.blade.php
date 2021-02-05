@@ -38,11 +38,26 @@
     <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
         integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
         crossorigin=""></script>
-
+    <script src="assets/leaflet/accurate.js"></script>
     <style>
         body {
             padding: 0;
             margin: 0;
+        }
+
+        #overlay {
+            background: #ffffff;
+            color: #666666;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            z-index: 5000;
+            top: 0;
+            left: 0;
+            float: left;
+            text-align: center;
+            padding-top: 25%;
+            opacity: .80;
         }
 
         #mapid {
@@ -101,6 +116,7 @@
                 display: none;
             }
         }
+
     </style>
 
 </head>
@@ -109,7 +125,12 @@
 
     <!-- Page Wrapper -->
     <div id="wrapper">
-
+        <div id="overlay">
+            <!-- <div class="spinner"></div> -->
+            <img width="120px" src="assets/img/loading2.gif">
+            <br />
+            <strong id="omessage">Sedang memproses...</strong>
+        </div>
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -174,9 +195,6 @@
                         </a>
                     </div>
                     <div class="leaflet-bottom leaflet-right">
-                        <a href="javascript:void" class="location btn btn-light btn-circle btn-lg">
-                            <i style="font-size: 25px;" class="fa fa-compass"></i>
-                        </a>
                         <a href="javascript:void" class="add btn btn-success btn-circle btn-lg">
                             <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
@@ -265,7 +283,7 @@
 
     <script>
         $(function () {
-
+            $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
             L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=UyiGFyFAZELpBWUZ6VQd', {
@@ -281,8 +299,11 @@
             });
             var newIcon = L.icon({
                 iconUrl: 'assets/img/new.png',
+                shadowUrl: 'assets/img/shadow.png',
                 iconSize: [35, 35], // size of the icon
+                shadowSize: [32, 35], // size of the shadow
                 iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+                shadowAnchor: [8, 37], // the same for the shadow
                 popupAnchor: [0, -
                     35
                 ] // point from which the popup should open relative to the iconAnchor
@@ -301,16 +322,20 @@
             var manMarker;
             var newMarker;
             var foundMarker;
-
+            var geocodeService = L.esri.Geocoding.geocodeService();
             //L.esri.basemapLayer('Gray').addTo(mymap);
             //L.esri.basemapLayer('GrayLabels').addTo(mymap);
 
             mymap.setMaxZoom(18);
             mymap.setMinZoom(3);
+            L.control.scale().addTo(mymap);
+
 
             function mapMarker(data, show = false) {
                 for (var i = 0; i < data.length; i++) {
-                    var marker = L.marker([data[i].lat, data[i].lng]).addTo(mymap);
+                    var marker = L.marker([data[i].lat, data[i].lng], {
+                        icon: newIcon
+                    }).addTo(mymap);
                     if (show) {
                         mymap.setView([data[i].lat, data[i].lng], 18);
                         marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
@@ -340,18 +365,28 @@
                 if (foundMarker != undefined) {
                     mymap.removeLayer(foundMarker);
                 }
-                newMarker = L.marker(e.latlng, {
-                        icon: newIcon
-                    }).addTo(mymap)
-                    .bindPopup(
-                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
-                    ).openPopup();
-                $('#place').val('');
-                $('#lat').val(e.latlng.lat);
-                $('#lng').val(e.latlng.lng);
-                $('.btnAdd').on('click', function () {
-                    $('#addMarkerModal').modal('show');
+                geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                    if (error) {
+                        return;
+                    }
+
+                    // L.marker(result.latlng).addTo(mymap).bindPopup()
+                    //     .openPopup();
+
+                    newMarker = L.marker(e.latlng, {
+                            icon: foundIcon
+                        }).addTo(mymap)
+                        .bindPopup(result.address.Match_addr + '<br>' +
+                            '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
+                        ).openPopup();
+                    $('#place').val('');
+                    $('#lat').val(e.latlng.lat);
+                    $('#lng').val(e.latlng.lng);
+                    $('.btnAdd').on('click', function () {
+                        $('#addMarkerModal').modal('show');
+                    });
                 });
+
             });
 
 
@@ -394,17 +429,65 @@
                 });
             }
 
+            function onAccuratePositionFound(e) {
+                var radius = e.accuracy / 2;
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+                manMarker = L.marker(e.latlng, {
+                        icon: manIcon
+                    }).addTo(mymap)
+                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
+                    ).openPopup();
+                circle = L.circle(e.latlng, radius, {
+                    color: 'red',
+                    opacity: 0.1
+                }).addTo(mymap);
+                $('#place').val('');
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+                $('#overlay').delay(100).fadeOut();
+
+                $('.btnAdd').on('click', function () {
+                    $('#addMarkerModal').modal('show');
+                });
+            }
+
+            function onAccuratePositionProgress(e) {
+                var message = 'Sedang memporeses… (akurasi: ' + e.accuracy / 2 + ' meter)';
+                $("#overlay").fadeIn();
+                $("#omessage").html(message)
+
+            }
+
             function onLocationError(e) {
                 alert(e.message);
             }
 
             $('.add').on('click', function () {
-                mymap.on('locationfound', onLocationFound);
+                mymap.on('accuratepositionprogress', onAccuratePositionProgress);
+                mymap.on('accuratepositionfound', onAccuratePositionFound);
                 mymap.on('locationerror', onLocationError);
+
+                mymap.findAccuratePosition({
+                    maxWait: 10000,
+                    desiredAccuracy: 20
+                });
 
                 mymap.locate({
                     setView: true
                 });
+
             });
 
             $.ajax({
@@ -477,6 +560,10 @@
             $('#addMarkerModal').on('shown.bs.modal', function (e) {
                 $("#place").focus();
             })
+
+            $('.btnAdd').on('click', function () {
+                $('#addMarkerModal').modal('show');
+            });
 
         })
 
