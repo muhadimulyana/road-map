@@ -39,6 +39,9 @@
         integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
         crossorigin=""></script>
     <script src="assets/leaflet/accurate.js"></script>
+
+    <link rel="stylesheet" href="assets/plugin/magnific/magnific.css">
+
     <style>
         body {
             padding: 0;
@@ -115,6 +118,44 @@
             .menu-btn {
                 display: none;
             }
+        }
+
+        .modal .modal-dialog-aside {
+            width: 350px;
+            max-width: 80%;
+            height: 100%;
+            margin: 0;
+            transform: translate(0);
+            transition: transform .2s;
+        }
+
+        .modal .modal-dialog-aside .modal-content {
+            height: inherit;
+            border: 0;
+            border-radius: 0;
+        }
+
+        .modal .modal-dialog-aside .modal-content .modal-body {
+            overflow-y: auto
+        }
+
+        .modal.fixed-left .modal-dialog-aside {
+            margin-left: auto;
+            transform: translateX(100%);
+        }
+
+        .modal.fixed-right .modal-dialog-aside {
+            margin-right: auto;
+            transform: translateX(-100%);
+        }
+
+        .modal.show .modal-dialog-aside {
+            transform: translateX(0);
+        }
+
+        .mfp-bg,
+        .mfp-gallery {
+            z-index: 9999;
         }
 
     </style>
@@ -195,6 +236,10 @@
                         </a>
                     </div>
                     <div class="leaflet-bottom leaflet-right">
+                        <a href="javascript:void" data-toggle="modal" data-target="#modal_aside_right"
+                            class="location btn btn-light btn-circle btn-lg">
+                            <i style="font-size: 25px;" class="fas fa-compass"></i>
+                        </a>
                         <a href="javascript:void" class="add btn btn-success btn-circle btn-lg">
                             <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
@@ -261,6 +306,10 @@
                             <label for="exampleInputEmail1">Langitude</label>
                             <input type="text" class="form-control" id="lng" name="lng" required readonly>
                         </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Foto</label><br>
+                            <input type="file" multiple="multiple" id="file" name="file[]">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="submit">Simpan</button>
@@ -271,6 +320,50 @@
         </div>
     </div>
 
+    <div id="detailMarkerModal" class="modal fixed-left fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-aside" style="overflow-y: initial !important" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bolder" id="placeName">Right fixed sample</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="height: 80vh; overflow-y: auto;">
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Latitude</label>
+                        <p id="latText" class="font-weight-bold"></p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Longitude</label>
+                        <p id="lngText" class="font-weight-bold"></p>
+                    </div>
+                    {{-- <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Informasi</label>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tristique elit at interdum
+                            condimentum. Vivamus in ultricies augue. Suspendisse viverra ante orci, malesuada cursus
+                            purus fringilla et. In a mauris sollicitudin, luctus nulla ac, sagittis ante. Proin non nunc
+                            posuere, bibendum augue at, bibendum justo. Curabitur venenatis eget diam eget mattis. Duis
+                            lacus augue, eleifend sit amet commodo sed, vehicula a orci. Nam ut semper est, ut faucibus
+                            erat. Sed eget feugiat lectus. Phasellus laoreet magna a pellentesque congue. Donec posuere
+                            nibh nec lectus pharetra, a commodo ex malesuada. Mauris ultrices est lobortis, bibendum est
+                            ac, dignissim magna. Suspendisse aliquam nunc nec lorem finibus consequat. Nulla vitae
+                            tellus vitae massa mattis facilisis cursus sed erat. In hac habitasse platea dictumst.</p>
+                    </div> --}}
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Foto</label>
+                        <div class="row image-gallery">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                </div>
+            </div>
+        </div> <!-- modal-bialog .// -->
+    </div> <!-- modal.// -->
+
     <!-- Bootstrap core JavaScript-->
     <script src="assets/sbadmin/vendor/jquery/jquery.min.js"></script>
     <script src="assets/sbadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -280,6 +373,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="assets/sbadmin/js/sb-admin-2.js"></script>
+    <script src="assets/plugin/magnific/magnific-popup.min.js"></script>
+
 
     <script>
         $(function () {
@@ -318,6 +413,7 @@
             });
             var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
             var results = L.layerGroup().addTo(mymap);
+            var marker;
             var circle;
             var manMarker;
             var newMarker;
@@ -330,27 +426,59 @@
             mymap.setMinZoom(3);
             L.control.scale().addTo(mymap);
 
+            function markerOnClick() {
+                var id = this.options.id;
+                var place = this.options.place;
+                var lat = this.options.lat;
+                var lng = this.options.lng;
+                $("#placeName").html(place);
+                $("#latText").html(lat)
+                $("#lngText").html(lng)
+                //console.log(id);
+                $.ajax({
+                    url: "{{ route('getMarkerImage') }}",
+                    data: {
+                        "_token": csrf,
+                        "id": id
+                    },
+                    success: function (data) {
+                        console.log(place);
+                        var html = '';
+                        for (var i = 0; i < data.length; i++) {
+                            html += '<div class="col-6 text-center mb-3"><a href="upload/img/' +
+                                data[i].gambar + '" class="image-link"><img src="upload/img/' +
+                                data[i].gambar +
+                                '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                        }
+                        $('.image-gallery').html(html);
+                    }
+                });
+                $("#detailMarkerModal").modal('show');
+            }
 
             function mapMarker(data, show = false) {
                 for (var i = 0; i < data.length; i++) {
-                    var marker = L.marker([data[i].lat, data[i].lng], {
-                        icon: newIcon
-                    }).addTo(mymap);
+                    marker = L.marker([data[i].lat, data[i].lng], {
+                        icon: newIcon,
+                        id: data[i].id,
+                        place: data[i].place,
+                        lat: data[i].lat,
+                        lng: data[i].lng
+                    }).addTo(mymap).on('click', markerOnClick);
                     if (show) {
                         mymap.setView([data[i].lat, data[i].lng], 18);
-                        marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
+                        //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
                     } else {
-                        marker.bindPopup(data[i].place);
+                        //marker.bindPopup(data[i].place);
                     }
                 }
                 // marker.on('click', function (e) {
                 //     map.setView(e.latlng, 13);
                 // });
+                // marker.on('click', function (e) {
+                //     console.log(e.latlng);
+                // });
             }
-
-            // marker.on('click', function (e) {
-            //     map.setView(e.latlng, 13);
-            // });
 
             mymap.on('contextmenu', function (e) {
                 if (manMarker != undefined) {
@@ -369,9 +497,6 @@
                     if (error) {
                         return;
                     }
-
-                    // L.marker(result.latlng).addTo(mymap).bindPopup()
-                    //     .openPopup();
 
                     newMarker = L.marker(e.latlng, {
                             icon: foundIcon
@@ -519,7 +644,10 @@
                 }
                 $.ajax({
                     url: "{{ route('addCoord') }}",
-                    data: $(this).serialize(),
+                    //data: $(this).serialize(),
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
                     type: "POST",
                     success: function (response) {
                         $("#exampleModal").modal('hide');
@@ -550,10 +678,6 @@
             }
 
             searchControl.on('results', function (data) {
-                // results.clearLayers();
-                // for (var i = data.results.length - 1; i >= 0; i--) {
-                //     results.addLayer(L.marker(data.results[i].latlng));
-                // }
                 searchGeo(data);
             });
 
@@ -563,6 +687,22 @@
 
             $('.btnAdd').on('click', function () {
                 $('#addMarkerModal').modal('show');
+            });
+
+            $('body').magnificPopup({
+                delegate: 'a.image-link',
+                type: 'image',
+                gallery: {
+                    enabled: true
+                },
+                zoom: {
+                    enabled: true, // By default it's false, so don't forget to enable it
+                    duration: 300, // duration of the effect, in milliseconds
+                    easing: 'ease-in-out', // CSS transition easing function
+                    opener: function (openerElement) {
+                        return openerElement.is('img') ? openerElement : openerElement.find('img');
+                    }
+                }
             });
 
         })
