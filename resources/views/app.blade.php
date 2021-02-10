@@ -314,7 +314,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Form Tambah Marker</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <button class="close btnClose" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
@@ -343,7 +343,7 @@
                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             Menyimpan...
                         </button>
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                        <button class="btn btn-secondary btnClose" type="button" data-dismiss="modal">Batal</button>
                     </div>
                 </div>
             </form>
@@ -416,7 +416,7 @@
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
-            L.tileLayer('https://api.maptiler.com/maps/street/{z}/{x}/{y}.png?key=rxCo7D6wTRmUURup0cND', {
+            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=rxCo7D6wTRmUURup0cND', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(mymap);
             var manIcon = L.icon({
@@ -686,7 +686,6 @@
 
             $("#formCoord").submit(function (e) {
                 e.preventDefault();
-                $("#addMarkerModal").modal('hide');
                 if (manMarker != undefined) {
                     mymap.removeLayer(manMarker);
                 }
@@ -709,20 +708,22 @@
                     beforeSend: function () {
                         $('#btnSubmit').hide();
                         $('#btnLoad').show();
+                        $('.btnClose').pro('disabled', true);
                     },
                     success: function (response) {
-                        mapMarker(response, true);
-                    },
-                    complete: function(){
                         $('#btnSubmit').show();
                         $('#btnLoad').hide();
-                        $("#exampleModal").modal('hide');
+                        $('.btnClose').pro('disabled', false);
+                        $("#addMarkerModal").modal('hide');
                         $("#formCoord")[0].reset();
+                        mapMarker(response, true);
                     },
                     error: function (response) {
                         $('#btnSubmit').show();
                         $('#btnLoad').hide();
-                        $("#exampleModal").modal('hide');
+                        $('.btnClose').pro('disabled', false);
+                        $("#addMarkerModal").modal('hide');
+                        //$("#exampleModal").modal('hide');
                         alert('Something went wrong!');
                     }
                 });
