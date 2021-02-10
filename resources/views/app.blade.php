@@ -153,6 +153,31 @@
             transform: translateX(0);
         }
 
+        .form-control.error {
+            display: block;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #6e707e;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ed3960;
+            border-radius: .35rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        label.error {
+            color: #d3333b;
+            font-size: 12px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        input[type="file"] {}
+
         .mfp-bg,
         .mfp-gallery {
             z-index: 9999;
@@ -308,11 +333,16 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Foto</label><br>
-                            <input type="file" multiple="multiple" id="file" name="file[]">
+                            <input type="file" style="line-height: normal !important; font-size: 14px !important;"
+                                multiple="multiple" id="file" name="file[]">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Simpan</button>
+                        <button class="btn btn-primary" id="btnSubmit" type="submit">Simpan</button>
+                        <button class="btn btn-primary" id="btnLoad" style="display: none;" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Menyimpan...
+                        </button>
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
                     </div>
                 </div>
@@ -375,13 +405,18 @@
     <script src="assets/sbadmin/js/sb-admin-2.js"></script>
     <script src="assets/plugin/magnific/magnific-popup.min.js"></script>
 
-
+    {{-- Validate --}}
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
     <script>
+        $.validator.addMethod('filesize', function (value, element, param) {
+            return this.optional(element) || (element.files[0].size <= param)
+        }, 'File size must be less than {0} MB');
         $(function () {
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
-            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=UyiGFyFAZELpBWUZ6VQd', {
+            L.tileLayer('https://api.maptiler.com/maps/street/{z}/{x}/{y}.png?key=rxCo7D6wTRmUURup0cND', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(mymap);
             var manIcon = L.icon({
@@ -442,13 +477,10 @@
                         "id": id
                     },
                     success: function (data) {
-                        console.log(place);
                         var html = '';
+                        var storage = '{{ asset('storage/images/') }}';
                         for (var i = 0; i < data.length; i++) {
-                            html += '<div class="col-6 text-center mb-3"><a href="upload/img/' +
-                                data[i].gambar + '" class="image-link"><img src="upload/img/' +
-                                data[i].gambar +
-                                '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                            html += '<div class="col-6 text-center mb-3"><a href="upload/img/' + data[i].gambar + '" class="image-link"><img src="upload/img/thumbnail/' + data[i].gambar + '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
                         }
                         $('.image-gallery').html(html);
                     }
@@ -456,7 +488,7 @@
                 $("#detailMarkerModal").modal('show');
             }
 
-            function mapMarker(data, show = false) {
+            function mapMarker(data, show) {
                 for (var i = 0; i < data.length; i++) {
                     marker = L.marker([data[i].lat, data[i].lng], {
                         icon: newIcon,
@@ -627,6 +659,31 @@
                 }
             });
 
+            // $('#formCoord').validate({ // initialize the plugin
+            //     rules: {
+            //         "place": {
+            //             required: true
+            //         },
+            //         "file[]": {
+            //             required: false,
+            //             extension: "jpeg|png|jpg",
+            //             filesize: 2
+            //         },
+            //     },
+            //     messages: {
+            //         "place": {
+            //             required: "Nama tempat tidak boleh kosong"
+            //         },
+            //         "file[]": {
+            //             extension: "File yang diperbolehkan hanya JPEG dan PNG",
+            //             filesize: "Maksimum ukuran file 2 MB"
+            //         }
+            //     },
+            //     submitHandler: function (form) {
+
+            //     }
+            // });
+
             $("#formCoord").submit(function (e) {
                 e.preventDefault();
                 $("#addMarkerModal").modal('hide');
@@ -649,13 +706,28 @@
                     processData: false,
                     contentType: false,
                     type: "POST",
+                    beforeSend: function () {
+                        $('#btnSubmit').hide();
+                        $('#btnLoad').show();
+                    },
                     success: function (response) {
-                        $("#exampleModal").modal('hide');
                         mapMarker(response, true);
+                    },
+                    complete: function(){
+                        $('#btnSubmit').show();
+                        $('#btnLoad').hide();
+                        $("#exampleModal").modal('hide');
                         $("#formCoord")[0].reset();
+                    },
+                    error: function (response) {
+                        $('#btnSubmit').show();
+                        $('#btnLoad').hide();
+                        $("#exampleModal").modal('hide');
+                        alert('Something went wrong!');
                     }
                 });
             });
+
 
             function searchGeo(data) {
                 if (manMarker != undefined) {
@@ -685,6 +757,11 @@
                 $("#place").focus();
             })
 
+            $('#addMarkerModal').on('hidden.bs.modal', function (e) {
+                $("#formCoord")[0].reset();
+                $("label.error").hide();
+            })
+
             $('.btnAdd').on('click', function () {
                 $('#addMarkerModal').modal('show');
             });
@@ -700,7 +777,8 @@
                     duration: 300, // duration of the effect, in milliseconds
                     easing: 'ease-in-out', // CSS transition easing function
                     opener: function (openerElement) {
-                        return openerElement.is('img') ? openerElement : openerElement.find('img');
+                        return openerElement.is('img') ? openerElement : openerElement.find(
+                            'img');
                     }
                 }
             });
