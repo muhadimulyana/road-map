@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Image;
 
 class CoordController extends Controller
 {
@@ -42,10 +43,15 @@ class CoordController extends Controller
         if ($request->hasfile('file')) {
             foreach ($request->file('file') as $file) {
                 $name = time() . '_' . $i . '.' . $file->extension();
+                $img = Image::make($file->getRealPath());
+                $img->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save(public_path() . '/upload/img/thumbnail/' . $name);
                 $file->move(public_path() . '/upload/img/', $name);
+                //$path = Storage::putFileAs('public/images', $file, $name);
                 $files[] = [
                     'id' => $data['id'],
-                    'gambar' => $name
+                    'gambar' => $name,
                 ];
                 $i++;
             }
@@ -57,22 +63,22 @@ class CoordController extends Controller
 
             Coord::create($data);
             ($files) ? DB::table('gps_markers_gambar')->insert($files) : '';
-    
+
             $response[] = [
                 'id' => $data['id'],
                 'place' => $request->place,
                 'lat' => $request->lat,
                 'lng' => $request->lng,
                 'file' => ($files) ? array_column($files, 'gambar') : null,
-                'code' => 200
+                'code' => 200,
             ];
             DB::commit();
 
-        } catch(QueryException $e) {
+        } catch (QueryException $e) {
 
             $response[] = [
                 'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2],
-                'code' => 500
+                'code' => 500,
             ];
             DB::rollback();
 
@@ -81,14 +87,11 @@ class CoordController extends Controller
         return response()->json($response, $response[0]['code'], []);
 
     }
-    
 
     public function getMarkerImage(Request $request)
     {
         $id = $request->input('id');
-        //dd($id);
         $image = DB::table('gps_markers_gambar')->where('id', $id)->get();
-        //dd($image);
         return response()->json($image, 200, []);
     }
 }
