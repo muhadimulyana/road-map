@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="key-api" content="{{ $key }}">
     <title>Road Map</title>
 
     <!-- Custom fonts for this template-->
@@ -415,8 +416,9 @@
         $(function () {
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
+            var key = $('meta[name="key-api"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
-            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=rxCo7D6wTRmUURup0cND', {
+            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             }).addTo(mymap);
             var manIcon = L.icon({
@@ -486,6 +488,12 @@
                     }
                 });
                 $("#detailMarkerModal").modal('show');
+            }
+
+            function manMarkerOnClick(){
+                $('.btnAdd').on('click', function () {
+                    $('#addMarkerModal').modal('show');
+                });
             }
 
             function mapMarker(data, show) {
@@ -572,7 +580,7 @@
                     }).addTo(mymap)
                     .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
                         '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
-                    ).openPopup();
+                    ).openPopup().on('click', manMarkerOnClick);
                 circle = L.circle(e.latlng, radius, {
                     color: 'red',
                     opacity: 0.1
@@ -708,12 +716,12 @@
                     beforeSend: function () {
                         $('#btnSubmit').hide();
                         $('#btnLoad').show();
-                        $('.btnClose').pro('disabled', true);
+                        $('.btnClose').prop('disabled', true);
                     },
                     success: function (response) {
                         $('#btnSubmit').show();
                         $('#btnLoad').hide();
-                        $('.btnClose').pro('disabled', false);
+                        $('.btnClose').prop('disabled', false);
                         $("#addMarkerModal").modal('hide');
                         $("#formCoord")[0].reset();
                         mapMarker(response, true);
@@ -721,7 +729,7 @@
                     error: function (response) {
                         $('#btnSubmit').show();
                         $('#btnLoad').hide();
-                        $('.btnClose').pro('disabled', false);
+                        $('.btnClose').prop('disabled', false);
                         $("#addMarkerModal").modal('hide');
                         //$("#exampleModal").modal('hide');
                         alert('Something went wrong!');

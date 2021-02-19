@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Image;
 
 class CoordController extends Controller
@@ -13,12 +14,58 @@ class CoordController extends Controller
     {
         $this->middleware('auth');
     }
+
+    public function show()
+    {
+        $result = DB::table('key_api')->where('aktif', 1)->get();
+
+        foreach($result as $row){
+            $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
+            if($request->successful()){
+                $key = $row->key;
+                break;
+            } else {
+                DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
+            }
+        }
+
+        return view('app')->with('key', $key);
+    }
     //
     public function getCoordinates(Request $request)
     {
         $coords = Coord::all();
         return response()->json($coords, 200, []);
 
+    }
+
+    public function getApiKey()
+    {
+        $result = DB::table('key_api')->where('aktif', 1)->get();
+
+        foreach($result as $row){
+            $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
+            if($request->successful()){
+                $response = [
+                    'key' => $row->key
+                ];
+                break;
+            } else {
+                DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
+            }
+        }
+
+        return response()->json($response, 200, []);
+
+    }
+
+    public function checkApi()
+    {
+        $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=UyiGFyFAZELpBWUZ6VQd');
+        if( $request->successful() ) {
+            
+            return response()->json($request, 200, []);
+        }
     }
 
     public function store(Request $request)

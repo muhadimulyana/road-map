@@ -24,13 +24,12 @@ Auth::routes([
 Route::post('/getCoord', [CoordController::class, 'getCoordinates'])->name('getCoord')->middleware('auth');
 Route::post('/addCoord', [CoordController::class, 'store'])->name('addCoord')->middleware('auth');
 Route::get('/getMarkerImage', [CoordController::class, 'getMarkerImage'])->name('getMarkerImage')->middleware('auth');
-Route::get('/', function () {
-    return view('app');
-})->middleware('auth');
+Route::get('/', [CoordController::class, 'show'])->middleware('auth');
 Route::get('/home', function () {
     return view('app');
 })->middleware('auth');
-
+Route::get('/checkApi', [CoordController::class, 'checkApi'])->name('checkApi');
+Route::get('/getApiKey', [CoordController::class, 'getApiKey'])->name('getApiKey');
 
 // Route::get('/esri', function () {
 //     return view('welcome');
