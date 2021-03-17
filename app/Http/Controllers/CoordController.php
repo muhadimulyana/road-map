@@ -17,9 +17,14 @@ class CoordController extends Controller
 
     public function show()
     {
-        $result = DB::table('key_api')->where('aktif', 1)->get();
+        $keys = DB::table('key_api')->where('aktif', 1)->get();
+        $jenis_usaha = DB::table('m_jenis_usaha')->get();
+        $jenis_bahan = DB::table('m_jenis_bahan')->get();
+        $tempat_penjualan = DB::table('m_tempat_penjualan')->get();
+        $jenis_pembayaran = DB::table('m_jenis_pembayaran')->get();
+        $mesin = DB::table('m_mesin')->get();
 
-        foreach($result as $row){
+        foreach($keys as $row){
             $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
             if($request->successful()){
                 $key = $row->key;
@@ -29,7 +34,7 @@ class CoordController extends Controller
             }
         }
 
-        return view('app')->with('key', $key);
+        return view('app')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0);
     }
     //
     public function getCoordinates(Request $request)

@@ -31,6 +31,12 @@ Route::get('/home', function () {
 Route::get('/checkApi', [CoordController::class, 'checkApi'])->name('checkApi');
 Route::get('/getApiKey', [CoordController::class, 'getApiKey'])->name('getApiKey');
 
+//API getallMastertoForm
+Route::get('/getJenisUsaha', [CoordController::class, 'getJenisUsaha'])->name('getJenisUsaha')->middleware('auth');
+Route::get('/getBahanBaku', [CoordController::class, 'getBahanBaku'])->name('getBahanBaku')->middleware('auth');
+Route::get('/getPenjualanBahan', [CoordController::class, 'getPenjualanBahan'])->name('getPenjualanBahan')->middleware('auth');
+Route::get('/getPembayaran', [CoordController::class, 'getPembayaran'])->name('getPembayaran')->middleware('auth');
+Route::get('/getMesin', [CoordController::class, 'getMesin'])->name('getMesin')->middleware('auth');
 // Route::get('/esri', function () {
 //     return view('welcome');
 // });

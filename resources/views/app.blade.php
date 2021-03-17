@@ -43,6 +43,9 @@
 
     <link rel="stylesheet" href="assets/plugin/magnific/magnific.css">
 
+    <link href="assets/plugin/select2/select2.css" rel="stylesheet" />
+
+
     <style>
         body {
             padding: 0;
@@ -184,6 +187,21 @@
             z-index: 9999;
         }
 
+        .form-control::placeholder {
+            /* Chrome, Firefox, Opera, Safari 10.1+ */
+            color: #d6d5d5;
+            /* Firefox */
+        }
+
+        .form-control:-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: #d6d5d5;
+        }
+
+        .form-control::-ms-input-placeholder {
+            /* Microsoft Edge */
+            color: #d6d5d5;
+        }
     </style>
 
 </head>
@@ -309,34 +327,190 @@
     <!-- Logout Modal-->
     <div class="modal fade" id="addMarkerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <form id="formCoord">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Form Tambah Marker</h5>
+                        <h4 class="modal-title" id="exampleModalLabel">Tambah Tempat</h4>
                         <button class="close btnClose" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="height: 70vh; overflow-y: auto;">
+                        <h5 class="text-primary mb-3" style="text-decoration: underline;">Tempat Usaha</h5>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Place</label>
-                            <input type="text" class="form-control" required id="place" name="place">
+                            <label for="kategori">Kategori</label>
+                            <select class="form-control select2" required data-placeholder="Pilih Kategori" name="kategori"
+                                id="kategori">
+                                {{-- <option value=""> -- Pilih Kategori -- </option> --}}
+                                <option value=""></option>
+                                <option value="supplier">Supplier</option>
+                                <option value="non supplier">Non Supplier</option>
+                                <option value="kompetitor">Kompetitor</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Latitude</label>
-                            <input type="text" class="form-control" id="lat" name="lat" required readonly>
+                            <label for="exampleInputEmail1">Nama Usaha</label>
+                            <input type="text" class="form-control" placeholder="Masukkan nama usaha" required
+                                id="nama_usaha" name="nama_usaha">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Langitude</label>
-                            <input type="text" class="form-control" id="lng" name="lng" required readonly>
+                            <label for="exampleInputEmail1">Jenis Usaha</label>
+                            <div class="row">
+                                @foreach ($jenis_usaha as $row)
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                        <input type="checkbox" name="jenis_usaha[]" class="custom-control-input"
+                                            id="jenis_usaha{{ $row->ID_JENIS_USAHA }}"
+                                            value="{{ strtolower($row->JENIS_USAHA) }}">
+                                        <label class="custom-control-label"
+                                            for="jenis_usaha{{ $row->ID_JENIS_USAHA }}">{{ $row->JENIS_USAHA }}</label>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Contact Person</label>
+                            <input type="text" class="form-control" placeholder="Masukkan kontak person" required
+                                id="cp" name="cp">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Telepon</label>
+                            <input type="text" class="form-control" placeholder="Masukkan nomor telepon" required
+                                id="telepon" name="telepon">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Alamat Lengkap</label>
+                            <textarea class="form-control" placeholder="Masukkan alamat lengkap" required id="telepon"
+                                rows="5" name="telepon"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="status_tempat">Status Tempat Usaha</label>
+                            <select class="form-control select2" name="status_tempat"
+                                data-placeholder="Pilih Status Tempat Usaha" id="status_tempat">
+                                <option value=""></option>
+                                <option value="milik sendiri">Milik Sendiri</option>
+                                <option value="kontrak/sewa">Kontrak/Sewa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Jumlah Pekerja</label>
+                            <input type="text" class="form-control" placeholder="Masukkan jumlah pekerja" required
+                                id="jml_pekerja" name="jml_pekerja">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Foto</label><br>
                             <input type="file" style="line-height: normal !important; font-size: 14px !important;"
                                 multiple="multiple" id="file" name="file[]">
                         </div>
+                        <hr>
+                        <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
+                        <div class="form-group">
+                            <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#"
+                                    class="text-success" id="tBahanBaku">Tambah</a></label>
+                            <div id="cBahanBaku">
+                                <div class="row">
+                                    <div class="col-md-5 mb-2 mb-md-0">
+                                        <select class="form-control select2" data-placeholder="Pilih Jenis Bahan Baku"
+                                            name="bahan_baku" id="bahan_baku">
+                                            <option value=""></option>
+                                            @foreach ($jenis_bahan as $row)
+                                            <option value="{{ $row->JENIS_BAHAN }}">{{ $row->JENIS_BAHAN }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)"
+                                            required id="bahan_baku_kg" name="bahan_baku_kg">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
+                        </div>
+                        <div class="form-group">
+                            <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#"
+                                    class="text-success">Tambah</a></label>
+                            <div class="row">
+                                <div class="col-md-5  mb-2 mb-md-0">
+                                    <select class="form-control select2" data-placeholder="Pilih Penjualan Bahan Baku"
+                                        name="penjualan_bahan" id="penjualan_bahan">
+                                        <option value=""></option>
+                                        @foreach ($tempat_penjualan as $row)
+                                        <option value="{{ $row->TEMPAT_PENJUALAN }}">{{ $row->TEMPAT_PENJUALAN }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control"
+                                        placeholder="Keterangan penjualan bahan baku" required id="penjualan_bahan_ket"
+                                        name="penjualan_bahan_ket">
+                                </div>
+                            </div>
+                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
+                        </div>
+                        <div class="form-group">
+                            <label for="proses_penjualan">Proses Penjualan</label>
+                            <select class="form-control select2" data-placeholder="Pilih Proses Penjualan"
+                                name="proses_penjualan" id="proses_penjualan">
+                                <option value=""></option>
+                                <option value="dikirim">Dikirim</option>
+                                <option value="diambil">Diambil</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="proses_pembayaran">Proses Pembayaran</label>
+                            <select class="form-control select2" data-placeholder="Pilih Proses Pembayaran"
+                                name="proses_pembayaran" id="proses_pembayaran">
+                                <option value=""></option>
+                                @foreach ($jenis_pembayaran as $row)
+                                <option value="{{ $row->JENIS_PEMBAYARAN }}">{{ $row->JENIS_PEMBAYARAN }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <hr>
+                        <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
+                        <div class="form-group">
+                            <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#"
+                                    class="text-success">Tambah</a></label>
+                            <div class="row">
+                                <div class="col-md-5 mb-2 mb-md-0">
+                                    <select class="form-control select2" data-placeholder="Pilih Mesin" name="mesin"
+                                        id="mesin">
+                                        <option value=""></option>
+                                        @foreach ($mesin as $row)
+                                        <option value="{{ $row->MESIN }}">{{ $row->MESIN }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2 mb-md-0">
+                                    <select class="form-control select2" data-placeholder="Kepemilikan"
+                                        name="kepemilikan" id="kepemilikan">
+                                        <option value=""></option>
+                                        <option value="milik sendiri">Milik Sendiri</option>
+                                        <option value="dipinjamkan">Dipinjamkan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="Jumlah mesin" required
+                                        id="mesin_qty" name="mesin_qty">
+                                </div>
+                            </div>
+                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
+                        </div>
+                        <br>
+                        <hr>
+                        <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat </h5>
+                        {{-- <div class="form-group">
+                            <label for="exampleInputEmail1">Latitude</label>
+                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude" name="lat" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Longitude</label>
+                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"  name="lng" required readonly>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" id="btnSubmit" type="submit">Simpan</button>
@@ -398,6 +572,7 @@
     <!-- Bootstrap core JavaScript-->
     <script src="assets/sbadmin/vendor/jquery/jquery.min.js"></script>
     <script src="assets/sbadmin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/plugin/select2/select2.min.js"></script>
 
     <!-- Core plugin JavaScript-->
     <script src="assets/sbadmin/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -410,10 +585,10 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
     <script>
-        $.validator.addMethod('filesize', function (value, element, param) {
-            return this.optional(element) || (element.files[0].size <= param)
-        }, 'File size must be less than {0} MB');
         $(function () {
+            $('.select2').select2({
+                allowClear: true
+            });
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var key = $('meta[name="key-api"]').attr('content');
@@ -791,6 +966,9 @@
                     }
                 }
             });
+
+            // For Form Element
+
 
         })
 
