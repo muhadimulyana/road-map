@@ -236,12 +236,14 @@ class CoordController extends Controller
         if($request->input('id')){
 
             $id = $request->input('id');
+            $tempat = DB::table('tempat')->where('ID_TEMPAT', $id)->first();
             $jenis_usaha = DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $id)->get();
             $jenis_bahan = DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $id)->get();
             $penjualan = DB::table('tempat_penjualan')->where('ID_TEMPAT', $id)->get();
             $mesin = DB::table('tempat_mesin')->where('ID_TEMPAT', $id)->get();
             $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get();
             $response = [
+                'tempat' => $tempat,
                 'jenis_usaha' => $jenis_usaha,
                 'jenis_bahan' => $jenis_bahan,
                 'penjualan' => $penjualan,

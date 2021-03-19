@@ -206,7 +206,7 @@
             color: #d6d5d5;
         }
 
-        .select2{
+        .select2 {
             width: 100%;
         }
     </style>
@@ -287,11 +287,11 @@
                         </a>
                     </div>
                     <div class="leaflet-bottom leaflet-right">
-                        <a href="javascript:void"
-                            class="location btn btn-info btn-circle btn-lg">
+                        <a href="javascript:void" class="location btn btn-info btn-circle btn-lg">
                             <i style="font-size: 25px;" class="fas fa-street-view"></i>
                         </a>
-                        <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal" class="add btn btn-success btn-circle btn-lg">
+                        <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal"
+                            class="add btn btn-success btn-circle btn-lg">
                             <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -332,8 +332,8 @@
     </div>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <form id="formCoord">
                 @csrf
@@ -364,8 +364,8 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Tanggal Kunjungan</label>
-                            <input type="text" class="form-control datepicker" placeholder="Pilih tanggal kunjungan" required
-                                id="tgl_kunjungan" name="tgl_kunjungan">
+                            <input type="text" class="form-control datepicker" placeholder="Pilih tanggal kunjungan"
+                                required id="tgl_kunjungan" name="tgl_kunjungan">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Jenis Usaha</label>
@@ -373,8 +373,8 @@
                                 @foreach ($jenis_usaha as $row)
                                 <div class="col-lg-3 col-6">
                                     <div class="custom-control custom-checkbox" style="display: inline-block;">
-                                        <input type="checkbox" required name="jenis_usaha[]" class="custom-control-input"
-                                            id="jenis_usaha{{ $row->ID_JENIS_USAHA }}"
+                                        <input type="checkbox" required name="jenis_usaha[]"
+                                            class="custom-control-input" id="jenis_usaha{{ $row->ID_JENIS_USAHA }}"
                                             value="{{ strtolower($row->JENIS_USAHA) }}">
                                         <label class="custom-control-label"
                                             for="jenis_usaha{{ $row->ID_JENIS_USAHA }}">{{ $row->JENIS_USAHA }}</label>
@@ -443,24 +443,26 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#"
-                                    id="tPenjualanBahan" class="text-success">Tambah</a></label>
+                            <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#" id="tPenjualanBahan"
+                                    class="text-success">Tambah</a></label>
                             <div id="cPenjualanBahan">
                                 <div class="row">
                                     <div class="col-md-5 mb-2 mb-md-0">
-                                        <select class="form-control penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku"
-                                            name="penjualan_bahan[]" id="penjualan_bahan">
+                                        <select class="form-control penjualan-bahan select2" required
+                                            data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]"
+                                            id="penjualan_bahan">
                                             <option value=""></option>
                                             @foreach ($tempat_penjualan as $row)
-                                            <option value="{{ strtolower($row->TEMPAT_PENJUALAN) }}">{{ $row->TEMPAT_PENJUALAN }}
+                                            <option value="{{ strtolower($row->TEMPAT_PENJUALAN) }}">
+                                                {{ $row->TEMPAT_PENJUALAN }}
                                             </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-7">
                                         <input type="text" class="form-control"
-                                            placeholder="Keterangan penjualan bahan baku" required id="penjualan_bahan_ket"
-                                            name="penjualan_bahan_ket[]">
+                                            placeholder="Keterangan penjualan bahan baku" required
+                                            id="penjualan_bahan_ket" name="penjualan_bahan_ket[]">
                                     </div>
                                 </div>
                             </div>
@@ -480,20 +482,21 @@
                                 name="proses_pembayaran" required id="proses_pembayaran">
                                 <option value=""></option>
                                 @foreach ($jenis_pembayaran as $row)
-                                <option value="{{ strtolower($row->JENIS_PEMBAYARAN) }}">{{ $row->JENIS_PEMBAYARAN }}</option>
+                                <option value="{{ strtolower($row->JENIS_PEMBAYARAN) }}">{{ $row->JENIS_PEMBAYARAN }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
                         <hr>
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                         <div class="form-group">
-                            <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#"
-                                    class="text-success" id="tMesin">Tambah</a></label>
+                            <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="text-success"
+                                    id="tMesin">Tambah</a></label>
                             <div id="cMesin">
                                 <div class="row">
                                     <div class="col-md-12 mb-2 mb-md-3">
-                                        <select class="form-control mesin select2" style="width: 100%;" data-placeholder="Pilih Mesin" required name="mesin[]"
-                                            id="mesin">
+                                        <select class="form-control mesin select2" style="width: 100%;"
+                                            data-placeholder="Pilih Mesin" required name="mesin[]" id="mesin">
                                             <option value=""></option>
                                             @foreach ($mesin as $row)
                                             <option value="{{ strtolower($row->MESIN) }}">{{ $row->MESIN }}</option>
@@ -520,11 +523,13 @@
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat </h5>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Latitude</label>
-                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude" name="lat" required>
+                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude"
+                                name="lat" required>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Longitude</label>
-                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"  name="lng" required>
+                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"
+                                name="lng" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -552,11 +557,13 @@
                 <div class="modal-body" style="height: 80vh; overflow-y: auto;">
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Kategori</label><br>
-                        <p id="kategoriText" class="font-weight-bold badge badge-primary" style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
+                        <p id="kategoriText" class="font-weight-bold badge badge-primary"
+                            style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Jenis Usaha</label>
-                        <p id="jenisUsahaText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...</p>
+                        <p id="jenisUsahaText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
+                        </p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Tanggal Kunjungan</label>
@@ -576,7 +583,8 @@
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Status Tempat Usaha</label>
-                        <p id="statusTempatText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                        <p id="statusTempatText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...
+                        </p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Jumlah Pekerja</label>
@@ -593,15 +601,18 @@
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
-                        <p id="penjualanBahanBakuText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                        <p id="penjualanBahanBakuText" style="text-transform: capitalize;" class="font-weight-bold">
+                            Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Proses Penjualan</label>
-                        <p id="prosesPenjualanText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                        <p id="prosesPenjualanText" style="text-transform: capitalize;" class="font-weight-bold">
+                            Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Proses Pembayaran</label>
-                        <p id="prosesPembayaranText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                        <p id="prosesPembayaranText" style="text-transform: capitalize;" class="font-weight-bold">
+                            Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Kepemilikan Mesin</label>
@@ -653,7 +664,9 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
     {{-- Moment --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous"></script>
     {{-- Datepicker --}}
     <script src="assets/plugin/datepicker/js/bootstrap-material-datetimepicker.js"></script>
     <script>
@@ -662,8 +675,14 @@
                 allowClear: true
             });
             $('.datepicker').bootstrapMaterialDatePicker({
-                time: false
+                time: false,
+                format: 'DD-MM-YYYY'
             });
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
 
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
@@ -754,6 +773,7 @@
                 $('#jmlPekerjaText').html(this.options.JUMLAH_PEKERJA);
                 $('#prosesPenjualanText').html(this.options.PROSES_PENJUALAN);
                 $('#prosesPembayaranText').html(this.options.PROSES_PEMBAYARAN);
+                $('#btnEdit').attr('data-id', id)
                 $("#latText").html(lat)
                 $("#lngText").html(lng)
                 //console.log(id);
@@ -1163,7 +1183,7 @@
                 var vBahanBaku = $('.bahan-baku').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
                 if(vBahanBaku.length == 0) {
                     if(max_field >= iBahanBaku) {
-                        $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" required id="bahan_baku_kg" name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
+                        $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" required  name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
                     } else {
                         alert('Error!');
                     }
@@ -1290,6 +1310,120 @@
                     requiredCheckboxes.attr('required', 'required');
                 }
             });
+
+            // Edit Section
+
+            $('#btnEdit').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                $.ajax({
+                    url: "{{ route('getDetailCoord') }}",
+                    data: {
+                        "_token": csrf,
+                        "id": id
+                    },
+                    success: function (data) {
+                        $('#kategori').val(data.tempat.KATEGORI).change();
+                        $('#nama_usaha').val(data.tempat.NAMA_USAHA);
+                        $('#tgl_kunjungan').val(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
+                        $('#cp').val(data.tempat.CP);
+                        $('#telepon').val(data.tempat.TELEPON);
+                        $('#alamat').val(data.tempat.ALAMAT);
+                        $('#status_tempat').val(data.tempat.STATUS_USAHA).change();
+                        $('#jml_pekerja').val(data.tempat.JUMLAH_PEKERJA);
+                        $('#proses_penjualan').val(data.tempat.PROSES_PENJUALAN).change();
+                        $('#proses_pembayaran').val(data.tempat.PROSES_PEMBAYARAN).change();
+                        $("#lat").val(data.tempat.LAT)
+                        $("#lng").val(data.tempat.LNG)
+
+                        for(var i = 0; i < data.jenis_usaha.length; i++) {
+                            $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true);
+                        }
+
+                        //$('#cBahanBaku').html('');
+                        for(var i = 0; i < data.jenis_bahan.length; i++) {
+                            if(i == 0) {
+                                // $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value="' + data.jenis_bahan[i].JENIS_BAHAN + '" selected>' + data.jenis_bahan[i].JENIS_BAHAN + '</option></select></div><div class="col-md-7"><input type="text" class="form-control" value="' + data.jenis_bahan[i].KAPASITAS + '" placeholder="Masukan kapasitas (KG/Bulan)" required name="bahan_baku_kg[]"></div></div>');
+                                $('#bahan_baku').val(data.jenis_bahan[i].JENIS_BAHAN).change();
+                                $('#bahan_baku_kg').val(data.jenis_bahan[i].KAPASITAS);
+                            } else {
+                                $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value="' + data.jenis_bahan[i].JENIS_BAHAN + '" selected>' + data.jenis_bahan[i].JENIS_BAHAN + '</option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" value="' + data.jenis_bahan[i].KAPASITAS + '" required name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
+                            }
+                        }
+
+                        $(".d-bahan-baku").select2({
+                            allowClear: true,
+                            ajax: {
+                                url: "{{ route('getBahanBaku') }}",
+                                processResults: function (response) {
+                                    return {
+                                        results: response
+                                    };
+                                },
+                                cache: true
+                            }
+                        });
+
+                        //$('#cPenjualanBahan').html('');
+                        for(var i = 0; i < data.penjualan.length; i++) {
+                            if(i == 0) {
+                                // $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option><option value="' + data.penjualan[i].TEMPAT_PENJUALAN +'" selected>' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) +'</option></select></div><div class="col-md-7"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN +'" required name="penjualan_bahan_ket[]"></div></div>');
+                                $('#penjualan_bahan').val(data.penjualan[i].TEMPAT_PENJUALAN).change();
+                                $('#penjualan_bahan_ket').val(data.penjualan[i].KETERANGAN);
+                            } else {
+                                $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option><option value="' + data.penjualan[i].TEMPAT_PENJUALAN +'" selected>' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) +'</option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN +'" required name="penjualan_bahan_ket[]"></div><div class="col-md-1"><a href="#" class="text-danger hPenjualanBahan mt-1"><small>Hapus</small></a></div></div>');
+                            }
+                        }
+
+                        //Isi select bahan baku
+                        $(".d-penjualan-bahan").select2({
+                            allowClear: true,
+                            ajax: {
+                                url: "{{ route('getPenjualanBahan') }}",
+                                processResults: function (response) {
+                                    return {
+                                        results: response
+                                    };
+                                },
+                                cache: true
+                            }
+                        });
+
+                        //$('#cMesin').html('');
+                        for(var i = 0; i < data.mesin.length; i++) {
+                            var selectMilik = data.mesin[i].KEPEMILIKAN == 'milik sendiri' ? 'selected' : '';
+                            var selectPinjam = data.mesin[i].KEPEMILIKAN == 'dipinjamkan' ? 'selected' : '';
+                            if(i == 0) {
+                                // $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option><option value="' + data.mesin[i].MESIN +'" selected>' + capitalizeFirstLetter(data.mesin[i].MESIN) +'</option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri" ' + selectMilik + '>Milik Sendiri</option><option value="dipinjamkan ' + selectPinjam + '">Dipinjamkan</option></select></div><div class="col-md-6"><input type="text" class="form-control" required placeholder="Jumlah mesin" value="' + data.mesin[i].QTY +'" name="mesin_qty[]"></div></div>');
+                                $('#mesin').val(data.mesin[i].MESIN).change();
+                                $('#kepemilikan').val(data.mesin[i].KEPEMILIKAN).change();
+                                $('#mesin_qty').val(data.mesin[i].QTY);
+                            } else {
+                                $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option><option value="' + data.mesin[i].MESIN +'" selected>' + capitalizeFirstLetter(data.mesin[i].MESIN) +'</option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri" ' + selectMilik + '>Milik Sendiri</option><option value="dipinjamkan ' + selectPinjam + '">Dipinjamkan</option></select></div><div class="col-md-5"><input type="text" class="form-control" required placeholder="Jumlah mesin" value="' + data.mesin[i].QTY +'" name="mesin_qty[]"></div><div class="col-md-1"><a href="#" class="text-danger hMesin mt-1"><small>Hapus</small></a></div></div>');
+                            }
+                        }
+
+                        //Isi select bahan baku
+                        $(".d-mesin").select2({
+                            allowClear: true,
+                            ajax: {
+                                url: "{{ route('getMesin') }}",
+                                processResults: function (response) {
+                                    return {
+                                        results: response
+                                    };
+                                },
+                                cache: true
+                            }
+                        });
+                        $('.kepemilikan').select2({
+                            allowClear: true
+                        });
+                        $('#addMarkerModal').modal('show');
+                        $("#detailMarkerModal").modal('hide');
+                    }
+                });
+            })
 
         })
 
