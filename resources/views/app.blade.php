@@ -42,8 +42,11 @@
     <script src="assets/leaflet/accurate.js"></script>
 
     <link rel="stylesheet" href="assets/plugin/magnific/magnific.css">
-
     <link href="assets/plugin/select2/select2.css" rel="stylesheet" />
+
+    {{-- Datepicker --}}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="assets/plugin/datepicker/css/bootstrap-material-datetimepicker.css">
 
 
     <style>
@@ -125,7 +128,7 @@
         }
 
         .modal .modal-dialog-aside {
-            width: 350px;
+            width: 400px;
             max-width: 80%;
             height: 100%;
             margin: 0;
@@ -201,6 +204,10 @@
         .form-control::-ms-input-placeholder {
             /* Microsoft Edge */
             color: #d6d5d5;
+        }
+
+        .select2{
+            width: 100%;
         }
     </style>
 
@@ -280,11 +287,11 @@
                         </a>
                     </div>
                     <div class="leaflet-bottom leaflet-right">
-                        <a href="javascript:void" data-toggle="modal" data-target="#modal_aside_right"
-                            class="location btn btn-light btn-circle btn-lg">
-                            <i style="font-size: 25px;" class="fas fa-compass"></i>
+                        <a href="javascript:void"
+                            class="location btn btn-info btn-circle btn-lg">
+                            <i style="font-size: 25px;" class="fas fa-street-view"></i>
                         </a>
-                        <a href="javascript:void" class="add btn btn-success btn-circle btn-lg">
+                        <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal" class="add btn btn-success btn-circle btn-lg">
                             <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -325,7 +332,7 @@
     </div>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="addMarkerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <form id="formCoord">
@@ -341,8 +348,8 @@
                         <h5 class="text-primary mb-3" style="text-decoration: underline;">Tempat Usaha</h5>
                         <div class="form-group">
                             <label for="kategori">Kategori</label>
-                            <select class="form-control select2" required data-placeholder="Pilih Kategori" name="kategori"
-                                id="kategori">
+                            <select class="form-control select2" required data-placeholder="Pilih Kategori"
+                                name="kategori" id="kategori">
                                 {{-- <option value=""> -- Pilih Kategori -- </option> --}}
                                 <option value=""></option>
                                 <option value="supplier">Supplier</option>
@@ -356,12 +363,17 @@
                                 id="nama_usaha" name="nama_usaha">
                         </div>
                         <div class="form-group">
+                            <label for="exampleInputEmail1">Tanggal Kunjungan</label>
+                            <input type="text" class="form-control datepicker" placeholder="Pilih tanggal kunjungan" required
+                                id="tgl_kunjungan" name="tgl_kunjungan">
+                        </div>
+                        <div class="form-group">
                             <label for="exampleInputEmail1">Jenis Usaha</label>
                             <div class="row">
                                 @foreach ($jenis_usaha as $row)
                                 <div class="col-lg-3 col-6">
                                     <div class="custom-control custom-checkbox" style="display: inline-block;">
-                                        <input type="checkbox" name="jenis_usaha[]" class="custom-control-input"
+                                        <input type="checkbox" required name="jenis_usaha[]" class="custom-control-input"
                                             id="jenis_usaha{{ $row->ID_JENIS_USAHA }}"
                                             value="{{ strtolower($row->JENIS_USAHA) }}">
                                         <label class="custom-control-label"
@@ -383,13 +395,13 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Alamat Lengkap</label>
-                            <textarea class="form-control" placeholder="Masukkan alamat lengkap" required id="telepon"
-                                rows="5" name="telepon"></textarea>
+                            <textarea class="form-control" placeholder="Masukkan alamat lengkap" required id="alamat"
+                                rows="5" name="alamat"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="status_tempat">Status Tempat Usaha</label>
                             <select class="form-control select2" name="status_tempat"
-                                data-placeholder="Pilih Status Tempat Usaha" id="status_tempat">
+                                data-placeholder="Pilih Status Tempat Usaha" required id="status_tempat">
                                 <option value=""></option>
                                 <option value="milik sendiri">Milik Sendiri</option>
                                 <option value="kontrak/sewa">Kontrak/Sewa</option>
@@ -408,13 +420,14 @@
                         <hr>
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
                         <div class="form-group">
-                            <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#"
-                                    class="text-success" id="tBahanBaku">Tambah</a></label>
+                            <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="text-success"
+                                    id="tBahanBaku">Tambah</a></label>
                             <div id="cBahanBaku">
                                 <div class="row">
                                     <div class="col-md-5 mb-2 mb-md-0">
-                                        <select class="form-control select2" data-placeholder="Pilih Jenis Bahan Baku"
-                                            name="bahan_baku" id="bahan_baku">
+                                        <select class="form-control select2 bahan-baku"
+                                            data-placeholder="Pilih Jenis Bahan Baku" required name="bahan_baku[]"
+                                            id="bahan_baku">
                                             <option value=""></option>
                                             @foreach ($jenis_bahan as $row)
                                             <option value="{{ $row->JENIS_BAHAN }}">{{ $row->JENIS_BAHAN }}</option>
@@ -422,39 +435,40 @@
                                         </select>
                                     </div>
                                     <div class="col-md-7">
-                                        <input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)"
-                                            required id="bahan_baku_kg" name="bahan_baku_kg">
+                                        <input type="text" class="form-control"
+                                            placeholder="Masukan kapasitas (KG/Bulan)" required id="bahan_baku_kg"
+                                            name="bahan_baku_kg[]">
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
                         </div>
                         <div class="form-group">
                             <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#"
-                                    class="text-success">Tambah</a></label>
-                            <div class="row">
-                                <div class="col-md-5  mb-2 mb-md-0">
-                                    <select class="form-control select2" data-placeholder="Pilih Penjualan Bahan Baku"
-                                        name="penjualan_bahan" id="penjualan_bahan">
-                                        <option value=""></option>
-                                        @foreach ($tempat_penjualan as $row)
-                                        <option value="{{ $row->TEMPAT_PENJUALAN }}">{{ $row->TEMPAT_PENJUALAN }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-7">
-                                    <input type="text" class="form-control"
-                                        placeholder="Keterangan penjualan bahan baku" required id="penjualan_bahan_ket"
-                                        name="penjualan_bahan_ket">
+                                    id="tPenjualanBahan" class="text-success">Tambah</a></label>
+                            <div id="cPenjualanBahan">
+                                <div class="row">
+                                    <div class="col-md-5 mb-2 mb-md-0">
+                                        <select class="form-control penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku"
+                                            name="penjualan_bahan[]" id="penjualan_bahan">
+                                            <option value=""></option>
+                                            @foreach ($tempat_penjualan as $row)
+                                            <option value="{{ strtolower($row->TEMPAT_PENJUALAN) }}">{{ $row->TEMPAT_PENJUALAN }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control"
+                                            placeholder="Keterangan penjualan bahan baku" required id="penjualan_bahan_ket"
+                                            name="penjualan_bahan_ket[]">
+                                    </div>
                                 </div>
                             </div>
-                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
                         </div>
                         <div class="form-group">
                             <label for="proses_penjualan">Proses Penjualan</label>
                             <select class="form-control select2" data-placeholder="Pilih Proses Penjualan"
-                                name="proses_penjualan" id="proses_penjualan">
+                                name="proses_penjualan" required id="proses_penjualan">
                                 <option value=""></option>
                                 <option value="dikirim">Dikirim</option>
                                 <option value="diambil">Diambil</option>
@@ -463,10 +477,10 @@
                         <div class="form-group">
                             <label for="proses_pembayaran">Proses Pembayaran</label>
                             <select class="form-control select2" data-placeholder="Pilih Proses Pembayaran"
-                                name="proses_pembayaran" id="proses_pembayaran">
+                                name="proses_pembayaran" required id="proses_pembayaran">
                                 <option value=""></option>
                                 @foreach ($jenis_pembayaran as $row)
-                                <option value="{{ $row->JENIS_PEMBAYARAN }}">{{ $row->JENIS_PEMBAYARAN }}</option>
+                                <option value="{{ strtolower($row->JENIS_PEMBAYARAN) }}">{{ $row->JENIS_PEMBAYARAN }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -474,43 +488,44 @@
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                         <div class="form-group">
                             <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#"
-                                    class="text-success">Tambah</a></label>
-                            <div class="row">
-                                <div class="col-md-5 mb-2 mb-md-0">
-                                    <select class="form-control select2" data-placeholder="Pilih Mesin" name="mesin"
-                                        id="mesin">
-                                        <option value=""></option>
-                                        @foreach ($mesin as $row)
-                                        <option value="{{ $row->MESIN }}">{{ $row->MESIN }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4 mb-2 mb-md-0">
-                                    <select class="form-control select2" data-placeholder="Kepemilikan"
-                                        name="kepemilikan" id="kepemilikan">
-                                        <option value=""></option>
-                                        <option value="milik sendiri">Milik Sendiri</option>
-                                        <option value="dipinjamkan">Dipinjamkan</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control" placeholder="Jumlah mesin" required
-                                        id="mesin_qty" name="mesin_qty">
+                                    class="text-success" id="tMesin">Tambah</a></label>
+                            <div id="cMesin">
+                                <div class="row">
+                                    <div class="col-md-12 mb-2 mb-md-3">
+                                        <select class="form-control mesin select2" style="width: 100%;" data-placeholder="Pilih Mesin" required name="mesin[]"
+                                            id="mesin">
+                                            <option value=""></option>
+                                            @foreach ($mesin as $row)
+                                            <option value="{{ strtolower($row->MESIN) }}">{{ $row->MESIN }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-2 mb-md-0">
+                                        <select class="form-control select2" required data-placeholder="Kepemilikan"
+                                            name="kepemilikan[]" id="kepemilikan">
+                                            <option value=""></option>
+                                            <option value="milik sendiri">Milik Sendiri</option>
+                                            <option value="dipinjamkan">Dipinjamkan</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Jumlah mesin" required
+                                            id="mesin_qty" name="mesin_qty[]">
+                                    </div>
                                 </div>
                             </div>
-                            <a href="#" class="text-danger float-right mt-1"><small>Hapus</small></a>
                         </div>
                         <br>
                         <hr>
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat </h5>
-                        {{-- <div class="form-group">
+                        <div class="form-group">
                             <label for="exampleInputEmail1">Latitude</label>
-                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude" name="lat" required readonly>
+                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude" name="lat" required>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Longitude</label>
-                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"  name="lng" required readonly>
-                        </div> --}}
+                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"  name="lng" required>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" id="btnSubmit" type="submit">Simpan</button>
@@ -536,12 +551,69 @@
                 </div>
                 <div class="modal-body" style="height: 80vh; overflow-y: auto;">
                     <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kategori</label><br>
+                        <p id="kategoriText" class="font-weight-bold badge badge-primary" style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jenis Usaha</label>
+                        <p id="jenisUsahaText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Tanggal Kunjungan</label>
+                        <p id="tglKunjunganText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Contact Person</label>
+                        <p id="cpText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Telepon</label>
+                        <p id="teleponText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Alamat</label>
+                        <p id="alamatText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Status Tempat Usaha</label>
+                        <p id="statusTempatText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jumlah Pekerja</label>
+                        <p id="jmlPekerjaText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Foto</label>
+                        <div class="row image-gallery">
+                        </div>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jenis & Kapasitas Bahan</label>
+                        <p id="jenisBahanText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
+                        <p id="penjualanBahanBakuText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Proses Penjualan</label>
+                        <p id="prosesPenjualanText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Proses Pembayaran</label>
+                        <p id="prosesPembayaranText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kepemilikan Mesin</label>
+                        <p id="mesinText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Latitude</label>
-                        <p id="latText" class="font-weight-bold"></p>
+                        <p id="latText" class="font-weight-bold">Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Longitude</label>
-                        <p id="lngText" class="font-weight-bold"></p>
+                        <p id="lngText" class="font-weight-bold">Memuat...</p>
                     </div>
                     {{-- <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Informasi</label>
@@ -555,14 +627,10 @@
                             ac, dignissim magna. Suspendisse aliquam nunc nec lorem finibus consequat. Nulla vitae
                             tellus vitae massa mattis facilisis cursus sed erat. In hac habitasse platea dictumst.</p>
                     </div> --}}
-                    <div class="form-group border-bottom">
-                        <label for="exampleInputPassword1">Foto</label>
-                        <div class="row image-gallery">
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <a href="#" class="btn btn-success" id="btnEdit">Edit</a>
+                    <button type="button" class="btn btn-danger">Hapus</button>
                     {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
                 </div>
             </div>
@@ -584,18 +652,37 @@
     {{-- Validate --}}
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
+    {{-- Moment --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+    {{-- Datepicker --}}
+    <script src="assets/plugin/datepicker/js/bootstrap-material-datetimepicker.js"></script>
     <script>
         $(function () {
             $('.select2').select2({
                 allowClear: true
             });
+            $('.datepicker').bootstrapMaterialDatePicker({
+                time: false
+            });
+
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var key = $('meta[name="key-api"]').attr('content');
             var mymap = L.map('mapid').setView([-1, 117], 5);
-            L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(mymap);
+            if ($(window).width() >= 993) {
+                L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                    tileSize: 512,
+                    zoomOffset: -1,
+                }).addTo(mymap);
+            } else {
+                L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                    //tileSize: 512,
+                    //zoomOffset: -1,
+                }).addTo(mymap);
+            }
+            
             var manIcon = L.icon({
                 iconUrl: 'assets/img/placeholder2.png',
                 iconSize: [35, 35], // size of the icon
@@ -639,27 +726,85 @@
             L.control.scale().addTo(mymap);
 
             function markerOnClick() {
-                var id = this.options.id;
+
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+
+                var id = this.options.ID_TEMPAT;
                 var place = this.options.place;
-                var lat = this.options.lat;
-                var lng = this.options.lng;
+                var lat = this.options.LAT;
+                var lng = this.options.LNG;
                 $("#placeName").html(place);
+                $('#kategoriText').html(this.options.KATEGORI);
+                $('#tglKunjunganText').html(moment(this.options.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
+                $('#cpText').html(this.options.CP);
+                $('#teleponText').html(this.options.TELEPON);
+                $('#alamatText').html(this.options.ALAMAT);
+                $('#statusTempatText').html(this.options.STATUS_USAHA);
+                $('#jmlPekerjaText').html(this.options.JUMLAH_PEKERJA);
+                $('#prosesPenjualanText').html(this.options.PROSES_PENJUALAN);
+                $('#prosesPembayaranText').html(this.options.PROSES_PEMBAYARAN);
                 $("#latText").html(lat)
                 $("#lngText").html(lng)
                 //console.log(id);
                 $.ajax({
-                    url: "{{ route('getMarkerImage') }}",
+                    url: "{{ route('getDetailCoord') }}",
                     data: {
                         "_token": csrf,
                         "id": id
                     },
                     success: function (data) {
-                        var html = '';
-                        var storage = '{{ asset('storage/images/') }}';
-                        for (var i = 0; i < data.length; i++) {
-                            html += '<div class="col-6 text-center mb-3"><a href="upload/img/' + data[i].gambar + '" class="image-link"><img src="upload/img/thumbnail/' + data[i].gambar + '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                        //Jenis Usaha
+                        var jenis_usaha ='';
+                        for(var i = 0; i < data.jenis_usaha.length; i++) {
+                            jenis_usaha += '- ' + data.jenis_usaha[i].JENIS_USAHA + '<br>'
                         }
-                        $('.image-gallery').html(html);
+
+                        $('#jenisUsahaText').html(jenis_usaha);
+
+                        //Jenis Bahan & Kapasitas
+                        var jenis_bahan ='';
+                        for(var i = 0; i < data.jenis_bahan.length; i++) {
+                            jenis_bahan += '- ' + data.jenis_bahan[i].JENIS_BAHAN + ' (' + data.jenis_bahan[i].KAPASITAS + ' KG/Bulan)' + '<br>'
+                        }
+
+                        $('#jenisBahanText').html(jenis_bahan);
+
+                        //Penjualan Bahan Baku
+
+                        var penjualan ='';
+                        for(var i = 0; i < data.penjualan.length; i++) {
+                            penjualan += '- ' + data.penjualan[i].TEMPAT_PENJUALAN + ' (' + data.penjualan[i].KETERANGAN + ')' + '<br>'
+                        }
+
+                        $('#penjualanBahanBakuText').html(penjualan);
+
+                        //Mesin
+
+                        var mesin ='';
+                        for(var i = 0; i < data.mesin.length; i++) {
+                            mesin += '- ' + data.mesin[i].MESIN + ' ' + data.mesin[i].QTY + ' (' + data.mesin[i].KEPEMILIKAN + ')' + '<br>'
+                        }
+
+                        $('#mesinText').html(mesin);
+
+                        //Image Handle
+                        var img = '';
+                        //var storage = '{{ asset('storage/images/') }}';
+                        for (var i = 0; i < data.image.length; i++) {
+                            img += '<div class="col-6 text-center mb-3"><a href="upload/img/' + data.image[i].GAMBAR + '" class="image-link"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                        }
+                        $('.image-gallery').html(img);
                     }
                 });
                 $("#detailMarkerModal").modal('show');
@@ -673,15 +818,24 @@
 
             function mapMarker(data, show) {
                 for (var i = 0; i < data.length; i++) {
-                    marker = L.marker([data[i].lat, data[i].lng], {
+                    marker = L.marker([data[i].LAT, data[i].LNG], {
                         icon: newIcon,
-                        id: data[i].id,
-                        place: data[i].place,
-                        lat: data[i].lat,
-                        lng: data[i].lng
+                        ID_TEMPAT: data[i].ID_TEMPAT,
+                        place: data[i].NAMA_USAHA,
+                        KATEGORI: data[i].KATEGORI,
+                        CP: data[i].CP,
+                        TELEPON: data[i].TELEPON,
+                        ALAMAT: data[i].ALAMAT,
+                        STATUS_USAHA: data[i].STATUS_USAHA,
+                        JUMLAH_PEKERJA: data[i].JUMLAH_PEKERJA,
+                        PROSES_PENJUALAN: data[i].PROSES_PENJUALAN,
+                        PROSES_PEMBAYARAN: data[i].PROSES_PEMBAYARAN,
+                        TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
+                        LAT: data[i].LAT,
+                        LNG: data[i].LNG
                     }).addTo(mymap).on('click', markerOnClick);
                     if (show) {
-                        mymap.setView([data[i].lat, data[i].lng], 18);
+                        mymap.setView([data[i].LAT, data[i].LNG], 18);
                         //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
                     } else {
                         //marker.bindPopup(data[i].place);
@@ -694,6 +848,21 @@
                 //     console.log(e.latlng);
                 // });
             }
+
+            mymap.on('click', function (e) {
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+            });
 
             mymap.on('contextmenu', function (e) {
                 if (manMarker != undefined) {
@@ -814,7 +983,7 @@
                 alert(e.message);
             }
 
-            $('.add').on('click', function () {
+            $('.location').on('click', function () {
                 mymap.on('accuratepositionprogress', onAccuratePositionProgress);
                 mymap.on('accuratepositionfound', onAccuratePositionFound);
                 mymap.on('locationerror', onLocationError);
@@ -905,7 +1074,6 @@
                         $('#btnSubmit').show();
                         $('#btnLoad').hide();
                         $('.btnClose').prop('disabled', false);
-                        $("#addMarkerModal").modal('hide');
                         //$("#exampleModal").modal('hide');
                         alert('Something went wrong!');
                     }
@@ -944,6 +1112,24 @@
             $('#addMarkerModal').on('hidden.bs.modal', function (e) {
                 $("#formCoord")[0].reset();
                 $("label.error").hide();
+                $('.select2').val('').change();
+                $('.d-bahan-baku').val('').change();
+                $('.d-mesin').val('').change();
+                $('.d-penjualan-bahan').val('').change();
+                $('.kepemilikan').val('').change();
+                $('.clone').remove();
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
             })
 
             $('.btnAdd').on('click', function () {
@@ -968,7 +1154,142 @@
             });
 
             // For Form Element
+            // =============================== //
+            var max_field = 10000;
+            // Tambah Jenis Bahan Baku //
+            var iBahanBaku = 1; // Jumlah field bahan baku
+            $('#tBahanBaku').on('click', function(e) {
+                e.preventDefault();
+                var vBahanBaku = $('.bahan-baku').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
+                if(vBahanBaku.length == 0) {
+                    if(max_field >= iBahanBaku) {
+                        $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" required id="bahan_baku_kg" name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
+                    } else {
+                        alert('Error!');
+                    }
+                } else if(vBahanBaku.length > 0) {
+                    $('#tBahanBaku').click(false);
+                    alert('Mohon lengkapi data jenis bahan baku sebelumnya!');
+                }
 
+                //Isi select bahan baku
+                $(".d-bahan-baku").select2({
+                    allowClear: true,
+                    ajax: {
+                        url: "{{ route('getBahanBaku') }}",
+                        processResults: function (response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            })
+
+            //Hapus field jenis bahan baku
+            $('#cBahanBaku').on("click", ".hBahanBaku", function(e){ //user click on remove text
+                e.preventDefault(); 
+                $(this).parents('.row').remove(); iBahanBaku--;
+            });
+
+            //============== End ================= //
+
+             // Tambah Penjualan Bahan Baku //
+             var iPenjualan = 1; // Jumlah field bahan baku
+            $('#tPenjualanBahan').on('click', function(e) {
+                e.preventDefault();
+                var vPenjualan = $('.penjualan-bahan').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
+                if(vPenjualan.length == 0) {
+                    if(max_field >= iPenjualan) {
+                        $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div><div class="col-md-1"><a href="#" class="text-danger hPenjualanBahan mt-1"><small>Hapus</small></a></div></div>');
+                    } else {
+                        alert('Error!');
+                    }
+                } else if(vPenjualan.length > 0) {
+                    $('#tPenjualanBahan').click(false);
+                    alert('Mohon lengkapi data penjualan bahan baku sebelumnya!');
+                }
+
+                //Isi select bahan baku
+                $(".d-penjualan-bahan").select2({
+                    allowClear: true,
+                    ajax: {
+                        url: "{{ route('getPenjualanBahan') }}",
+                        processResults: function (response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            })
+
+            //Hapus field jenis bahan baku
+            $('#cPenjualanBahan').on("click", ".hPenjualanBahan", function(e){ //user click on remove text
+                e.preventDefault(); 
+                $(this).parents('.row').remove(); iPenjualan--;
+            });
+
+            // ============== End ============ //
+
+            // Tambah Mesin //
+            var iMesin = 1; // Jumlah field Mesin
+            $('#tMesin').on('click', function(e) {
+                e.preventDefault();
+                var vMesin = $('.mesin').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
+                if(vMesin.length == 0) {
+                    if(max_field >= iMesin) {
+                        $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri">Milik Sendiri</option><option value="dipinjamkan">Dipinjamkan</option></select></div><div class="col-md-5"><input type="text" class="form-control" required placeholder="Jumlah mesin" name="mesin_qty[]"></div><div class="col-md-1"><a href="#" class="text-danger hMesin mt-1"><small>Hapus</small></a></div></div>');
+                    } else {
+                        alert('Error!');
+                    }
+                } else if(vMesin.length > 0) {
+                    $('#tMesin').click(false);
+                    alert('Mohon lengkapi data mesin sebelumnya!');
+                }
+
+                //Isi select bahan baku
+                $(".d-mesin").select2({
+                    allowClear: true,
+                    ajax: {
+                        url: "{{ route('getMesin') }}",
+                        processResults: function (response) {
+                            return {
+                                results: response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+
+                $('.kepemilikan').select2({
+                    allowClear: true
+                });
+            })
+
+            //Hapus field jenis bahan baku
+            $('#cMesin').on("click", ".hMesin", function(e){ //user click on remove text
+                e.preventDefault(); 
+                $(this).parents('.row').remove(); iPenjualan--;
+            });
+
+            // ============== End ============ //
+
+            // Validasi Checkbox 
+            var requiredCheckboxes = $(':checkbox[required]');
+
+            requiredCheckboxes.change(function(){
+
+                if(requiredCheckboxes.is(':checked')) {
+                    requiredCheckboxes.removeAttr('required');
+                }
+
+                else {
+                    requiredCheckboxes.attr('required', 'required');
+                }
+            });
 
         })
 

@@ -39,7 +39,7 @@ class CoordController extends Controller
     //
     public function getCoordinates(Request $request)
     {
-        $coords = Coord::all();
+        $coords = DB::table('tempat')->get();
         return response()->json($coords, 200, []);
 
     }
@@ -75,20 +75,59 @@ class CoordController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'place' => 'required',
-            'lat' => 'required',
-            'lng' => 'required',
-        ]);
-
+        
         $data = [
-            'id' => time(),
-            'place' => $request->place,
-            'lat' => $request->lat,
-            'lng' => $request->lng,
-            'user' => 'mamulyana',
-            'created_date' => date('Y-m-d H:i:s'),
+            'ID_TEMPAT' => time(),
+            'KATEGORI' => $request->kategori,
+            'NAMA_USAHA' => $request->nama_usaha,
+            'CP' => $request->cp,
+            'TELEPON' => $request->telepon,
+            'ALAMAT' => $request->alamat,
+            'STATUS_USAHA' => $request->status_tempat,
+            'JUMLAH_PEKERJA' => $request->jml_pekerja,
+            'PROSES_PENJUALAN' => $request->proses_penjualan,
+            'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
+            'LAT' => $request->lat,
+            'LNG' => $request->lng,
+            'TANGGAL_KUNJUNGAN' => $request->tgl_kunjungan,
+            'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
+            'USERNAME' => 'mamulyana'
         ];
+
+        // jenis usaha
+        foreach($request->jenis_usaha as $key => $value) {
+            $jenis_usaha[] = [
+                'ID_TEMPAT' => time(),
+                'JENIS_USAHA' => $request->jenis_usaha[$key]
+            ];
+        }
+
+        foreach($request->bahan_baku as $key => $value) {
+            $bahan_baku[] = [
+                'ID_TEMPAT' => time(),
+                'JENIS_BAHAN' => $request->bahan_baku[$key],
+                'KAPASITAS' => $request->bahan_baku_kg[$key]
+            ];
+        }
+
+        foreach($request->penjualan_bahan as $key => $value) {
+            $penjualan_bahan[] = [
+                'ID_TEMPAT' => time(),
+                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                'KETERANGAN' => $request->penjualan_bahan_ket[$key]
+            ];
+        }
+
+        foreach($request->mesin as $key => $value) {
+            $mesin[] = [
+                'ID_TEMPAT' => time(),
+                'MESIN' => $request->mesin[$key],
+                'KEPEMILIKAN' => $request->kepemilikan[$key],
+                'QTY' => $request->mesin_qty[$key]
+            ];
+        }
+
+        //dd($data, $jenis_usaha, $bahan_baku, $penjualan_bahan, $mesin);
 
         $files = false;
         $i = 1;
@@ -102,8 +141,8 @@ class CoordController extends Controller
                 $file->move(public_path() . '/upload/img/', $name);
                 //$path = Storage::putFileAs('public/images', $file, $name);
                 $files[] = [
-                    'id' => $data['id'],
-                    'gambar' => $name,
+                    'ID_TEMPAT' => time(),
+                    'GAMBAR' => $name,
                 ];
                 $i++;
             }
@@ -113,15 +152,18 @@ class CoordController extends Controller
 
         try {
 
-            Coord::create($data);
-            ($files) ? DB::table('gps_markers_gambar')->insert($files) : '';
+            DB::table('tempat')->insert($data);
+            DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
+            DB::table('tempat_jenis_bahan')->insert($bahan_baku);
+            DB::table('tempat_penjualan')->insert($penjualan_bahan);
+            DB::table('tempat_mesin')->insert($mesin);
+            ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
             $response[] = [
-                'id' => $data['id'],
-                'place' => $request->place,
-                'lat' => $request->lat,
-                'lng' => $request->lng,
-                'file' => ($files) ? array_column($files, 'gambar') : null,
+                'ID_TEMPAT' => time(),
+                'NAMA_USAHA' => $request->nama_usaha,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
                 'code' => 200,
             ];
             DB::commit();
@@ -143,7 +185,71 @@ class CoordController extends Controller
     public function getMarkerImage(Request $request)
     {
         $id = $request->input('id');
-        $image = DB::table('gps_markers_gambar')->where('id', $id)->get();
+        $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get();
         return response()->json($image, 200, []);
+    }
+
+    public function getBahanBaku()
+    {
+        $result = DB::table('m_jenis_bahan')->get(); 
+
+        foreach($result as $row) {
+            $response[] = [
+                'id' => $row->JENIS_BAHAN,
+                'text' => $row->JENIS_BAHAN
+            ];
+        }
+
+        return response()->json($response, 200, []);
+    }
+
+    public function getPenjualanBahan()
+    {
+        $result = DB::table('m_tempat_penjualan')->get(); 
+
+        foreach($result as $row) {
+            $response[] = [
+                'id' => strtolower($row->TEMPAT_PENJUALAN),
+                'text' => $row->TEMPAT_PENJUALAN
+            ];
+        }
+
+        return response()->json($response, 200, []);
+    }
+
+    public function getMesin()
+    {
+        $result = DB::table('m_mesin')->get(); 
+
+        foreach($result as $row) {
+            $response[] = [
+                'id' => strtolower($row->MESIN),
+                'text' => $row->MESIN
+            ];
+        }
+
+        return response()->json($response, 200, []);
+    }
+
+    public function getDetailCoord(Request $request)
+    {
+        if($request->input('id')){
+
+            $id = $request->input('id');
+            $jenis_usaha = DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $id)->get();
+            $jenis_bahan = DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $id)->get();
+            $penjualan = DB::table('tempat_penjualan')->where('ID_TEMPAT', $id)->get();
+            $mesin = DB::table('tempat_mesin')->where('ID_TEMPAT', $id)->get();
+            $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get();
+            $response = [
+                'jenis_usaha' => $jenis_usaha,
+                'jenis_bahan' => $jenis_bahan,
+                'penjualan' => $penjualan,
+                'mesin' => $mesin,
+                'image' => $image
+            ];
+            
+            return response()->json($response, 200, []);
+        }
     }
 }
