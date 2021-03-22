@@ -726,7 +726,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-success" id="btnEdit">Edit</a>
-                    <button type="button" class="btn btn-danger">Hapus</button>
+                    <a href="{{ route('delCoord') }}" class="btn btn-danger btnDelete">Hapus</button>
                     {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
                 </div>
             </div>
@@ -754,6 +754,9 @@
         crossorigin="anonymous"></script>
     {{-- Datepicker --}}
     <script src="assets/plugin/datepicker/js/bootstrap-material-datetimepicker.js"></script>
+    {{-- Sweetalert2 --}}
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <script>
         $(function () {
             $('.select2').select2({
@@ -906,10 +909,15 @@
                         //Image Handle
                         var img = '';
                         //var storage = '{{ asset('storage/images/') }}';
-                        for (var i = 0; i < data.image.length; i++) {
-                            img += '<div class="col-6 text-center mb-3"><a href="upload/img/' + data.image[i].GAMBAR + '" class="image-link"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                        if(data.image.length > 0){
+                            for (var i = 0; i < data.image.length; i++) {
+                                img += '<div class="col-6 text-center mb-3"><a href="upload/img/' + data.image[i].GAMBAR + '" class="image-link"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>'
+                            }
+                            $('.image-gallery').html(img);
+                        } else {
+                            img += '<div class="col-6 text-center mb-3"><a href="https://info.solokkota.go.id/uploads/No_Image_Available.jpg" class="image-link"><img src="https://info.solokkota.go.id/uploads/No_Image_Available.jpg" style="width:150px; height:100px; object-fit:cover; border-radius: 10px;" class="img-fluid" alt=""></a></div>';
+                            $('.image-gallery').html(img);
                         }
-                        $('.image-gallery').html(img);
                     }
                 });
                 $("#detailMarkerModal").modal('show');
@@ -920,6 +928,7 @@
                     $('#addMarkerModal').modal('show');
                     $('#formCoord').attr('action', "{{ route('addCoord') }}");
                     $('#addMarkerJudul').html('Tambah Tempat');
+                    $('#cExistImage').hide();
                 });
             }
 
@@ -948,12 +957,6 @@
                         //marker.bindPopup(data[i].place);
                     }
                 }
-                // marker.on('click', function (e) {
-                //     map.setView(e.latlng, 13);
-                // });
-                // marker.on('click', function (e) {
-                //     console.log(e.latlng);
-                // });
             }
 
             mymap.on('click', function (e) {
@@ -1002,6 +1005,7 @@
                         $('#addMarkerModal').modal('show');
                         $('#formCoord').attr('action', "{{ route('addCoord') }}");
                         $('#addMarkerJudul').html('Tambah Tempat');
+                        $('#cExistImage').hide();
                     });
                 });
 
@@ -1046,6 +1050,7 @@
                     $('#addMarkerModal').modal('show');
                     $('#formCoord').attr('action', "{{ route('addCoord') }}");
                     $('#addMarkerJudul').html('Tambah Tempat');
+                    $('#cExistImage').hide();
                 });
             }
 
@@ -1082,6 +1087,7 @@
                     $('#addMarkerModal').modal('show');
                     $('#formCoord').attr('action', "{{ route('addCoord') }}");
                     $('#addMarkerJudul').html('Tambah Tempat');
+                    $('#cExistImage').hide();
                 });
             }
 
@@ -1249,12 +1255,14 @@
                 $('#addMarkerModal').modal('show');
                 $('#formCoord').attr('action', "{{ route('addCoord') }}");
                 $('#addMarkerJudul').html('Tambah Tempat');
+                $('#cExistImage').hide();
             });
 
             $('.add').on('click', function () {
                 $('#addMarkerModal').modal('show');
                 $('#formCoord').attr('action', "{{ route('addCoord') }}");
                 $('#addMarkerJudul').html('Tambah Tempat');
+                $('#cExistImage').hide();
             });
 
             $('body').magnificPopup({
@@ -1414,6 +1422,7 @@
             $('#btnEdit').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
+                $('#addMarkerJudul').html('Ubah Tempat')
                 $('#formCoord').attr('action', "{{ route('updateCoord') }}")
                 $.ajax({
                     url: "{{ route('getDetailCoord') }}",
@@ -1441,13 +1450,16 @@
                             $('#cExistImage').show();
                             var imgList = '';
                             for(var i = 0; i < data.image.length; i++) {
-                                imgList += '<li class="img-check"><input type="checkbox" id="myCheckbox' + i + '"><label class="img-label" for="myCheckbox' + i + '"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" /></label></li>'
+                                imgList += '<li class="img-check"><input type="checkbox" name="del_image[]" value="' + data.image[i].GAMBAR + '" id="myCheckbox' + i + '"><label class="img-label" for="myCheckbox' + i + '"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" /></label></li>'
                             }
                             $('#imgList').html(imgList);
-    
-                            for(var i = 0; i < data.jenis_usaha.length; i++) {
-                                $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true).change();
-                            }
+                        } else {
+                            $('#cExistImage').hide();
+                            $('#imgList').html('');
+                        }
+
+                        for(var i = 0; i < data.jenis_usaha.length; i++) {
+                            $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true).change();
                         }
 
                         //$('#cBahanBaku').html('');

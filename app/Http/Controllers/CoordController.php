@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Image;
+use File;
 
 class CoordController extends Controller
 {
@@ -89,7 +90,7 @@ class CoordController extends Controller
             'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
             'LAT' => $request->lat,
             'LNG' => $request->lng,
-            'TANGGAL_KUNJUNGAN' => $request->tgl_kunjungan,
+            'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
             'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
             'USERNAME' => 'mamulyana'
         ];
@@ -257,6 +258,133 @@ class CoordController extends Controller
 
     public function update(Request $request)
     {
-        dd($request);
+        //dd($request);
+        $data = [
+            'KATEGORI' => $request->kategori,
+            'NAMA_USAHA' => $request->nama_usaha,
+            'CP' => $request->cp,
+            'TELEPON' => $request->telepon,
+            'ALAMAT' => $request->alamat,
+            'STATUS_USAHA' => $request->status_tempat,
+            'JUMLAH_PEKERJA' => $request->jml_pekerja,
+            'PROSES_PENJUALAN' => $request->proses_penjualan,
+            'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
+            'LAT' => $request->lat,
+            'LNG' => $request->lng,
+            'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
+            'USERNAME' => 'mamulyana'
+        ];
+
+        // jenis usaha
+        foreach($request->jenis_usaha as $key => $value) {
+            $jenis_usaha[] = [
+                'ID_TEMPAT' => $request->id_tempat,
+                'JENIS_USAHA' => $request->jenis_usaha[$key]
+            ];
+        }
+
+        foreach($request->bahan_baku as $key => $value) {
+            $bahan_baku[] = [
+                'ID_TEMPAT' => $request->id_tempat,
+                'JENIS_BAHAN' => $request->bahan_baku[$key],
+                'KAPASITAS' => $request->bahan_baku_kg[$key]
+            ];
+        }
+
+        foreach($request->penjualan_bahan as $key => $value) {
+            $penjualan_bahan[] = [
+                'ID_TEMPAT' => $request->id_tempat,
+                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                'KETERANGAN' => $request->penjualan_bahan_ket[$key]
+            ];
+        }
+
+        foreach($request->mesin as $key => $value) {
+            $mesin[] = [
+                'ID_TEMPAT' => $request->id_tempat,
+                'MESIN' => $request->mesin[$key],
+                'KEPEMILIKAN' => $request->kepemilikan[$key],
+                'QTY' => $request->mesin_qty[$key]
+            ];
+        }
+
+        //For delete image
+        $del_image = false;
+        if(isset($request->del_image)){
+            $del_image = true;
+            foreach($request->del_image as $key => $value) {
+                if(File::exists(public_path() . '/upload/img/' . $request->del_image[$key])){
+                    File::delete(public_path() . '/upload/img/'  . $request->del_image[$key]);
+                } else {
+                    dd('error');
+                }
+                if(File::exists(public_path() . '/upload/img/thumbnail/' . $request->del_image[$key])){
+                    File::delete(public_path() . '/upload/img/thumbnail/'  . $request->del_image[$key]);
+                } else {
+                    dd('error');
+                }
+            }
+        }
+
+        //dd($data, $jenis_usaha, $bahan_baku, $penjualan_bahan, $mesin);
+
+        $files = false;
+        $i = 1;
+        if ($request->hasfile('file')) {
+            foreach ($request->file('file') as $file) {
+                $name = time() . '_' . $i . '.' . $file->extension();
+                $img = Image::make($file->getRealPath());
+                $img->resize(100, 100, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save(public_path() . '/upload/img/thumbnail/' . $name);
+                $file->move(public_path() . '/upload/img/', $name);
+                //$path = Storage::putFileAs('public/images', $file, $name);
+                $files[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'GAMBAR' => $name,
+                ];
+                $i++;
+            }
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            DB::table('tempat')->where('ID_TEMPAT', $request->id_tempat)->update($data);
+
+            DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $request->id_tempat)->delete();
+            DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $request->id_tempat)->delete();
+            DB::table('tempat_penjualan')->where('ID_TEMPAT', $request->id_tempat)->delete();
+            DB::table('tempat_mesin')->where('ID_TEMPAT', $request->id_tempat)->delete();
+
+            DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
+            DB::table('tempat_jenis_bahan')->insert($bahan_baku);
+            DB::table('tempat_penjualan')->insert($penjualan_bahan);
+            DB::table('tempat_mesin')->insert($mesin);
+            
+            ($del_image) ? DB::table('tempat_gambar')->where('ID_TEMPAT', $request->id_tempat)->delete() : '';
+            ($files) ? DB::table('tempat_gambar')->insert($files) : '';
+
+            $response[] = [
+                'ID_TEMPAT' => $request->id_tempat,
+                'NAMA_USAHA' => $request->nama_usaha,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
+                'code' => 200,
+            ];
+            DB::commit();
+
+        } catch (QueryException $e) {
+
+            $response[] = [
+                'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2],
+                'code' => 500,
+            ];
+            DB::rollback();
+
+        }
+
+        return response()->json($response, $response[0]['code'], []);
     }
 }
