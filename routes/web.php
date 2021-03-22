@@ -23,6 +23,7 @@ Auth::routes([
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/getCoord', [CoordController::class, 'getCoordinates'])->name('getCoord')->middleware('auth');
 Route::post('/addCoord', [CoordController::class, 'store'])->name('addCoord')->middleware('auth');
+Route::post('/updateCoord', [CoordController::class, 'update'])->name('updateCoord')->middleware('auth');
 Route::get('/getDetailCoord', [CoordController::class, 'getDetailCoord'])->name('getDetailCoord')->middleware('auth');
 Route::get('/getMarkerImage', [CoordController::class, 'getMarkerImage'])->name('getMarkerImage')->middleware('auth');
 Route::get('/', [CoordController::class, 'show'])->middleware('auth');

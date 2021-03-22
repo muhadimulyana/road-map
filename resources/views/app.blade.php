@@ -209,6 +209,73 @@
         .select2 {
             width: 100%;
         }
+
+        /* Checkbox Image */
+        ul.img-list {
+            list-style-type: none !important;
+            padding: 0;
+        }
+
+        li.img-check {
+            display: inline-block;
+        }
+
+        input[type="checkbox"][id^="myCheckbox"] {
+            display: none;
+        }
+
+        label.img-label {
+            border: 1px solid #fff;
+            display: block;
+            position: relative;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        label.img-label:before {
+            background-color: white;
+            color: white;
+            content: " ";
+            display: block;
+            border-radius: 50%;
+            border: 1px solid grey;
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            line-height: 28px;
+            transition-duration: 0.4s;
+            transform: scale(0);
+        }
+
+        label.img-label img {
+            height: 100px;
+            width: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            transition-duration: 0.2s;
+            transform-origin: 50% 50%;
+        }
+
+        :checked+label.img-label {
+            border-color: #ddd;
+            border-radius: 10px;
+        }
+
+        :checked+label.img-label:before {
+            content: "✓";
+            background-color: grey;
+            transform: scale(1);
+            z-index: 1;
+        }
+
+        :checked+label.img-label img {
+            transform: scale(0.9);
+            /* box-shadow: 0 0 5px #333; */
+            z-index: -1;
+        }
     </style>
 
 </head>
@@ -339,7 +406,7 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="exampleModalLabel">Tambah Tempat</h4>
+                        <h4 class="modal-title" id="addMarkerJudul">Judul Modal</h4>
                         <button class="close btnClose" type="button" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -413,7 +480,24 @@
                                 id="jml_pekerja" name="jml_pekerja">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Foto</label><br>
+                            <div id="cExistImage" style="display: none;">
+                                <label id="existImageLabel" for="exampleInputEmail1">Foto | <span class="text-danger">*Pilih foto yang akan dihapus</span></label>
+                                <ul class="img-list" id="imgList">
+                                    {{-- <li class="img-check">
+                                        <input type="checkbox" id="myCheckbox1" />
+                                        <label class="img-label" for="myCheckbox1"><img src="http://townandcountryremovals.com/wp-content/uploads/2013/10/firefox-logo-200x200.png" /></label>
+                                    </li>
+                                    <li class="img-check">
+                                        <input type="checkbox" id="myCheckbox2" />
+                                        <label class="img-label" for="myCheckbox2"><img src="http://tech21info.com/admin/wp-content/uploads/2013/03/chrome-logo-200x200.png" /></label>
+                                    </li>
+                                    <li class="img-check">
+                                        <input type="checkbox" id="myCheckbox3" />
+                                        <label class="img-label" for="myCheckbox3"><img src="http://www.thebusinessofsports.com/wp-content/uploads/2010/10/facebook-icon-200x200.png" /></label>
+                                    </li> --}}
+                                </ul>
+                            </div>
+                            <label for="">Tambah Foto</label><br>
                             <input type="file" style="line-height: normal !important; font-size: 14px !important;"
                                 multiple="multiple" id="file" name="file[]">
                         </div>
@@ -532,6 +616,7 @@
                                 name="lng" required>
                         </div>
                     </div>
+                    <input type="hidden" name="id_tempat" id="id_tempat">
                     <div class="modal-footer">
                         <button class="btn btn-primary" id="btnSubmit" type="submit">Simpan</button>
                         <button class="btn btn-primary" id="btnLoad" style="display: none;" type="button" disabled>
@@ -833,6 +918,8 @@
             function manMarkerOnClick(){
                 $('.btnAdd').on('click', function () {
                     $('#addMarkerModal').modal('show');
+                    $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                    $('#addMarkerJudul').html('Tambah Tempat');
                 });
             }
 
@@ -913,6 +1000,8 @@
                     $('#lng').val(e.latlng.lng);
                     $('.btnAdd').on('click', function () {
                         $('#addMarkerModal').modal('show');
+                        $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                        $('#addMarkerJudul').html('Tambah Tempat');
                     });
                 });
 
@@ -955,6 +1044,8 @@
 
                 $('.btnAdd').on('click', function () {
                     $('#addMarkerModal').modal('show');
+                    $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                    $('#addMarkerJudul').html('Tambah Tempat');
                 });
             }
 
@@ -989,6 +1080,8 @@
 
                 $('.btnAdd').on('click', function () {
                     $('#addMarkerModal').modal('show');
+                    $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                    $('#addMarkerJudul').html('Tambah Tempat');
                 });
             }
 
@@ -1071,7 +1164,7 @@
                     mymap.removeLayer(foundMarker);
                 }
                 $.ajax({
-                    url: "{{ route('addCoord') }}",
+                    url: $(this).attr('action'),
                     //data: $(this).serialize(),
                     data: new FormData(this),
                     processData: false,
@@ -1154,6 +1247,14 @@
 
             $('.btnAdd').on('click', function () {
                 $('#addMarkerModal').modal('show');
+                $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                $('#addMarkerJudul').html('Tambah Tempat');
+            });
+
+            $('.add').on('click', function () {
+                $('#addMarkerModal').modal('show');
+                $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                $('#addMarkerJudul').html('Tambah Tempat');
             });
 
             $('body').magnificPopup({
@@ -1298,16 +1399,13 @@
             // ============== End ============ //
 
             // Validasi Checkbox 
-            var requiredCheckboxes = $(':checkbox[required]');
-
-            requiredCheckboxes.change(function(){
-
-                if(requiredCheckboxes.is(':checked')) {
-                    requiredCheckboxes.removeAttr('required');
+            var rCheckBox = $(':checkbox[required]');
+            rCheckBox.change(function(){
+                if(rCheckBox.is(':checked')) {
+                    rCheckBox.removeAttr('required');
                 }
-
                 else {
-                    requiredCheckboxes.attr('required', 'required');
+                    rCheckBox.attr('required', 'required');
                 }
             });
 
@@ -1316,6 +1414,7 @@
             $('#btnEdit').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
+                $('#formCoord').attr('action', "{{ route('updateCoord') }}")
                 $.ajax({
                     url: "{{ route('getDetailCoord') }}",
                     data: {
@@ -1335,9 +1434,20 @@
                         $('#proses_pembayaran').val(data.tempat.PROSES_PEMBAYARAN).change();
                         $("#lat").val(data.tempat.LAT)
                         $("#lng").val(data.tempat.LNG)
+                        $("#id_tempat").val(data.tempat.ID_TEMPAT);
 
-                        for(var i = 0; i < data.jenis_usaha.length; i++) {
-                            $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true);
+                        // Foto
+                        if(data.image.length > 0){
+                            $('#cExistImage').show();
+                            var imgList = '';
+                            for(var i = 0; i < data.image.length; i++) {
+                                imgList += '<li class="img-check"><input type="checkbox" id="myCheckbox' + i + '"><label class="img-label" for="myCheckbox' + i + '"><img src="upload/img/thumbnail/' + data.image[i].GAMBAR + '" /></label></li>'
+                            }
+                            $('#imgList').html(imgList);
+    
+                            for(var i = 0; i < data.jenis_usaha.length; i++) {
+                                $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true).change();
+                            }
                         }
 
                         //$('#cBahanBaku').html('');

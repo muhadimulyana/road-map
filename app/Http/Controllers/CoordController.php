@@ -254,4 +254,9 @@ class CoordController extends Controller
             return response()->json($response, 200, []);
         }
     }
+
+    public function update(Request $request)
+    {
+        dd($request);
+    }
 }
