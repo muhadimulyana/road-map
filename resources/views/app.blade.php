@@ -276,6 +276,14 @@
             /* box-shadow: 0 0 5px #333; */
             z-index: -1;
         }
+
+        /* Open 2 modal */
+        /* .modal:nth-of-type(even) {
+            z-index: 1052 !important;
+        }
+        .modal-backdrop.show:nth-of-type(even) {
+            z-index: 1051 !important;
+        } */
     </style>
 
 </head>
@@ -379,26 +387,6 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Logout Modal-->
     <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -412,22 +400,44 @@
                         </button>
                     </div>
                     <div class="modal-body" style="height: 70vh; overflow-y: auto;">
-                        <h5 class="text-primary mb-3" style="text-decoration: underline;">Tempat Usaha</h5>
+                        <h5 class="text-primary mb-3" style="text-decoration: underline;">Lokasi Usaha</h5>
                         <div class="form-group">
                             <label for="kategori">Kategori</label>
-                            <select class="form-control select2" required data-placeholder="Pilih Kategori"
+                            {{-- <select class="form-control select2" required data-placeholder="Pilih Kategori"
                                 name="kategori" id="kategori">
-                                {{-- <option value=""> -- Pilih Kategori -- </option> --}}
                                 <option value=""></option>
                                 <option value="supplier">Supplier</option>
                                 <option value="non supplier">Non Supplier</option>
                                 <option value="kompetitor">Kompetitor</option>
-                            </select>
+                            </select> --}}
+                            <div class="row">
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="kategori" class="custom-control-input"
+                                            id="supplier" value="supplier">
+                                        <label class="custom-control-label" for="supplier">Supplier</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="kategori" class="custom-control-input"
+                                            id="non_supplier" value="non supplier">
+                                        <label class="custom-control-label" for="non_supplier">Non Supplier</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="kategori" class="custom-control-input"
+                                            id="kompetitor" value="kompetitor">
+                                        <label class="custom-control-label" for="kompetitor">Kompetitor</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Nama Usaha</label>
-                            <input type="text" class="form-control" placeholder="Masukkan nama usaha" required
-                                id="nama_usaha" name="nama_usaha">
+                            <input type="text" class="form-control" autocomplete="off" placeholder="Masukkan nama usaha"
+                                required id="nama_usaha" name="nama_usaha">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Tanggal Kunjungan</label>
@@ -452,49 +462,54 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Contact Person</label>
-                            <input type="text" class="form-control" placeholder="Masukkan kontak person" required
-                                id="cp" name="cp">
+                            <input type="text" class="form-control" autocomplete="off"
+                                placeholder="Masukkan kontak person" required id="cp" name="cp">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Telepon</label>
-                            <input type="text" class="form-control" placeholder="Masukkan nomor telepon" required
-                                id="telepon" name="telepon">
+                            <input type="tel" class="form-control numeric" autocomplete="off"
+                                placeholder="Masukkan nomor telepon" required id="telepon" name="telepon">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Alamat Lengkap</label>
-                            <textarea class="form-control" placeholder="Masukkan alamat lengkap" required id="alamat"
-                                rows="5" name="alamat"></textarea>
+                            <textarea class="form-control" autocomplete="off" placeholder="Masukkan alamat lengkap"
+                                required id="alamat" rows="5" name="alamat"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="status_tempat">Status Tempat Usaha</label>
-                            <select class="form-control select2" name="status_tempat"
+                            {{-- <select class="form-control select2" name="status_tempat"
                                 data-placeholder="Pilih Status Tempat Usaha" required id="status_tempat">
                                 <option value=""></option>
                                 <option value="milik sendiri">Milik Sendiri</option>
                                 <option value="kontrak/sewa">Kontrak/Sewa</option>
-                            </select>
+                            </select> --}}
+                            <div class="row">
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="status_tempat" class="custom-control-input"
+                                            id="milikSendiri" value="milik sendiri">
+                                        <label class="custom-control-label" for="milikSendiri">Milik Sendiri</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="status_tempat" class="custom-control-input"
+                                            id="kontrak" value="kontrak/sewa">
+                                        <label class="custom-control-label" for="kontrak">Kontrak/Sewa</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Jumlah Pekerja</label>
-                            <input type="text" class="form-control" placeholder="Masukkan jumlah pekerja" required
-                                id="jml_pekerja" name="jml_pekerja">
+                            <input type="number" min="1" class="form-control numeric" autocomplete="off"
+                                placeholder="Masukkan jumlah pekerja" required id="jml_pekerja" name="jml_pekerja">
                         </div>
                         <div class="form-group">
                             <div id="cExistImage" style="display: none;">
-                                <label id="existImageLabel" for="exampleInputEmail1">Foto | <span class="text-danger">*Pilih foto yang akan dihapus</span></label>
+                                <label id="existImageLabel" for="exampleInputEmail1">Foto | <span
+                                        class="text-danger">*Pilih foto yang akan dihapus</span></label>
                                 <ul class="img-list" id="imgList">
-                                    {{-- <li class="img-check">
-                                        <input type="checkbox" id="myCheckbox1" />
-                                        <label class="img-label" for="myCheckbox1"><img src="http://townandcountryremovals.com/wp-content/uploads/2013/10/firefox-logo-200x200.png" /></label>
-                                    </li>
-                                    <li class="img-check">
-                                        <input type="checkbox" id="myCheckbox2" />
-                                        <label class="img-label" for="myCheckbox2"><img src="http://tech21info.com/admin/wp-content/uploads/2013/03/chrome-logo-200x200.png" /></label>
-                                    </li>
-                                    <li class="img-check">
-                                        <input type="checkbox" id="myCheckbox3" />
-                                        <label class="img-label" for="myCheckbox3"><img src="http://www.thebusinessofsports.com/wp-content/uploads/2010/10/facebook-icon-200x200.png" /></label>
-                                    </li> --}}
                                 </ul>
                             </div>
                             <label for="">Tambah Foto</label><br>
@@ -505,46 +520,51 @@
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
                         <div class="form-group">
                             <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="text-success"
-                                    id="tBahanBaku">Tambah</a></label>
+                                    data-toggle="modal" data-target="#addBahanModal">Pilih</a></label>
                             <div id="cBahanBaku">
                                 <div class="row">
                                     <div class="col-md-5 mb-2 mb-md-0">
-                                        <select class="form-control select2 bahan-baku"
+                                        {{-- <select class="form-control select2 bahan-baku"
                                             data-placeholder="Pilih Jenis Bahan Baku" required name="bahan_baku[]"
                                             id="bahan_baku">
                                             <option value=""></option>
                                             @foreach ($jenis_bahan as $row)
                                             <option value="{{ $row->JENIS_BAHAN }}">{{ $row->JENIS_BAHAN }}</option>
-                                            @endforeach
-                                        </select>
+                                        @endforeach
+                                        </select> --}}
+                                        <input type="text" class="form-control readonly" placeholder="Jenis bahan baku"
+                                            required id="bahan_baku" name="bahan_baku[]">
                                     </div>
                                     <div class="col-md-7">
-                                        <input type="text" class="form-control"
-                                            placeholder="Masukan kapasitas (KG/Bulan)" required id="bahan_baku_kg"
+                                        <input type="text" class="form-control readonly"
+                                            placeholder="Kapasitas (KG/Bulan)" required id="bahan_baku_kg"
                                             name="bahan_baku_kg[]">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#" id="tPenjualanBahan"
-                                    class="text-success">Tambah</a></label>
+                            <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#" data-toggle="modal"
+                                    data-target="#addPenjualanModal" class="text-success">Pilih</a></label>
                             <div id="cPenjualanBahan">
                                 <div class="row">
                                     <div class="col-md-5 mb-2 mb-md-0">
-                                        <select class="form-control penjualan-bahan select2" required
+                                        {{-- <select class="form-control penjualan-bahan select2" required
                                             data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]"
                                             id="penjualan_bahan">
                                             <option value=""></option>
                                             @foreach ($tempat_penjualan as $row)
                                             <option value="{{ strtolower($row->TEMPAT_PENJUALAN) }}">
-                                                {{ $row->TEMPAT_PENJUALAN }}
-                                            </option>
-                                            @endforeach
-                                        </select>
+                                        {{ $row->TEMPAT_PENJUALAN }}
+                                        </option>
+                                        @endforeach
+                                        </select> --}}
+                                        <input type="text" class="form-control readonly"
+                                            placeholder="Penjualan bahan baku" required id="penjualan_bahan"
+                                            name="penjualan_bahan[]">
                                     </div>
                                     <div class="col-md-7">
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control readonly"
                                             placeholder="Keterangan penjualan bahan baku" required
                                             id="penjualan_bahan_ket" name="penjualan_bahan_ket[]">
                                     </div>
@@ -553,12 +573,28 @@
                         </div>
                         <div class="form-group">
                             <label for="proses_penjualan">Proses Penjualan</label>
-                            <select class="form-control select2" data-placeholder="Pilih Proses Penjualan"
+                            {{-- <select class="form-control select2" data-placeholder="Pilih Proses Penjualan"
                                 name="proses_penjualan" required id="proses_penjualan">
                                 <option value=""></option>
                                 <option value="dikirim">Dikirim</option>
                                 <option value="diambil">Diambil</option>
-                            </select>
+                            </select> --}}
+                            <div class="row">
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="proses_penjualan"
+                                            class="custom-control-input" id="dikirim" value="dikirim">
+                                        <label class="custom-control-label" for="dikirim">Dikirim</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-6">
+                                    <div class="custom-control custom-radio" style="display: inline-block;">
+                                        <input type="radio" required name="proses_penjualan"
+                                            class="custom-control-input" id="diambil" value="diambil">
+                                        <label class="custom-control-label" for="diambil">Diambil</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="proses_pembayaran">Proses Pembayaran</label>
@@ -575,28 +611,32 @@
                         <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                         <div class="form-group">
                             <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="text-success"
-                                    id="tMesin">Tambah</a></label>
+                                    data-toggle="modal" data-target="#addMesinModal">Pilih</a></label>
                             <div id="cMesin">
                                 <div class="row">
-                                    <div class="col-md-12 mb-2 mb-md-3">
-                                        <select class="form-control mesin select2" style="width: 100%;"
+                                    <div class="col-md-5 mb-2 mb-md-3">
+                                        {{-- <select class="form-control mesin select2" style="width: 100%;"
                                             data-placeholder="Pilih Mesin" required name="mesin[]" id="mesin">
                                             <option value=""></option>
                                             @foreach ($mesin as $row)
                                             <option value="{{ strtolower($row->MESIN) }}">{{ $row->MESIN }}</option>
-                                            @endforeach
-                                        </select>
+                                        @endforeach
+                                        </select> --}}
+                                        <input type="text" class="form-control readonly" placeholder="Mesin" required
+                                            id="mesin" name="mesin[]">
                                     </div>
-                                    <div class="col-md-6 mb-2 mb-md-0">
-                                        <select class="form-control select2" required data-placeholder="Kepemilikan"
+                                    <div class="col-md-5 mb-2 mb-md-0">
+                                        {{-- <select class="form-control select2" required data-placeholder="Kepemilikan"
                                             name="kepemilikan[]" id="kepemilikan">
                                             <option value=""></option>
                                             <option value="milik sendiri">Milik Sendiri</option>
                                             <option value="dipinjamkan">Dipinjamkan</option>
-                                        </select>
+                                        </select> --}}
+                                        <input type="text" class="form-control readonly" placeholder="Kepemilikan"
+                                            required id="kepemilikan" name="kepemilikan[]">
                                     </div>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="Jumlah mesin" required
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control readonly" placeholder="Kuantitas" required
                                             id="mesin_qty" name="mesin_qty[]">
                                     </div>
                                 </div>
@@ -604,16 +644,16 @@
                         </div>
                         <br>
                         <hr>
-                        <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat </h5>
+                        <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat (Opsional)</h5>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Latitude</label>
-                            <input type="text" class="form-control" id="lat" placeholder="Masukkan koordinat latitude"
-                                name="lat" required>
+                            <input type="text" class="form-control" id="lat" autocomplete="off"
+                                placeholder="Masukkan koordinat latitude" name="lat">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Longitude</label>
-                            <input type="text" class="form-control" id="lng" placeholder="Masukkan koordinat longitude"
-                                name="lng" required>
+                            <input type="text" class="form-control" id="lng" autocomplete="off"
+                                placeholder="Masukkan koordinat longitude" name="lng">
                         </div>
                     </div>
                     <input type="hidden" name="id_tempat" id="id_tempat">
@@ -726,12 +766,175 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-success" id="btnEdit">Edit</a>
-                    <a href="{{ route('delCoord') }}" class="btn btn-danger btnDelete">Hapus</button>
+                    <a href="#" class="btn btn-danger" id="btnDelete">Hapus</a>
                     {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
                 </div>
             </div>
         </div> <!-- modal-bialog .// -->
     </div> <!-- modal.// -->
+
+    <!-- Bahan Baku Modal-->
+    <div class="modal fade modal-child" id="addBahanModal" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-modal-parent="#addMarkerModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pilih Jenis Bahan Baku</h5>
+                </div>
+                <form id="addBahanForm">
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="3%">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" id="checkAllBahan" class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                for="checkAllBahan"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Jenis Bahan</th>
+                                    <th scope="col">Kapasitas/Bulan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($jenis_bahan as $row)
+                                    <tr>
+                                        <th scope="row">
+                                            <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                <input type="checkbox" value="{{ $row->JENIS_BAHAN }}" data-id="{{ $row->ID_JENIS_BAHAN }} " name="c_bahan_baku[]" required id="c_bahan_baku{{ $row->ID_JENIS_BAHAN }}"
+                                                    class="custom-control-input c-bahan-baku">
+                                                <label class="custom-control-label"
+                                                    for="c_bahan_baku{{ $row->ID_JENIS_BAHAN }}"></label>
+                                            </div>
+                                        </th>
+                                        <td>{{ $row->JENIS_BAHAN }}</td>
+                                        <td><input type="tel" placeholder="Kapasitas (KG)" data-value="{{ $row->JENIS_BAHAN }}" name="c_bahan_baku_kg[]" id="c_bahan_baku_kg{{ $row->ID_JENIS_BAHAN }}" autocomplete="off" class="form-control numeric c-bahan-baku-kg" readonly></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" id="okBahanBaku" href="#">OK</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-child" id="addPenjualanModal" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-modal-parent="#addMarkerModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pilih Penjualan Bahan Baku</h5>
+                </div>
+                <form id="addPenjualanForm">
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="3%">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" id="checkAllPenjualan" class="custom-control-input">
+                                            <label class="custom-control-label"
+                                                for="checkAllPenjualan"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Penjualan Bahan Baku</th>
+                                    <th scope="col">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($tempat_penjualan as $row)
+                                    <tr>
+                                        <th scope="row">
+                                            <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                <input type="checkbox" value="{{ $row->TEMPAT_PENJUALAN }}" data-id="{{ $row->ID_TEMPAT_PENJUALAN }} " name="c_penjualan_bahan[]" required id="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"
+                                                    class="custom-control-input c-penjualan-bahan">
+                                                <label class="custom-control-label"
+                                                    for="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"></label>
+                                            </div>
+                                        </th>
+                                        <td>{{ $row->TEMPAT_PENJUALAN }}</td>
+                                        <td><input type="text" placeholder="Keterangan" name="c_penjualan_bahan_ket[]" id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off" class="form-control" readonly></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" id="okPenjualanBahan" href="#">OK</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-child" id="addMesinModal" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        data-modal-parent="#addMarkerModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pilih Mesin</h5>
+                </div>
+                <form id="addMesinForm">
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="3%">
+                                            <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                <input type="checkbox" id="checkAllMesin" class="custom-control-input">
+                                                <label class="custom-control-label"
+                                                    for="checkAllMesin"></label>
+                                            </div>
+                                        </th>
+                                        <th scope="col" width="40%">Mesin</th>
+                                        <th scope="col" width="40%">Kepemilikan</th>
+                                        <th scope="col">Kuantitas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach ($mesin as $row)
+                                    <tr>
+                                        <th scope="row">
+                                            <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                                <input type="checkbox" value="{{ $row->MESIN }}" data-id="{{ $row->ID_MESIN }} " name="c_mesin[]" required id="c_mesin{{ $row->ID_MESIN }}"
+                                                    class="custom-control-input c-mesin">
+                                                <label class="custom-control-label"
+                                                    for="c_mesin{{ $row->ID_MESIN }}"></label>
+                                            </div>
+                                        </th>
+                                        <td>{{ $row->MESIN }}</td>
+                                        <td>
+                                            <select class="form-control c-kepemilikan select2" required data-placeholder="Kepemilikan"
+                                                name="c_kepemilikan[]" disabled id="c_kepemilikan{{ $row->ID_MESIN }}">
+                                                <option value=""></option>
+                                                <option value="milik sendiri">Milik Sendiri</option>
+                                                <option value="dipinjamkan">Dipinjamkan</option>
+                                            </select> 
+                                        </td>
+                                        <td><input type="tel" placeholder="Kuantitas" name="c_mesin_qty[]" id="c_mesin_qty{{ $row->ID_MESIN }}" autocomplete="off" class="form-control numeric" readonly></td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" id="okMesin" href="#">OK</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="assets/sbadmin/vendor/jquery/jquery.min.js"></script>
@@ -771,6 +974,175 @@
                 return string.charAt(0).toUpperCase() + string.slice(1);
             }
 
+            $(document).on('keydown paste focus mousedown', '.readonly', function(e){
+                if(e.keyCode != 9) // ignore tab
+                    e.preventDefault();
+            });
+
+            $(".numeric").on("keypress keyup blur",function (event) {
+                $(this).val($(this).val().replace(/[^\d].+/, ""));
+                if ((event.which < 48 || event.which > 57)) {
+                    event.preventDefault();
+                }
+            });
+
+            // Modal 2
+            $('.modal-child').on('show.bs.modal', function () {
+                var modalParent = $(this).attr('data-modal-parent');
+                $(modalParent).css('opacity', 0);
+            });
+            
+            $('.modal-child').on('hidden.bs.modal', function () {
+                var modalParent = $(this).attr('data-modal-parent');
+                $(modalParent).css('opacity', 1);
+            });
+
+            // Modal Bahan Baku
+            $('.c-bahan-baku').on('change', function(e) {
+                var id = $(this).attr('data-id');
+                if($(this).is(':checked')) {
+                    $('#c_bahan_baku_kg' + id).prop('readonly', false)
+                } else {
+                    $('#c_bahan_baku_kg' + id).prop('readonly', true);
+                    $('#c_bahan_baku_kg' + id).val('');
+                }
+            })
+
+            // CheckAll checkbox
+            $("#checkAllBahan").change(function(){ // Ketika user men-cek checkbox all      
+            if($(this).is(":checked")) // Jika checkbox all diceklis
+                $(".c-bahan-baku").prop("checked", true).change(); // ceklis semua checkbox siswa dengan class "c-bahan-baku"
+            else // Jika checkbox all tidak diceklis
+                $(".c-bahan-baku").prop("checked", false).change(); // un-ceklis semua checkbox siswa dengan class "c-bahan-baku"
+            });
+
+            
+            //Foreach c bahan baku
+            $('#okBahanBaku').on('click', function(e) {
+                var cekBahanBaku = $('.c-bahan-baku:checked').length
+                $('#cBahanBaku').html('');
+                if(cekBahanBaku > 0) {
+                    $('.c-bahan-baku:checked').each(function(i, obj) {
+                        var margin = i == 0 ? '' : ' mt-3';
+                        var value = $(obj).val();
+                        var id = $(obj).attr('data-id');
+                        var value_kg = !$('#c_bahan_baku_kg' + id).val() ? '0' : $('#c_bahan_baku_kg' + id).val() ;
+                        $('#cBahanBaku').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" value="' + value_kg + '" required name="bahan_baku_kg[]"></div></div>');
+                    });
+                } else {
+                    $('#cBahanBaku').append('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" required name="bahan_baku_kg[]"></div></div>');
+                }
+                $('#addBahanModal').modal('hide');
+            });
+
+            // Penjualan bahan baku
+            // Modal Bahan Baku
+            $('.c-penjualan-bahan').on('change', function(e) {
+                var id = $(this).attr('data-id');
+                if($(this).is(':checked')) {
+                    $('#c_penjualan_bahan_ket' + id).prop('readonly', false)
+                } else {
+                    $('#c_penjualan_bahan_ket' + id).prop('readonly', true);
+                    $('#c_penjualan_bahan_ket' + id).val('');
+                }
+            })
+
+            // CheckAll checkbox
+            $("#checkAllPenjualan").change(function(){ // Ketika user men-cek checkbox all      
+            if($(this).is(":checked")) // Jika checkbox all diceklis
+                $(".c-penjualan-bahan").prop("checked", true).change(); // ceklis semua checkbox siswa dengan class "c-penjualan-bahan"
+            else // Jika checkbox all tidak diceklis
+                $(".c-penjualan-bahan").prop("checked", false).change(); // un-ceklis semua checkbox siswa dengan class "c-penjualan-bahan"
+            });
+
+            //Foreach c bahan baku
+            $('#okPenjualanBahan').on('click', function(e) {
+                var cekPenjualan = $('.c-penjualan-bahan:checked').length
+                $('#cPenjualanBahan').html('');
+                if(cekPenjualan > 0) {
+                    $('.c-penjualan-bahan:checked').each(function(i, obj) {
+                        var margin = i == 0 ? '' : ' mt-3';
+                        var value = $(obj).val();
+                        var id = $(obj).attr('data-id');
+                        var value_ket = !$('#c_penjualan_bahan_ket' + id).val() ? '0' : $('#c_penjualan_bahan_ket' + id).val() ;
+                        $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + value_ket + '" required name="penjualan_bahan_ket[]"></div></div>');
+                    });
+                } else {
+                    $('#cPenjualanBahan').append('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required id="bahan_baku" name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div></div>');
+                }
+                $('#addPenjualanModal').modal('hide');
+            });
+
+            $('.c-mesin').on('change', function(e) {
+                var id = $(this).attr('data-id');
+                if($(this).is(':checked')) {
+                    $('#c_mesin_qty' + id).prop('readonly', false)
+                    $('#c_kepemilikan' + id).prop('disabled', false)
+                } else {
+                    $('#c_mesin_qty' + id).prop('readonly', true);
+                    $('#c_kepemilikan' + id).prop('disabled', true)
+                    $('#c_kepemilikan' + id).val('').change();
+                    $('#c_mesin_qty' + id).val('');
+                }
+            })
+
+            $("#checkAllMesin").change(function(){ // Ketika user men-cek checkbox all      
+            if($(this).is(":checked")) // Jika checkbox all diceklis
+                $(".c-mesin").prop("checked", true).change(); // ceklis semua checkbox siswa dengan class "c-mesin"
+            else // Jika checkbox all tidak diceklis
+                $(".c-mesin").prop("checked", false).change(); // un-ceklis semua checkbox siswa dengan class "c-mesin"
+            });
+
+            $('#okMesin').on('click', function(e) {
+                var cekPenjualan = $('.c-mesin:checked').length
+                $('#cMesin').html('');
+                if(cekPenjualan > 0) {
+                    $('.c-mesin:checked').each(function(i, obj) {
+                        var margin = i == 0 ? '' : ' mt-3 mt-md-0';
+                        var value = $(obj).val();
+                        var id = $(obj).attr('data-id');
+                        var value_milik = $('#c_kepemilikan' + id).val();
+                        var value_qty = !$('#c_mesin_qty' + id).val() ? '0' : $('#c_mesin_qty' + id).val();
+                        
+                        $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" value="' + value + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(value_milik) + '" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
+                    });
+                } else {
+                    $('#cMesin').append('<div class="row"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
+                }
+                $('#addMesinModal').modal('hide');
+            });
+
+
+            //  ============================ //
+
+            function clearFormAdd() {
+                $("#formCoord")[0].reset();
+                $("label.error").hide();
+                $('.select2').val('').change();
+                $('.d-bahan-baku').val('').change();
+                $('.d-mesin').val('').change();
+                $('.d-penjualan-bahan').val('').change();
+                $('.kepemilikan').val('').change();
+                $('.clone').remove();
+                $('#addBahanForm')[0].reset();
+                $('#checkAllBahan').prop('checked', false).change();
+                $('#addPenjualanForm')[0].reset();
+                $('#checkAllPenjualan').prop('checked', false).change();
+                $('#addMesinForm')[0].reset();
+                $('#checkAllMesin').prop('checked', false).change();
+                $('.c-kepemilikan').val('').change();
+                $('#cBahanBaku').html('');
+                $('#cPenjualanBahan').html('');
+                $('#cMesin').html('');
+                $('#cBahanBaku').html('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" required name="bahan_baku_kg[]"></div></div>');
+                $('#cPenjualanBahan').html('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div></div>');
+                $('#cMesin').html('<div class="row"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
+                $('#cExistImage').hide();
+            }
+
+            $('.btnClose').on('click', function(e) {
+                clearFormAdd();
+            })
 
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
@@ -862,6 +1234,9 @@
                 $('#prosesPenjualanText').html(this.options.PROSES_PENJUALAN);
                 $('#prosesPembayaranText').html(this.options.PROSES_PEMBAYARAN);
                 $('#btnEdit').attr('data-id', id)
+                $('#btnDelete').attr('data-id', id)
+                $('#btnDelete').attr('data-lat', lat)
+                $('#btnDelete').attr('data-lng', lng)
                 $("#latText").html(lat)
                 $("#lngText").html(lng)
                 //console.log(id);
@@ -927,8 +1302,7 @@
                 $('.btnAdd').on('click', function () {
                     $('#addMarkerModal').modal('show');
                     $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                    $('#addMarkerJudul').html('Tambah Tempat');
-                    $('#cExistImage').hide();
+                    $('#addMarkerJudul').html('Tambah Lokasi');
                 });
             }
 
@@ -1118,17 +1492,28 @@
 
             });
 
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('getCoord') }}",
-                data: {
-                    "_token": csrf
-                },
-                success: function (data) {
-                    //var locations = data;
-                    mapMarker(data);
-                }
-            });
+            function loadMarker() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('getCoord') }}",
+                    data: {
+                        "_token": csrf
+                    },
+                    success: function (data) {
+                        //var locations = data;
+                        mapMarker(data);
+                    }
+                });
+            }
+
+            function clearMarker()
+            {
+                $(".leaflet-marker-icon").remove();
+                $(".leaflet-popup").remove();
+                $(".leaflet-marker-shadow").remove();
+            }
+
+            loadMarker();
 
             // $('#formCoord').validate({ // initialize the plugin
             //     rules: {
@@ -1229,14 +1614,6 @@
             })
 
             $('#addMarkerModal').on('hidden.bs.modal', function (e) {
-                $("#formCoord")[0].reset();
-                $("label.error").hide();
-                $('.select2').val('').change();
-                $('.d-bahan-baku').val('').change();
-                $('.d-mesin').val('').change();
-                $('.d-penjualan-bahan').val('').change();
-                $('.kepemilikan').val('').change();
-                $('.clone').remove();
                 if (manMarker != undefined) {
                     mymap.removeLayer(manMarker);
                 }
@@ -1422,7 +1799,7 @@
             $('#btnEdit').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
-                $('#addMarkerJudul').html('Ubah Tempat')
+                $('#addMarkerJudul').html('Ubah Lokasi')
                 $('#formCoord').attr('action', "{{ route('updateCoord') }}")
                 $.ajax({
                     url: "{{ route('getDetailCoord') }}",
@@ -1431,15 +1808,18 @@
                         "id": id
                     },
                     success: function (data) {
-                        $('#kategori').val(data.tempat.KATEGORI).change();
+                        //$('#kategori').val(data.tempat.KATEGORI).change();
+                        $('input[name="kategori"][value="' + data.tempat.KATEGORI + '"]').prop("checked", true);
                         $('#nama_usaha').val(data.tempat.NAMA_USAHA);
                         $('#tgl_kunjungan').val(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
                         $('#cp').val(data.tempat.CP);
                         $('#telepon').val(data.tempat.TELEPON);
                         $('#alamat').val(data.tempat.ALAMAT);
-                        $('#status_tempat').val(data.tempat.STATUS_USAHA).change();
+                        //$('#status_tempat').val(data.tempat.STATUS_USAHA).change();
+                        $('input[name="status_tempat"][value="' + data.tempat.STATUS_USAHA + '"]').prop("checked", true);
                         $('#jml_pekerja').val(data.tempat.JUMLAH_PEKERJA);
-                        $('#proses_penjualan').val(data.tempat.PROSES_PENJUALAN).change();
+                        //$('#proses_penjualan').val(data.tempat.PROSES_PENJUALAN).change();
+                        $('input[name="proses_penjualan"][value="' + data.tempat.PROSES_PENJUALAN + '"]').prop("checked", true);
                         $('#proses_pembayaran').val(data.tempat.PROSES_PEMBAYARAN).change();
                         $("#lat").val(data.tempat.LAT)
                         $("#lng").val(data.tempat.LNG)
@@ -1462,90 +1842,131 @@
                             $(':checkbox[value="' + data.jenis_usaha[i].JENIS_USAHA.toLowerCase() + '"]').prop('checked', true).change();
                         }
 
-                        //$('#cBahanBaku').html('');
+                        $('#cBahanBaku').html('');
+                        console.log(data.jenis_bahan)
                         for(var i = 0; i < data.jenis_bahan.length; i++) {
-                            if(i == 0) {
-                                // $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value="' + data.jenis_bahan[i].JENIS_BAHAN + '" selected>' + data.jenis_bahan[i].JENIS_BAHAN + '</option></select></div><div class="col-md-7"><input type="text" class="form-control" value="' + data.jenis_bahan[i].KAPASITAS + '" placeholder="Masukan kapasitas (KG/Bulan)" required name="bahan_baku_kg[]"></div></div>');
-                                $('#bahan_baku').val(data.jenis_bahan[i].JENIS_BAHAN).change();
-                                $('#bahan_baku_kg').val(data.jenis_bahan[i].KAPASITAS);
-                            } else {
-                                $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value="' + data.jenis_bahan[i].JENIS_BAHAN + '" selected>' + data.jenis_bahan[i].JENIS_BAHAN + '</option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" value="' + data.jenis_bahan[i].KAPASITAS + '" required name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
-                            }
+                            var margin = i == 0 ? '' : ' mt-3';
+                            $('#cBahanBaku').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + data.jenis_bahan[i].JENIS_BAHAN + '" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" value="' + data.jenis_bahan[i].KAPASITAS + '" required name="bahan_baku_kg[]"></div></div>');
+
+                            //  =============== untuk modal bahan baku ==============//
+                            $('.c-bahan-baku[value="' + data.jenis_bahan[i].JENIS_BAHAN + '"]').prop('checked', true).change();
+                            $('.c-bahan-baku-kg[data-value="' + data.jenis_bahan[i].JENIS_BAHAN  + '"]').val(data.jenis_bahan[i].KAPASITAS);
                         }
 
-                        $(".d-bahan-baku").select2({
-                            allowClear: true,
-                            ajax: {
-                                url: "{{ route('getBahanBaku') }}",
-                                processResults: function (response) {
-                                    return {
-                                        results: response
-                                    };
-                                },
-                                cache: true
-                            }
-                        });
+                        // $(".d-bahan-baku").select2({
+                        //     allowClear: true,
+                        //     ajax: {
+                        //         url: "{{ route('getBahanBaku') }}",
+                        //         processResults: function (response) {
+                        //             return {
+                        //                 results: response
+                        //             };
+                        //         },
+                        //         cache: true
+                        //     }
+                        // });
 
-                        //$('#cPenjualanBahan').html('');
+                        $('#cPenjualanBahan').html('');
                         for(var i = 0; i < data.penjualan.length; i++) {
-                            if(i == 0) {
-                                // $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option><option value="' + data.penjualan[i].TEMPAT_PENJUALAN +'" selected>' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) +'</option></select></div><div class="col-md-7"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN +'" required name="penjualan_bahan_ket[]"></div></div>');
-                                $('#penjualan_bahan').val(data.penjualan[i].TEMPAT_PENJUALAN).change();
-                                $('#penjualan_bahan_ket').val(data.penjualan[i].KETERANGAN);
-                            } else {
-                                $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option><option value="' + data.penjualan[i].TEMPAT_PENJUALAN +'" selected>' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) +'</option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN +'" required name="penjualan_bahan_ket[]"></div><div class="col-md-1"><a href="#" class="text-danger hPenjualanBahan mt-1"><small>Hapus</small></a></div></div>');
-                            }
+                            var margin = i == 0 ? '' : ' mt-3';
+                            $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div></div>');
                         }
 
                         //Isi select bahan baku
-                        $(".d-penjualan-bahan").select2({
-                            allowClear: true,
-                            ajax: {
-                                url: "{{ route('getPenjualanBahan') }}",
-                                processResults: function (response) {
-                                    return {
-                                        results: response
-                                    };
-                                },
-                                cache: true
-                            }
-                        });
+                        // $(".d-penjualan-bahan").select2({
+                        //     allowClear: true,
+                        //     ajax: {
+                        //         url: "{{ route('getPenjualanBahan') }}",
+                        //         processResults: function (response) {
+                        //             return {
+                        //                 results: response
+                        //             };
+                        //         },
+                        //         cache: true
+                        //     }
+                        // });
 
-                        //$('#cMesin').html('');
+                        $('#cMesin').html('');
                         for(var i = 0; i < data.mesin.length; i++) {
-                            var selectMilik = data.mesin[i].KEPEMILIKAN == 'milik sendiri' ? 'selected' : '';
-                            var selectPinjam = data.mesin[i].KEPEMILIKAN == 'dipinjamkan' ? 'selected' : '';
-                            if(i == 0) {
-                                // $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option><option value="' + data.mesin[i].MESIN +'" selected>' + capitalizeFirstLetter(data.mesin[i].MESIN) +'</option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri" ' + selectMilik + '>Milik Sendiri</option><option value="dipinjamkan ' + selectPinjam + '">Dipinjamkan</option></select></div><div class="col-md-6"><input type="text" class="form-control" required placeholder="Jumlah mesin" value="' + data.mesin[i].QTY +'" name="mesin_qty[]"></div></div>');
-                                $('#mesin').val(data.mesin[i].MESIN).change();
-                                $('#kepemilikan').val(data.mesin[i].KEPEMILIKAN).change();
-                                $('#mesin_qty').val(data.mesin[i].QTY);
-                            } else {
-                                $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option><option value="' + data.mesin[i].MESIN +'" selected>' + capitalizeFirstLetter(data.mesin[i].MESIN) +'</option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri" ' + selectMilik + '>Milik Sendiri</option><option value="dipinjamkan ' + selectPinjam + '">Dipinjamkan</option></select></div><div class="col-md-5"><input type="text" class="form-control" required placeholder="Jumlah mesin" value="' + data.mesin[i].QTY +'" name="mesin_qty[]"></div><div class="col-md-1"><a href="#" class="text-danger hMesin mt-1"><small>Hapus</small></a></div></div>');
-                            }
+                            var margin = i == 0 ? '' : ' mt-3 mt-md-0';
+                            var value = data.mesin[i].MESIN;
+                            var value_milik = data.mesin[i].KEPEMILIKAN;
+                            var value_qty = data.mesin[i].QTY;
+                            
+                            $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" value="' + capitalizeFirstLetter(value) + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(value_milik) + '" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
                         }
 
                         //Isi select bahan baku
-                        $(".d-mesin").select2({
-                            allowClear: true,
-                            ajax: {
-                                url: "{{ route('getMesin') }}",
-                                processResults: function (response) {
-                                    return {
-                                        results: response
-                                    };
-                                },
-                                cache: true
-                            }
-                        });
-                        $('.kepemilikan').select2({
-                            allowClear: true
-                        });
+                        // $(".d-mesin").select2({ 
+                        //     allowClear: true,
+                        //     ajax: {
+                        //         url: "{{ route('getMesin') }}",
+                        //         processResults: function (response) {
+                        //             return {
+                        //                 results: response
+                        //             };
+                        //         },
+                        //         cache: true
+                        //     }
+                        // });
+                        // $('.kepemilikan').select2({
+                        //     allowClear: true
+                        // });
+                        
+
                         $('#addMarkerModal').modal('show');
                         $("#detailMarkerModal").modal('hide');
                     }
                 });
             })
+
+            $('#btnDelete').on('click', function(e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id');
+                var lat = $(this).attr('data-lat');
+                var lng = $(this).attr('data-lng');
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Data tempat akan dihapus",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('delCoord') }}",
+                            data: {
+                                "_token": csrf,
+                                "id": id
+                            },
+                            type: "POST",
+                            success: function(response) {
+                                $('#detailMarkerModal').modal('hide');
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success'
+                                )
+                                clearMarker();
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "{{ route('getCoord') }}",
+                                    data: {
+                                        "_token": csrf
+                                    },
+                                    success: function (data) {
+                                        //var locations = data;
+                                        mapMarker(data);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+            });
 
         })
 

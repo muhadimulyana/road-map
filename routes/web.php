@@ -39,6 +39,7 @@ Route::get('/getBahanBaku', [CoordController::class, 'getBahanBaku'])->name('get
 Route::get('/getPenjualanBahan', [CoordController::class, 'getPenjualanBahan'])->name('getPenjualanBahan')->middleware('auth');
 Route::get('/getPembayaran', [CoordController::class, 'getPembayaran'])->name('getPembayaran')->middleware('auth');
 Route::get('/getMesin', [CoordController::class, 'getMesin'])->name('getMesin')->middleware('auth');
+Route::post('/delCoord', [CoordController::class, 'delCoord'])->name('delCoord')->middleware('auth');
 // Route::get('/esri', function () {
 //     return view('welcome');
 // });

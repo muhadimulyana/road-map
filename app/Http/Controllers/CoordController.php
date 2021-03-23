@@ -162,9 +162,20 @@ class CoordController extends Controller
 
             $response[] = [
                 'ID_TEMPAT' => time(),
+                'KATEGORI' => $request->kategori,
                 'NAMA_USAHA' => $request->nama_usaha,
+                'CP' => $request->cp,
+                'TELEPON' => $request->telepon,
+                'ALAMAT' => $request->alamat,
+                'STATUS_USAHA' => $request->status_tempat,
+                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'PROSES_PENJUALAN' => $request->proses_penjualan,
+                'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
+                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
+                'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
+                'USERNAME' => 'mamulyana',
                 'code' => 200,
             ];
             DB::commit();
@@ -315,13 +326,9 @@ class CoordController extends Controller
             foreach($request->del_image as $key => $value) {
                 if(File::exists(public_path() . '/upload/img/' . $request->del_image[$key])){
                     File::delete(public_path() . '/upload/img/'  . $request->del_image[$key]);
-                } else {
-                    dd('error');
                 }
                 if(File::exists(public_path() . '/upload/img/thumbnail/' . $request->del_image[$key])){
                     File::delete(public_path() . '/upload/img/thumbnail/'  . $request->del_image[$key]);
-                } else {
-                    dd('error');
                 }
             }
         }
@@ -362,15 +369,25 @@ class CoordController extends Controller
             DB::table('tempat_jenis_bahan')->insert($bahan_baku);
             DB::table('tempat_penjualan')->insert($penjualan_bahan);
             DB::table('tempat_mesin')->insert($mesin);
-            
-            ($del_image) ? DB::table('tempat_gambar')->where('ID_TEMPAT', $request->id_tempat)->delete() : '';
+
+            ($del_image) ? DB::table('tempat_gambar')->where('ID_TEMPAT', $request->id_tempat)->whereIn('GAMBAR', $request->del_image)->delete() : '';
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
             $response[] = [
                 'ID_TEMPAT' => $request->id_tempat,
+                'KATEGORI' => $request->kategori,
                 'NAMA_USAHA' => $request->nama_usaha,
+                'CP' => $request->cp,
+                'TELEPON' => $request->telepon,
+                'ALAMAT' => $request->alamat,
+                'STATUS_USAHA' => $request->status_tempat,
+                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'PROSES_PENJUALAN' => $request->proses_penjualan,
+                'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
+                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
+                'USERNAME' => 'mamulyana',
                 'code' => 200,
             ];
             DB::commit();
@@ -386,5 +403,47 @@ class CoordController extends Controller
         }
 
         return response()->json($response, $response[0]['code'], []);
+    }
+
+    public function delCoord(Request $request)
+    {
+        $id = $request->id;
+        $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get()->toArray();
+        $image = array_column($image, 'GAMBAR');
+
+        DB::beginTransaction();
+        
+        try {
+            DB::table('tempat')->where('ID_TEMPAT', $id)->delete();
+            $response[] = [
+                'code' => 200
+            ];
+            $del_image = true;
+            DB::commit();
+        } catch (QueryException $e) {
+
+            $response[] = [
+                'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2],
+                'code' => 500,
+            ];
+            DB::rollback();
+            $del_image = false;
+        }
+
+        if($del_image) {
+            if(count($image) > 0){
+                foreach($image as $key => $value) {
+                    if(File::exists(public_path() . '/upload/img/' . $image[$key])){
+                        File::delete(public_path() . '/upload/img/'  . $image[$key]);
+                    }
+                    if(File::exists(public_path() . '/upload/img/thumbnail/' . $image[$key])){
+                        File::delete(public_path() . '/upload/img/thumbnail/'  . $image[$key]);
+                    }
+                }
+            }
+        }
+
+        return response()->json($response, $response[0]['code'], []);
+
     }
 }
