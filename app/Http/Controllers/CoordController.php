@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Image;
 use File;
+use DataTables;
 
 class CoordController extends Controller
 {
@@ -466,6 +467,56 @@ class CoordController extends Controller
                 DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
             }
         }
+        
+        
         return view('list')->with('key', $key);
+    }
+
+    public function getAllCoords()
+    {
+        $coords = DB::table('tempat')->get();
+        return Datatables::of($coords)
+        ->addIndexColumn()
+        ->editColumn("NAMA_USAHA", function($data){
+            $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary">' . $data->NAMA_USAHA .'</a> ';
+            return $nama_usaha; 
+        })
+        ->addColumn("LOKASI",  function($data) {
+            if($data->LAT != null || $data->LNG != null ) {
+                $lokasi = '<a href="' . route('/') . '" class="text-primary">Lihat Lokasi</a>'; 
+            } else {
+                $lokasi = 'Belum Input';
+            }
+            return $lokasi;
+        })
+        ->editColumn("KATEGORI", function($data){
+            if($data->KATEGORI == 'supplier') {
+                $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            } elseif($data->KATEGORI == 'non supplier') {
+                $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            } else {
+                $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            }
+            return $kategori; 
+        })
+        ->editColumn("TANGGAL_KUNJUNGAN", function($data){
+            $tgl_kunjung = date('d M Y', strtotime($data->TANGGAL_KUNJUNGAN));
+            return $tgl_kunjung;
+        })
+        ->editColumn("TANGGAL_BUAT", function($data){
+            $tgl_buat = date('d M Y', strtotime($data->TANGGAL_BUAT));
+            return $tgl_buat;
+        })
+        ->addColumn('AKSI', function($data){
+            $aksi = 
+            '<div class="btn-group">
+            <a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
+            <a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger"><i class="fas fa-fw fa-trash-alt"></i></a>
+            </div>';
+            return $aksi;
+        })
+        ->rawColumns(['NAMA_USAHA', 'LOKASI', 'KATEGORI', 'AKSI'])
+        ->make(true);
+
     }
 }

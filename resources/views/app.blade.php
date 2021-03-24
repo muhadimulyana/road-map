@@ -45,9 +45,10 @@
     <link href="assets/plugin/select2/select2.css" rel="stylesheet" />
 
     {{-- Datepicker --}}
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="assets/plugin/datepicker/css/bootstrap-material-datetimepicker.css">
 
+    {{-- Datatable --}}
+    <link href="assets/plugin//datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -277,6 +278,13 @@
             z-index: -1;
         }
 
+        .btn-group-sm>.btn, .btn-smx {
+            padding: .25rem .3rem;
+            font-size: .775rem;
+            line-height: 1.5;
+            border-radius: .2rem;
+        }
+
         /* Open 2 modal */
         /* .modal:nth-of-type(even) {
             z-index: 1052 !important;
@@ -307,7 +315,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active" >
+            <li class="nav-item" >
                 <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
                     <i class="fas fa-fw fa-map-marker-alt"></i>
                     <span>Map</span></a>
@@ -376,6 +384,9 @@
     <script src="assets/plugin/datepicker/js/bootstrap-material-datetimepicker.js"></script>
     {{-- Sweetalert2 --}}
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    {{-- Datatable --}}
+    <script src="assets/plugin/datatables/jquery.dataTables.min.js"></script>
+    <script src="assets/plugin/datatables/dataTables.bootstrap4.min.js"></script>
 
     @stack('script')
     
