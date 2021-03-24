@@ -40,7 +40,7 @@ class CoordController extends Controller
     //
     public function getCoordinates(Request $request)
     {
-        $coords = DB::table('tempat')->get();
+        $coords = DB::table('tempat')->whereNotNull('LAT')->get();
         return response()->json($coords, 200, []);
 
     }
@@ -176,6 +176,8 @@ class CoordController extends Controller
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
                 'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
                 'USERNAME' => 'mamulyana',
+                'KOSONG' => $request->lat == null ? true : false,
+                'AKSI' => 'tambah',
                 'code' => 200,
             ];
             DB::commit();
@@ -189,6 +191,8 @@ class CoordController extends Controller
             DB::rollback();
 
         }
+
+        //dd($response);
 
         return response()->json($response, $response[0]['code'], []);
 
@@ -305,7 +309,7 @@ class CoordController extends Controller
         foreach($request->penjualan_bahan as $key => $value) {
             $penjualan_bahan[] = [
                 'ID_TEMPAT' => $request->id_tempat,
-                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                'TEMPAT_PENJUALAN' => strtolower($request->penjualan_bahan[$key]),
                 'KETERANGAN' => $request->penjualan_bahan_ket[$key]
             ];
         }
@@ -313,8 +317,8 @@ class CoordController extends Controller
         foreach($request->mesin as $key => $value) {
             $mesin[] = [
                 'ID_TEMPAT' => $request->id_tempat,
-                'MESIN' => $request->mesin[$key],
-                'KEPEMILIKAN' => $request->kepemilikan[$key],
+                'MESIN' => strtolower($request->mesin[$key]),
+                'KEPEMILIKAN' => strtolower($request->kepemilikan[$key]),
                 'QTY' => $request->mesin_qty[$key]
             ];
         }
@@ -384,10 +388,12 @@ class CoordController extends Controller
                 'JUMLAH_PEKERJA' => $request->jml_pekerja,
                 'PROSES_PENJUALAN' => $request->proses_penjualan,
                 'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
-                'LAT' => $request->lat,
-                'LNG' => $request->lng,
+                'LAT' => $request->lat == '' ? null : $request->lat, 
+                'LNG' => $request->lng == '' ? null : $request->lng,
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
                 'USERNAME' => 'mamulyana',
+                'KOSONG' => $request->lat == null ? true :  false,
+                'AKSI' => 'ubah',
                 'code' => 200,
             ];
             DB::commit();

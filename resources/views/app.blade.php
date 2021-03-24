@@ -655,8 +655,10 @@
                             <input type="text" class="form-control" id="lng" autocomplete="off"
                                 placeholder="Masukkan koordinat longitude" name="lng">
                         </div>
+                        <a href="#" class="text-success" id="addFromMap">Pilih dari map</a>
                     </div>
                     <input type="hidden" name="id_tempat" id="id_tempat">
+                    <input type="hidden" name="id_marker" id="id_marker">
                     <div class="modal-footer">
                         <button class="btn btn-primary" id="btnSubmit" type="submit">Simpan</button>
                         <button class="btn btn-primary" id="btnLoad" style="display: none;" type="button" disabled>
@@ -859,8 +861,8 @@
                                                     for="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"></label>
                                             </div>
                                         </th>
-                                        <td>{{ $row->TEMPAT_PENJUALAN }}</td>
-                                        <td><input type="text" placeholder="Keterangan" name="c_penjualan_bahan_ket[]" id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off" class="form-control" readonly></td>
+                                        <td style="text-transform: capitalize;">{{ $row->TEMPAT_PENJUALAN }}</td>
+                                        <td><input type="text" placeholder="Keterangan" data-value="{{ $row->TEMPAT_PENJUALAN }}" name="c_penjualan_bahan_ket[]" id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off" class="form-control c-penjualan-bahan-ket" readonly></td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -911,16 +913,16 @@
                                                     for="c_mesin{{ $row->ID_MESIN }}"></label>
                                             </div>
                                         </th>
-                                        <td>{{ $row->MESIN }}</td>
+                                        <td style="text-transform: capitalize;">{{ $row->MESIN }}</td>
                                         <td>
                                             <select class="form-control c-kepemilikan select2" required data-placeholder="Kepemilikan"
-                                                name="c_kepemilikan[]" disabled id="c_kepemilikan{{ $row->ID_MESIN }}">
+                                                name="c_kepemilikan[]" data-value="{{ $row->MESIN }}" disabled id="c_kepemilikan{{ $row->ID_MESIN }}">
                                                 <option value=""></option>
                                                 <option value="milik sendiri">Milik Sendiri</option>
                                                 <option value="dipinjamkan">Dipinjamkan</option>
                                             </select> 
                                         </td>
-                                        <td><input type="tel" placeholder="Kuantitas" name="c_mesin_qty[]" id="c_mesin_qty{{ $row->ID_MESIN }}" autocomplete="off" class="form-control numeric" readonly></td>
+                                        <td><input type="tel" placeholder="Kuantitas" name="c_mesin_qty[]" id="c_mesin_qty{{ $row->ID_MESIN }}" autocomplete="off" data-value="{{ $row->MESIN }}" class="form-control c-mesin-qty numeric" readonly></td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -1064,8 +1066,8 @@
                         var margin = i == 0 ? '' : ' mt-3';
                         var value = $(obj).val();
                         var id = $(obj).attr('data-id');
-                        var value_ket = !$('#c_penjualan_bahan_ket' + id).val() ? '0' : $('#c_penjualan_bahan_ket' + id).val() ;
-                        $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + value_ket + '" required name="penjualan_bahan_ket[]"></div></div>');
+                        var value_ket = $('#c_penjualan_bahan_ket' + id).val() ;
+                        $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Penjualan bahan baku" style="text-transform: capitalize;" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + value_ket + '" required name="penjualan_bahan_ket[]"></div></div>');
                     });
                 } else {
                     $('#cPenjualanBahan').append('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required id="bahan_baku" name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div></div>');
@@ -1104,7 +1106,7 @@
                         var value_milik = $('#c_kepemilikan' + id).val();
                         var value_qty = !$('#c_mesin_qty' + id).val() ? '0' : $('#c_mesin_qty' + id).val();
                         
-                        $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" value="' + value + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(value_milik) + '" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
+                        $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Mesin" value="' + value + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" style="text-transform: capitalize;" value="' + value_milik + '" placeholder="Kepemilikan" style="text-transform: capitalize;" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
                     });
                 } else {
                     $('#cMesin').append('<div class="row"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
@@ -1147,6 +1149,9 @@
             $('#overlay').delay(100).fadeOut();
             var csrf = $('meta[name="csrf-token"]').attr('content');
             var key = $('meta[name="key-api"]').attr('content');
+
+
+            //  ============================= MAp ============================//
             var mymap = L.map('mapid').setView([-1, 117], 5);
             if ($(window).width() >= 993) {
                 L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
@@ -1190,13 +1195,15 @@
                 ] // point from which the popup should open relative to the iconAnchor
             });
             var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
-            var results = L.layerGroup().addTo(mymap);
-            var marker;
+            //var results = L.layerGroup();
+            var marker = L.layerGroup().addTo(mymap);
             var circle;
             var manMarker;
             var newMarker;
             var foundMarker;
             var geocodeService = L.esri.Geocoding.geocodeService();
+            var geocodeService2 = L.esri.Geocoding.geocodeService();
+            var clickOnMap = false;
             //L.esri.basemapLayer('Gray').addTo(mymap);
             //L.esri.basemapLayer('GrayLabels').addTo(mymap);
 
@@ -1204,8 +1211,8 @@
             mymap.setMinZoom(3);
             L.control.scale().addTo(mymap);
 
-            function markerOnClick() {
-
+            function markerOnClick(e) {
+                //console.log(this._leaflet_id);
                 if (manMarker != undefined) {
                     mymap.removeLayer(manMarker);
                 }
@@ -1218,7 +1225,7 @@
                 if (foundMarker != undefined) {
                     mymap.removeLayer(foundMarker);
                 }
-
+                var id_marker = this._leaflet_id;
                 var id = this.options.ID_TEMPAT;
                 var place = this.options.place;
                 var lat = this.options.LAT;
@@ -1234,9 +1241,11 @@
                 $('#prosesPenjualanText').html(this.options.PROSES_PENJUALAN);
                 $('#prosesPembayaranText').html(this.options.PROSES_PEMBAYARAN);
                 $('#btnEdit').attr('data-id', id)
+                $('#btnEdit').attr('data-marker', id_marker)
                 $('#btnDelete').attr('data-id', id)
                 $('#btnDelete').attr('data-lat', lat)
                 $('#btnDelete').attr('data-lng', lng)
+                $('#btnDelete').attr('data-marker', id_marker)
                 $("#latText").html(lat)
                 $("#lngText").html(lng)
                 //console.log(id);
@@ -1298,17 +1307,26 @@
                 $("#detailMarkerModal").modal('show');
             }
 
+            $(document).on('click', '.btnAdd', function () {
+                $('#addMarkerModal').modal('show');
+                $('#formCoord').attr('action', "{{ route('addCoord') }}");
+                $('#addMarkerJudul').html('Tambah Tempat');
+                $('#cExistImage').hide();
+            });
+
+
             function manMarkerOnClick(){
-                $('.btnAdd').on('click', function () {
+                $(document).on('click', '.btnAdd', function () {
                     $('#addMarkerModal').modal('show');
                     $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                    $('#addMarkerJudul').html('Tambah Lokasi');
+                    $('#addMarkerJudul').html('Tambah Tempat');
+                    $('#cExistImage').hide();
                 });
             }
 
             function mapMarker(data, show) {
                 for (var i = 0; i < data.length; i++) {
-                    marker = L.marker([data[i].LAT, data[i].LNG], {
+                    L.marker([data[i].LAT, data[i].LNG], {
                         icon: newIcon,
                         ID_TEMPAT: data[i].ID_TEMPAT,
                         place: data[i].NAMA_USAHA,
@@ -1323,7 +1341,8 @@
                         TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
                         LAT: data[i].LAT,
                         LNG: data[i].LNG
-                    }).addTo(mymap).on('click', markerOnClick);
+                    }).addTo(marker).on('click', markerOnClick);
+                    //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
                     if (show) {
                         mymap.setView([data[i].LAT, data[i].LNG], 18);
                         //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
@@ -1331,6 +1350,127 @@
                         //marker.bindPopup(data[i].place);
                     }
                 }
+            }
+
+            // Tidak digunakan
+            function onLocationInput(e) {
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+                $('#addMarkerModal').modal('show');
+            }
+
+            //Tidak digunakan
+            function onLocationFound(e) {
+                var radius = e.accuracy / 2;
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+                manMarker = L.marker(e.latlng, {
+                        icon: manIcon
+                    }).addTo(mymap)
+                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
+                    ).openPopup().on('click', manMarkerOnClick);
+                circle = L.circle(e.latlng, radius, {
+                    color: 'red',
+                    opacity: 0.1
+                }).addTo(mymap);
+                $('#place').val('');
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+
+            }
+
+            function onAccuratePositionFound(e) {
+                var radius = e.accuracy / 2;
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
+                manMarker = L.marker(e.latlng, {
+                        icon: manIcon
+                    }).addTo(mymap)
+                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
+                    ).openPopup();
+                circle = L.circle(e.latlng, radius, {
+                    color: 'red',
+                    opacity: 0.1
+                }).addTo(mymap);
+                //$('#place').val('');
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+                $('#overlay').delay(100).fadeOut();
+            }
+
+            function onAccuratePositionProgress(e) {
+                var message = 'Sedang memporeses…';
+                $("#overlay").fadeIn();
+                $("#omessage").html(message)
+
+            }
+
+            function onLocationError(e) {
+                alert(e.message);
+            }
+
+            function loadMarker(e) {
+                //e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('getCoord') }}",
+                    data: {
+                        "_token": csrf
+                    },
+                    success: function (data) {
+                        //var locations = data;
+                        mapMarker(data);
+                    }
+                });
+            }
+
+            function clearMarker()
+            {
+                $(".leaflet-marker-icon").remove();
+                $(".leaflet-popup").remove();
+                $(".leaflet-marker-shadow").remove();
+            }
+
+            function searchGeo(data) {
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                //results.clearLayers();
+                for (var i = data.results.length - 1; i >= 0; i--) {
+                    foundMarker = L.marker(data.results[i].latlng, {
+                        icon: foundIcon,
+                        opacity: 0
+                    });
+                }
+                //results.addLayer(foundMarker);
             }
 
             mymap.on('click', function (e) {
@@ -1361,120 +1501,51 @@
                 if (foundMarker != undefined) {
                     mymap.removeLayer(foundMarker);
                 }
+
+                newMarker = L.marker(e.latlng, {
+                        icon: foundIcon,
+                        draggable: true
+                }).addTo(mymap);
+
                 geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
                     if (error) {
                         return;
                     }
 
-                    newMarker = L.marker(e.latlng, {
-                            icon: foundIcon
-                        }).addTo(mymap)
-                        .bindPopup(result.address.Match_addr + '<br>' +
-                            '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
-                        ).openPopup();
-                    $('#place').val('');
+                    
+                    newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
+                    ).openPopup();
+                    
+                    //$('#place').val('');
                     $('#lat').val(e.latlng.lat);
                     $('#lng').val(e.latlng.lng);
-                    $('.btnAdd').on('click', function () {
-                        $('#addMarkerModal').modal('show');
-                        $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                        $('#addMarkerJudul').html('Tambah Tempat');
-                        $('#cExistImage').hide();
-                    });
+
+                    //console.log(e.latlng);
                 });
+
+                newMarker.on('dragend', function () {
+                    geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
+                        if (error) {
+                            return;
+                        }
+
+                        newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                            '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
+                        ).openPopup();
+                        
+                        //$('#place').val('');
+                        $('#lat').val(newMarker.getLatLng().lat);
+                        $('#lng').val(newMarker.getLatLng().lng);
+                        //console.log(newMarker.getLatLng());
+                    });
+                    
+                    
+                });
+
 
             });
 
-
-            function onLocationInput(e) {
-                $('#lat').val(e.latlng.lat);
-                $('#lng').val(e.latlng.lng);
-                $('#addMarkerModal').modal('show');
-            }
-
-            function onLocationFound(e) {
-                var radius = e.accuracy / 2;
-                if (manMarker != undefined) {
-                    mymap.removeLayer(manMarker);
-                }
-                if (circle != undefined) {
-                    mymap.removeLayer(circle);
-                }
-                if (newMarker != undefined) {
-                    mymap.removeLayer(newMarker);
-                }
-                if (foundMarker != undefined) {
-                    mymap.removeLayer(foundMarker);
-                }
-                manMarker = L.marker(e.latlng, {
-                        icon: manIcon
-                    }).addTo(mymap)
-                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
-                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
-                    ).openPopup().on('click', manMarkerOnClick);
-                circle = L.circle(e.latlng, radius, {
-                    color: 'red',
-                    opacity: 0.1
-                }).addTo(mymap);
-                $('#place').val('');
-                $('#lat').val(e.latlng.lat);
-                $('#lng').val(e.latlng.lng);
-
-                $('.btnAdd').on('click', function () {
-                    $('#addMarkerModal').modal('show');
-                    $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                    $('#addMarkerJudul').html('Tambah Tempat');
-                    $('#cExistImage').hide();
-                });
-            }
-
-            function onAccuratePositionFound(e) {
-                var radius = e.accuracy / 2;
-                if (manMarker != undefined) {
-                    mymap.removeLayer(manMarker);
-                }
-                if (circle != undefined) {
-                    mymap.removeLayer(circle);
-                }
-                if (newMarker != undefined) {
-                    mymap.removeLayer(newMarker);
-                }
-                if (foundMarker != undefined) {
-                    mymap.removeLayer(foundMarker);
-                }
-                manMarker = L.marker(e.latlng, {
-                        icon: manIcon
-                    }).addTo(mymap)
-                    .bindPopup("Akurat sampai " + Math.round(radius) + " meter" + '<br>' +
-                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Anda</button></div>'
-                    ).openPopup();
-                circle = L.circle(e.latlng, radius, {
-                    color: 'red',
-                    opacity: 0.1
-                }).addTo(mymap);
-                $('#place').val('');
-                $('#lat').val(e.latlng.lat);
-                $('#lng').val(e.latlng.lng);
-                $('#overlay').delay(100).fadeOut();
-
-                $('.btnAdd').on('click', function () {
-                    $('#addMarkerModal').modal('show');
-                    $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                    $('#addMarkerJudul').html('Tambah Tempat');
-                    $('#cExistImage').hide();
-                });
-            }
-
-            function onAccuratePositionProgress(e) {
-                var message = 'Sedang memporeses… (akurasi: ' + e.accuracy / 2 + ' meter)';
-                $("#overlay").fadeIn();
-                $("#omessage").html(message)
-
-            }
-
-            function onLocationError(e) {
-                alert(e.message);
-            }
 
             $('.location').on('click', function () {
                 mymap.on('accuratepositionprogress', onAccuratePositionProgress);
@@ -1492,53 +1563,72 @@
 
             });
 
-            function loadMarker() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('getCoord') }}",
-                    data: {
-                        "_token": csrf
-                    },
-                    success: function (data) {
-                        //var locations = data;
-                        mapMarker(data);
-                    }
-                });
-            }
+            $('#addFromMap').on('click', function() {
+                $('#addMarkerModal').modal('hide');
+                clickOnMap = true;
 
-            function clearMarker()
-            {
-                $(".leaflet-marker-icon").remove();
-                $(".leaflet-popup").remove();
-                $(".leaflet-marker-shadow").remove();
-            }
+                if(clickOnMap) {
+                    mymap.on('click', function (e) {
+                        if (manMarker != undefined) {
+                            mymap.removeLayer(manMarker);
+                        }
+                        if (circle != undefined) {
+                            mymap.removeLayer(circle);
+                        }
+                        if (newMarker != undefined) {
+                            mymap.removeLayer(newMarker);
+                        }
+                        if (foundMarker != undefined) {
+                            mymap.removeLayer(foundMarker);
+                        }
+
+                        newMarker = L.marker(e.latlng, {
+                                icon: foundIcon,
+                                draggable: true
+                        }).addTo(mymap);
+
+                        geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                            if (error) {
+                                return;
+                            }
+                            
+                            newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                                '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnConfirm">Tandai Lokasi Ini</button></div>'
+                            ).openPopup();
+                            
+                            //$('#place').val('');
+                            $('#lat').val(e.latlng.lat);
+                            $('#lng').val(e.latlng.lng);
+
+                            //console.log(e.latlng);
+                        });
+
+                        newMarker.on('dragend', function () {
+                            geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
+                                if (error) {
+                                    return;
+                                }
+
+                                newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                                    '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnConfirm">Tandai Lokasi Ini</button></div>'
+                                ).openPopup();
+                                
+                                //$('#place').val('');
+                                $('#lat').val(newMarker.getLatLng().lat);
+                                $('#lng').val(newMarker.getLatLng().lng);
+                                //console.log(newMarker.getLatLng());
+                            });
+                            
+                            
+                        });
+
+
+                    });
+                }
+            })
+
 
             loadMarker();
-
-            // $('#formCoord').validate({ // initialize the plugin
-            //     rules: {
-            //         "place": {
-            //             required: true
-            //         },
-            //         "file[]": {
-            //             required: false,
-            //             extension: "jpeg|png|jpg",
-            //             filesize: 2
-            //         },
-            //     },
-            //     messages: {
-            //         "place": {
-            //             required: "Nama tempat tidak boleh kosong"
-            //         },
-            //         "file[]": {
-            //             extension: "File yang diperbolehkan hanya JPEG dan PNG",
-            //             filesize: "Maksimum ukuran file 2 MB"
-            //         }
-            //     },
-            //     submitHandler: function (form) {
-
-            //     }
-            // });
 
             $("#formCoord").submit(function (e) {
                 e.preventDefault();
@@ -1571,8 +1661,19 @@
                         $('#btnLoad').hide();
                         $('.btnClose').prop('disabled', false);
                         $("#addMarkerModal").modal('hide');
-                        $("#formCoord")[0].reset();
-                        mapMarker(response, true);
+                        clearFormAdd();
+                        console.log(response);
+                        if(response[0].AKSI == 'tambah'){ // Jika aksinya tambah 
+                            mapMarker(response, true); // tambahkan 1 marker
+                        } else { // jika update
+                            if($('#id_marker').val().length > 0){ // jika id marker memiliki value
+                                marker.removeLayer($('#id_marker').val()); // remove marker berdasarkan id
+                                if(!response[0].KOSONG){ // jika respon empty false (ada data lat dan lng)
+                                    mapMarker(response, true); // tambahkan 1 marker
+                                }
+                            }
+                        }
+                        
                     },
                     error: function (response) {
                         $('#btnSubmit').show();
@@ -1584,33 +1685,12 @@
                 });
             });
 
-
-            function searchGeo(data) {
-                if (manMarker != undefined) {
-                    mymap.removeLayer(manMarker);
-                }
-                if (circle != undefined) {
-                    mymap.removeLayer(circle);
-                }
-                if (newMarker != undefined) {
-                    mymap.removeLayer(newMarker);
-                }
-                results.clearLayers();
-                for (var i = data.results.length - 1; i >= 0; i--) {
-                    foundMarker = L.marker(data.results[i].latlng, {
-                        icon: foundIcon,
-                        opacity: 0
-                    });
-                }
-                results.addLayer(foundMarker);
-            }
-
             searchControl.on('results', function (data) {
                 searchGeo(data);
             });
 
             $('#addMarkerModal').on('shown.bs.modal', function (e) {
-                $("#place").focus();
+                //$("#place").focus();
             })
 
             $('#addMarkerModal').on('hidden.bs.modal', function (e) {
@@ -1628,11 +1708,9 @@
                 }
             })
 
-            $('.btnAdd').on('click', function () {
+            $(document).on('click', '.btnConfirm', function () {
                 $('#addMarkerModal').modal('show');
-                $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                $('#addMarkerJudul').html('Tambah Tempat');
-                $('#cExistImage').hide();
+                clickOnMap = false
             });
 
             $('.add').on('click', function () {
@@ -1659,131 +1737,7 @@
                 }
             });
 
-            // For Form Element
-            // =============================== //
-            var max_field = 10000;
-            // Tambah Jenis Bahan Baku //
-            var iBahanBaku = 1; // Jumlah field bahan baku
-            $('#tBahanBaku').on('click', function(e) {
-                e.preventDefault();
-                var vBahanBaku = $('.bahan-baku').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
-                if(vBahanBaku.length == 0) {
-                    if(max_field >= iBahanBaku) {
-                        $('#cBahanBaku').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control select2 bahan-baku d-bahan-baku" required data-placeholder="Pilih Jenis Bahan Baku" name="bahan_baku[]" style="width: 100%;"><option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Masukan kapasitas (KG/Bulan)" required  name="bahan_baku_kg[]"></div><div class="col-md-1"><a href="#" class="text-danger hBahanBaku mt-1"><small>Hapus</small></a></div></div>');
-                    } else {
-                        alert('Error!');
-                    }
-                } else if(vBahanBaku.length > 0) {
-                    $('#tBahanBaku').click(false);
-                    alert('Mohon lengkapi data jenis bahan baku sebelumnya!');
-                }
-
-                //Isi select bahan baku
-                $(".d-bahan-baku").select2({
-                    allowClear: true,
-                    ajax: {
-                        url: "{{ route('getBahanBaku') }}",
-                        processResults: function (response) {
-                            return {
-                                results: response
-                            };
-                        },
-                        cache: true
-                    }
-                });
-            })
-
-            //Hapus field jenis bahan baku
-            $('#cBahanBaku').on("click", ".hBahanBaku", function(e){ //user click on remove text
-                e.preventDefault(); 
-                $(this).parents('.row').remove(); iBahanBaku--;
-            });
-
-            //============== End ================= //
-
-             // Tambah Penjualan Bahan Baku //
-             var iPenjualan = 1; // Jumlah field bahan baku
-            $('#tPenjualanBahan').on('click', function(e) {
-                e.preventDefault();
-                var vPenjualan = $('.penjualan-bahan').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
-                if(vPenjualan.length == 0) {
-                    if(max_field >= iPenjualan) {
-                        $('#cPenjualanBahan').append('<div class="row mt-3 clone"><div class="col-md-5 mb-2 mb-md-0"><select class="form-control penjualan-bahan d-penjualan-bahan select2" required data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]" style="width: 100%;"> <option value=""></option></select></div><div class="col-md-6"><input type="text" class="form-control" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div><div class="col-md-1"><a href="#" class="text-danger hPenjualanBahan mt-1"><small>Hapus</small></a></div></div>');
-                    } else {
-                        alert('Error!');
-                    }
-                } else if(vPenjualan.length > 0) {
-                    $('#tPenjualanBahan').click(false);
-                    alert('Mohon lengkapi data penjualan bahan baku sebelumnya!');
-                }
-
-                //Isi select bahan baku
-                $(".d-penjualan-bahan").select2({
-                    allowClear: true,
-                    ajax: {
-                        url: "{{ route('getPenjualanBahan') }}",
-                        processResults: function (response) {
-                            return {
-                                results: response
-                            };
-                        },
-                        cache: true
-                    }
-                });
-            })
-
-            //Hapus field jenis bahan baku
-            $('#cPenjualanBahan').on("click", ".hPenjualanBahan", function(e){ //user click on remove text
-                e.preventDefault(); 
-                $(this).parents('.row').remove(); iPenjualan--;
-            });
-
-            // ============== End ============ //
-
-            // Tambah Mesin //
-            var iMesin = 1; // Jumlah field Mesin
-            $('#tMesin').on('click', function(e) {
-                e.preventDefault();
-                var vMesin = $('.mesin').filter(function () { return this.value === '' }); // Jumlah class bahan baku yg ttidak memiliki value
-                if(vMesin.length == 0) {
-                    if(max_field >= iMesin) {
-                        $('#cMesin').append('<div class="row mt-3 clone"><div class="col-md-12 mb-2 mb-md-2"><select class="form-control mesin d-mesin" style="width: 100%;" required data-placeholder="Pilih Mesin" name="mesin[]"><option value=""></option></select></div><div class="col-md-6 mb-2 mb-md-0"><select class="form-control kepemilikan"  style="width: 100%;" data-placeholder="Kepemilikan" name="kepemilikan[]" required><option value=""></option><option value="milik sendiri">Milik Sendiri</option><option value="dipinjamkan">Dipinjamkan</option></select></div><div class="col-md-5"><input type="text" class="form-control" required placeholder="Jumlah mesin" name="mesin_qty[]"></div><div class="col-md-1"><a href="#" class="text-danger hMesin mt-1"><small>Hapus</small></a></div></div>');
-                    } else {
-                        alert('Error!');
-                    }
-                } else if(vMesin.length > 0) {
-                    $('#tMesin').click(false);
-                    alert('Mohon lengkapi data mesin sebelumnya!');
-                }
-
-                //Isi select bahan baku
-                $(".d-mesin").select2({
-                    allowClear: true,
-                    ajax: {
-                        url: "{{ route('getMesin') }}",
-                        processResults: function (response) {
-                            return {
-                                results: response
-                            };
-                        },
-                        cache: true
-                    }
-                });
-
-                $('.kepemilikan').select2({
-                    allowClear: true
-                });
-            })
-
-            //Hapus field jenis bahan baku
-            $('#cMesin').on("click", ".hMesin", function(e){ //user click on remove text
-                e.preventDefault(); 
-                $(this).parents('.row').remove(); iPenjualan--;
-            });
-
-            // ============== End ============ //
-
-            // Validasi Checkbox 
+            // Validasi Checkbox pada jenis usaha
             var rCheckBox = $(':checkbox[required]');
             rCheckBox.change(function(){
                 if(rCheckBox.is(':checked')) {
@@ -1795,10 +1749,10 @@
             });
 
             // Edit Section
-
             $('#btnEdit').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
+                var id_marker = $(this).attr('data-marker');
                 $('#addMarkerJudul').html('Ubah Lokasi')
                 $('#formCoord').attr('action', "{{ route('updateCoord') }}")
                 $.ajax({
@@ -1808,23 +1762,20 @@
                         "id": id
                     },
                     success: function (data) {
-                        //$('#kategori').val(data.tempat.KATEGORI).change();
                         $('input[name="kategori"][value="' + data.tempat.KATEGORI + '"]').prop("checked", true);
                         $('#nama_usaha').val(data.tempat.NAMA_USAHA);
                         $('#tgl_kunjungan').val(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
                         $('#cp').val(data.tempat.CP);
                         $('#telepon').val(data.tempat.TELEPON);
                         $('#alamat').val(data.tempat.ALAMAT);
-                        //$('#status_tempat').val(data.tempat.STATUS_USAHA).change();
                         $('input[name="status_tempat"][value="' + data.tempat.STATUS_USAHA + '"]').prop("checked", true);
                         $('#jml_pekerja').val(data.tempat.JUMLAH_PEKERJA);
-                        //$('#proses_penjualan').val(data.tempat.PROSES_PENJUALAN).change();
                         $('input[name="proses_penjualan"][value="' + data.tempat.PROSES_PENJUALAN + '"]').prop("checked", true);
                         $('#proses_pembayaran').val(data.tempat.PROSES_PEMBAYARAN).change();
                         $("#lat").val(data.tempat.LAT)
                         $("#lng").val(data.tempat.LNG)
                         $("#id_tempat").val(data.tempat.ID_TEMPAT);
-
+                        $('#id_marker').val(id_marker);
                         // Foto
                         if(data.image.length > 0){
                             $('#cExistImage').show();
@@ -1843,7 +1794,6 @@
                         }
 
                         $('#cBahanBaku').html('');
-                        console.log(data.jenis_bahan)
                         for(var i = 0; i < data.jenis_bahan.length; i++) {
                             var margin = i == 0 ? '' : ' mt-3';
                             $('#cBahanBaku').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + data.jenis_bahan[i].JENIS_BAHAN + '" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" value="' + data.jenis_bahan[i].KAPASITAS + '" required name="bahan_baku_kg[]"></div></div>');
@@ -1853,38 +1803,15 @@
                             $('.c-bahan-baku-kg[data-value="' + data.jenis_bahan[i].JENIS_BAHAN  + '"]').val(data.jenis_bahan[i].KAPASITAS);
                         }
 
-                        // $(".d-bahan-baku").select2({
-                        //     allowClear: true,
-                        //     ajax: {
-                        //         url: "{{ route('getBahanBaku') }}",
-                        //         processResults: function (response) {
-                        //             return {
-                        //                 results: response
-                        //             };
-                        //         },
-                        //         cache: true
-                        //     }
-                        // });
-
                         $('#cPenjualanBahan').html('');
                         for(var i = 0; i < data.penjualan.length; i++) {
                             var margin = i == 0 ? '' : ' mt-3';
-                            $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(data.penjualan[i].TEMPAT_PENJUALAN) + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div></div>');
-                        }
+                            $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" style="text-transform: capitalize;" value="' + data.penjualan[i].TEMPAT_PENJUALAN + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div></div>');
 
-                        //Isi select bahan baku
-                        // $(".d-penjualan-bahan").select2({
-                        //     allowClear: true,
-                        //     ajax: {
-                        //         url: "{{ route('getPenjualanBahan') }}",
-                        //         processResults: function (response) {
-                        //             return {
-                        //                 results: response
-                        //             };
-                        //         },
-                        //         cache: true
-                        //     }
-                        // });
+                            //  =============== untuk modal bahan baku ==============//
+                            $('.c-penjualan-bahan[value="' + data.penjualan[i].TEMPAT_PENJUALAN + '"]').prop('checked', true).change();
+                            $('.c-penjualan-bahan-ket[data-value="' + data.penjualan[i].TEMPAT_PENJUALAN  + '"]').val(data.penjualan[i].KETERANGAN);
+                        }
 
                         $('#cMesin').html('');
                         for(var i = 0; i < data.mesin.length; i++) {
@@ -1893,26 +1820,12 @@
                             var value_milik = data.mesin[i].KEPEMILIKAN;
                             var value_qty = data.mesin[i].QTY;
                             
-                            $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" value="' + capitalizeFirstLetter(value) + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + capitalizeFirstLetter(value_milik) + '" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
-                        }
+                            $('#cMesin').append('<div class="row ' + margin + '"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" style="text-transform: capitalize;" value="' + value + '" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" style="text-transform: capitalize;" value="' + value_milik + '" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" value="' + value_qty + '" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
 
-                        //Isi select bahan baku
-                        // $(".d-mesin").select2({ 
-                        //     allowClear: true,
-                        //     ajax: {
-                        //         url: "{{ route('getMesin') }}",
-                        //         processResults: function (response) {
-                        //             return {
-                        //                 results: response
-                        //             };
-                        //         },
-                        //         cache: true
-                        //     }
-                        // });
-                        // $('.kepemilikan').select2({
-                        //     allowClear: true
-                        // });
-                        
+                            $('.c-mesin[value="' + data.mesin[i].MESIN + '"]').prop('checked', true).change();
+                            $('.c-kepemilikan[data-value="' + data.mesin[i].MESIN + '"]').val(data.mesin[i].KEPEMILIKAN).change();
+                            $('.c-mesin-qty[data-value="' + data.mesin[i].MESIN  + '"]').val(data.mesin[i].QTY);
+                        }
 
                         $('#addMarkerModal').modal('show');
                         $("#detailMarkerModal").modal('hide');
@@ -1923,6 +1836,7 @@
             $('#btnDelete').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).attr('data-id');
+                var id_marker = $(this).attr('data-marker');
                 var lat = $(this).attr('data-lat');
                 var lng = $(this).attr('data-lng');
                 Swal.fire({
@@ -1946,27 +1860,25 @@
                             success: function(response) {
                                 $('#detailMarkerModal').modal('hide');
                                 Swal.fire(
-                                    'Deleted!',
-                                    'Your file has been deleted.',
+                                    'Berhasil!',
+                                    'Lokasi berhasil dihapus',
                                     'success'
                                 )
-                                clearMarker();
-                                $.ajax({
-                                    type: 'POST',
-                                    url: "{{ route('getCoord') }}",
-                                    data: {
-                                        "_token": csrf
-                                    },
-                                    success: function (data) {
-                                        //var locations = data;
-                                        mapMarker(data);
-                                    }
-                                });
+                                marker.removeLayer(id_marker)
                             }
                         });
+                        // $('#detailMarkerModal').modal('hide');
+                        // Swal.fire(
+                        //     'Deleted!',
+                        //     'Your file has been deleted.',
+                        //     'success'
+                        // )
+                        // marker.removeLayer(id_marker)
                     }
                 })
             });
+
+            //console.log(marker)
 
         })
 
