@@ -313,21 +313,23 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="/">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Beranda</span></a>
+            <li class="nav-item active" >
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="/">
+                    <i class="fas fa-fw fa-map-marker-alt"></i>
+                    <span>Map</span></a>
+            </li>
+            <li class="nav-item" >
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="/">
+                    <i class="fas fa-fw fa-list-ul"></i>
+                    <span>Daftar Lokasi</span></a>
             </li>
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Heading -->
-            <div class="sidebar-heading">
-                User
-            </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
+            <li class="nav-item"  >
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('logout') }}" onclick="event.preventDefault();
                               document.getElementById('logout-form').submit();">
                     <i class=" fas fa-door-closed"></i>
                     <span> {{ __('Logout') }}</span></a>
@@ -348,34 +350,7 @@
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Begin Page Content -->
-                <div class="">
-                    <!-- Page Heading -->
-                    <div id="mapid"></div>
-                    <div class="leaflet-top leaflet-right">
-                        <a id="sidebarToggleTop" href="javascript:void" class="menu-btn btn btn-primary btn-circle widget">
-                            <i style="font-size: 15px;" class="fa fa-bars"></i>
-                        </a>
-                    </div>
-                    <div class="leaflet-bottom leaflet-right">
-                        <a href="javascript:void" class="location btn btn-info btn-circle btn-lg widget">
-                            <i style="font-size: 25px;" class="fas fa-street-view"></i>
-                        </a>
-                        <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal"
-                            class="add btn btn-success btn-circle btn-lg widget">
-                            <i style="font-size: 25px;" class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                </div>
-                <!-- /.container-fluid -->
-            </div>
-            <!-- End of Main Content -->
-
-        </div>
+        @yield('content')
         <!-- End of Content Wrapper -->
 
     </div>
@@ -1872,18 +1847,9 @@
                                 marker.removeLayer(id_marker)
                             }
                         });
-                        // $('#detailMarkerModal').modal('hide');
-                        // Swal.fire(
-                        //     'Deleted!',
-                        //     'Your file has been deleted.',
-                        //     'success'
-                        // )
-                        // marker.removeLayer(id_marker)
                     }
                 })
             });
-
-            //console.log(marker)
 
         })
 
