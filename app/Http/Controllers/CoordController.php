@@ -452,4 +452,9 @@ class CoordController extends Controller
         return response()->json($response, $response[0]['code'], []);
 
     }
+
+    public function list()
+    {
+        
+    }
 }

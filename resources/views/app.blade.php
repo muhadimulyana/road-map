@@ -314,12 +314,12 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active" >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="/">
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
                     <i class="fas fa-fw fa-map-marker-alt"></i>
                     <span>Map</span></a>
             </li>
             <li class="nav-item" >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="/">
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/list') }}">
                     <i class="fas fa-fw fa-list-ul"></i>
                     <span>Daftar Lokasi</span></a>
             </li>

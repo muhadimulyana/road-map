@@ -26,12 +26,13 @@ Route::post('/addCoord', [CoordController::class, 'store'])->name('addCoord')->m
 Route::post('/updateCoord', [CoordController::class, 'update'])->name('updateCoord')->middleware('auth');
 Route::get('/getDetailCoord', [CoordController::class, 'getDetailCoord'])->name('getDetailCoord')->middleware('auth');
 Route::get('/getMarkerImage', [CoordController::class, 'getMarkerImage'])->name('getMarkerImage')->middleware('auth');
-Route::get('/', [CoordController::class, 'show'])->middleware('auth');
+Route::get('/', [CoordController::class, 'show'])->name('/')->middleware('auth');
 Route::get('/home', function () {
     return view('app');
 })->middleware('auth');
 Route::get('/checkApi', [CoordController::class, 'checkApi'])->name('checkApi');
 Route::get('/getApiKey', [CoordController::class, 'getApiKey'])->name('getApiKey');
+Route::get('/list', [CoordController::class, 'list'])->name('/list')->middleware('auth');
 
 //API getallMastertoForm
 Route::get('/getJenisUsaha', [CoordController::class, 'getJenisUsaha'])->name('getJenisUsaha')->middleware('auth');
