@@ -357,16 +357,16 @@
                     <!-- Page Heading -->
                     <div id="mapid"></div>
                     <div class="leaflet-top leaflet-right">
-                        <a id="sidebarToggleTop" href="javascript:void" class="menu-btn btn btn-primary btn-circle">
+                        <a id="sidebarToggleTop" href="javascript:void" class="menu-btn btn btn-primary btn-circle widget">
                             <i style="font-size: 15px;" class="fa fa-bars"></i>
                         </a>
                     </div>
                     <div class="leaflet-bottom leaflet-right">
-                        <a href="javascript:void" class="location btn btn-info btn-circle btn-lg">
+                        <a href="javascript:void" class="location btn btn-info btn-circle btn-lg widget">
                             <i style="font-size: 25px;" class="fas fa-street-view"></i>
                         </a>
                         <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal"
-                            class="add btn btn-success btn-circle btn-lg">
+                            class="add btn btn-success btn-circle btn-lg widget">
                             <i style="font-size: 25px;" class="fas fa-plus"></i>
                         </a>
                     </div>
@@ -1203,7 +1203,9 @@
             var foundMarker;
             var geocodeService = L.esri.Geocoding.geocodeService();
             var geocodeService2 = L.esri.Geocoding.geocodeService();
-            var clickOnMap = false;
+            if(sessionStorage["clickOnMap"]){
+                sessionStorage.removeItem("clickOnMap")
+            }
             //L.esri.basemapLayer('Gray').addTo(mymap);
             //L.esri.basemapLayer('GrayLabels').addTo(mymap);
 
@@ -1473,22 +1475,8 @@
                 //results.addLayer(foundMarker);
             }
 
-            mymap.on('click', function (e) {
-                if (manMarker != undefined) {
-                    mymap.removeLayer(manMarker);
-                }
-                if (circle != undefined) {
-                    mymap.removeLayer(circle);
-                }
-                if (newMarker != undefined) {
-                    mymap.removeLayer(newMarker);
-                }
-                if (foundMarker != undefined) {
-                    mymap.removeLayer(foundMarker);
-                }
-            });
-
             mymap.on('contextmenu', function (e) {
+
                 if (manMarker != undefined) {
                     mymap.removeLayer(manMarker);
                 }
@@ -1502,46 +1490,51 @@
                     mymap.removeLayer(foundMarker);
                 }
 
-                newMarker = L.marker(e.latlng, {
-                        icon: foundIcon,
-                        draggable: true
-                }).addTo(mymap);
+                if(!sessionStorage["clickOnMap"]) {
 
-                geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
-                    if (error) {
-                        return;
-                    }
+                    newMarker = L.marker(e.latlng, {
+                            icon: foundIcon,
+                            draggable: true
+                    }).addTo(mymap);
 
-                    
-                    newMarker.bindPopup(result.address.Match_addr + '<br>' +
-                        '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
-                    ).openPopup();
-                    
-                    //$('#place').val('');
-                    $('#lat').val(e.latlng.lat);
-                    $('#lng').val(e.latlng.lng);
-
-                    //console.log(e.latlng);
-                });
-
-                newMarker.on('dragend', function () {
-                    geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
+                    geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
                         if (error) {
                             return;
                         }
 
+                        
                         newMarker.bindPopup(result.address.Match_addr + '<br>' +
                             '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
                         ).openPopup();
                         
                         //$('#place').val('');
-                        $('#lat').val(newMarker.getLatLng().lat);
-                        $('#lng').val(newMarker.getLatLng().lng);
-                        //console.log(newMarker.getLatLng());
+                        $('#lat').val(e.latlng.lat);
+                        $('#lng').val(e.latlng.lng);
+
+                        //console.log(e.latlng);
                     });
-                    
-                    
-                });
+
+                    newMarker.on('dragend', function () {
+                        geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
+                            if (error) {
+                                return;
+                            }
+
+                            newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                                '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnAdd">Tandai Lokasi Ini</button></div>'
+                            ).openPopup();
+                            
+                            //$('#place').val('');
+                            $('#lat').val(newMarker.getLatLng().lat);
+                            $('#lng').val(newMarker.getLatLng().lng);
+                            //console.log(newMarker.getLatLng());
+                        });
+                        
+                        
+                    });
+
+                }
+
 
 
             });
@@ -1563,71 +1556,87 @@
 
             });
 
+            $(document).on('click', '.btnConfirm', function () {
+                $('#addMarkerModal').modal('show');
+                $('html').css('cursor', 'alias');
+                $('html').css('pointer-events', 'auto');
+                $('#mapid').css('cursor', 'alias');
+                $('.widget').attr('style', 'pointer-events: auto !important; cursor : alias;');
+                sessionStorage.removeItem("clickOnMap")
+            });
+
             $('#addFromMap').on('click', function() {
                 $('#addMarkerModal').modal('hide');
-                clickOnMap = true;
+                $('html').css('cursor', 'not-allowed');
+                $('html').css('pointer-events', 'none');
+                $('.widget').attr('style', 'pointer-events: none !important; cursor : now-allowed;');
+                $('#mapid').css('cursor', 'crosshair');
+                $('#mapid').css('pointer-events', 'auto');
+                sessionStorage.setItem("clickOnMap", 1);
+            })
 
-                if(clickOnMap) {
-                    mymap.on('click', function (e) {
-                        if (manMarker != undefined) {
-                            mymap.removeLayer(manMarker);
-                        }
-                        if (circle != undefined) {
-                            mymap.removeLayer(circle);
-                        }
-                        if (newMarker != undefined) {
-                            mymap.removeLayer(newMarker);
-                        }
-                        if (foundMarker != undefined) {
-                            mymap.removeLayer(foundMarker);
-                        }
+            mymap.on('click', function (e) {
 
-                        newMarker = L.marker(e.latlng, {
-                                icon: foundIcon,
-                                draggable: true
-                        }).addTo(mymap);
+                if (manMarker != undefined) {
+                    mymap.removeLayer(manMarker);
+                }
+                if (circle != undefined) {
+                    mymap.removeLayer(circle);
+                }
+                if (newMarker != undefined) {
+                    mymap.removeLayer(newMarker);
+                }
+                if (foundMarker != undefined) {
+                    mymap.removeLayer(foundMarker);
+                }
 
-                        geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                if(sessionStorage["clickOnMap"]) {
+
+                    newMarker = L.marker(e.latlng, {
+                            icon: foundIcon,
+                            draggable: true
+                    }).addTo(mymap);
+
+                    geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                        if (error) {
+                            return;
+                        }
+                        
+                        newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                            '<div class="text-center mt-1"><button class="btn btn-xs btn-success btnConfirm">Pilih Lokasi Ini</button></div>'
+                        ).openPopup();
+                        
+                        //$('#place').val('');
+                        $('#lat').val(e.latlng.lat);
+                        $('#lng').val(e.latlng.lng);
+
+                        //console.log(e.latlng);
+                    });
+
+                    newMarker.on('dragend', function () {
+                        geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
                             if (error) {
                                 return;
                             }
-                            
+
                             newMarker.bindPopup(result.address.Match_addr + '<br>' +
-                                '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnConfirm">Tandai Lokasi Ini</button></div>'
+                                '<div class="text-center mt-1"><button class="btn btn-xs btn-success btnConfirm">Pilih Lokasi Ini</button></div>'
                             ).openPopup();
                             
                             //$('#place').val('');
-                            $('#lat').val(e.latlng.lat);
-                            $('#lng').val(e.latlng.lng);
-
-                            //console.log(e.latlng);
+                            $('#lat').val(newMarker.getLatLng().lat);
+                            $('#lng').val(newMarker.getLatLng().lng);
+                            //console.log(newMarker.getLatLng());
                         });
-
-                        newMarker.on('dragend', function () {
-                            geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
-                                if (error) {
-                                    return;
-                                }
-
-                                newMarker.bindPopup(result.address.Match_addr + '<br>' +
-                                    '<div class="text-center mt-1"><button class="btn btn-xs btn-primary btnConfirm">Tandai Lokasi Ini</button></div>'
-                                ).openPopup();
-                                
-                                //$('#place').val('');
-                                $('#lat').val(newMarker.getLatLng().lat);
-                                $('#lng').val(newMarker.getLatLng().lng);
-                                //console.log(newMarker.getLatLng());
-                            });
-                            
-                            
-                        });
-
-
+                        
+                        
                     });
+
                 }
-            })
 
 
+            });
+            
             loadMarker();
 
             $("#formCoord").submit(function (e) {
@@ -1708,16 +1717,12 @@
                 }
             })
 
-            $(document).on('click', '.btnConfirm', function () {
-                $('#addMarkerModal').modal('show');
-                clickOnMap = false
-            });
-
             $('.add').on('click', function () {
                 $('#addMarkerModal').modal('show');
                 $('#formCoord').attr('action', "{{ route('addCoord') }}");
                 $('#addMarkerJudul').html('Tambah Tempat');
                 $('#cExistImage').hide();
+                clearFormAdd();
             });
 
             $('body').magnificPopup({
