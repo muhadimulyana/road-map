@@ -455,6 +455,17 @@ class CoordController extends Controller
 
     public function list()
     {
-        
+        $keys = DB::table('key_api')->where('aktif', 1)->get();
+
+        foreach($keys as $row){
+            $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
+            if($request->successful()){
+                $key = $row->key;
+                break;
+            } else {
+                DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
+            }
+        }
+        return view('list')->with('key', $key);
     }
 }
