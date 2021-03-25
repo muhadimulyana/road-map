@@ -19,7 +19,56 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
-            <!-- Page Heading -->
+            {{-- Filter Search --}}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h5 class="m-0 font-weight-bold text-primary">Filter Data</h5>
+                </div>
+                <form id="filterForm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <select name="f_kategori" style="width: 100%;" data-placeholder="Pilih kategori" id="f_kategori" class="form-control select2">
+                                    <option value=""></option>
+                                    <option value="supplier">Supplier</option>
+                                    <option value="non supplier">Non Supplier</option>
+                                    <option value="kompetitor">Kompetitor</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <input type="text" name="f_tgl_dari" id="f_tgl_dari" placeholder="Tanggal kunjungan dari" class="form-control datepicker">
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <input type="text" name="f_tgl_sampai" id="f_tgl_sampai" placeholder="Tanggal kunjungan sampai" class="form-control datepicker">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <select name="f_lokasi" style="width: 100%;" data-placeholder="Pilih status lokasi" id="f_lokasi" class="form-control select2">
+                                    <option value=""></option>
+                                    <option value="1">Sudah Input</option>
+                                    <option value="0">Belum Input</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <select name="f_jenis_usaha" style="width: 100%;" data-placeholder="Pilih jenis usaha" id="f_jenis_usaha" class="form-control select2">
+                                    <option value=""></option>
+                                    @foreach ($jenis_usaha as $row)
+                                        <option value="{{ strtolower($row->JENIS_USAHA)}}">{{ $row->JENIS_USAHA }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <input type="text" name="keyword" autocomplete="off" id="keyword" placeholder="Ketikkan keyword disini" class="form-control">
+                            </div>
+                        </div>
+                        <div class="float-right mb-4">
+                            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                            <a href="javascript:void" id="refresh" class="btn btn-secondary btn-sm">Refresh</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
@@ -35,10 +84,10 @@
                                     <th>Nama Usaha</th>
                                     <th>Lokasi</th>
                                     <th>Kategori</th>
-                                    <th>Tgl Kunjungan</th>
+                                    <th>Jenis Usaha</th>
                                     <th>CP</th>
                                     <th>Telp</th>
-                                    <th>Tgl Buat</th>
+                                    <th>Tgl Kunjungan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -54,52 +103,95 @@
     <!-- End of Main Content -->
 
 </div>
+<a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal"
+    class="add btn btn-success btn-circle btn-lg widget">
+    <i style="font-size: 25px;" class="fas fa-plus"></i>
+</a>
 @endsection
 
 @push('script')
 <script>
-    $('#coordDataTable').DataTable({
+    $(function() {
+        $('.select2').select2({
+            allowClear: true
+        });
+        $('.datepicker').bootstrapMaterialDatePicker({
+            time: false,
+            format: 'DD-MM-YYYY'
+        });
+    });
+</script>
+<script>
+    var oTable = $('#coordDataTable').DataTable({
         processing: true,
         serverSide: true,
-        searching: false,
-        ajax: "{{ route('getAllCoords') }}",
+        //searching: true,
+        ajax: {
+            url: "{{ route('getFilterRecord') }}",
+            data: function (d) {
+                d.KATEGORI = $('#f_kategori').val(),
+                d.TGL_DARI = $('#f_tgl_dari').val(),
+                d.TGL_SAMPAI = $('#f_tgl_sampai').val(),
+                d.LOKASI = $('#f_lokasi').val(),
+                d.JENIS = $('#f_jenis_usaha').val(),
+                d.KEYWORD = $('#keyword').val()
+            }
+        },
         columns: [
             { 
                 data: 'DT_RowIndex', 
-                name: 'no' },
+                name: 'DT_RowIndex' },
             {
                 data: 'NAMA_USAHA',
-                name: 'nama_usaha'
+                name: 'NAMA_USAHA'
             },
             {
                 data: 'LOKASI',
-                name: 'lokasi'
+                name: 'LOKASI'
             },
             {
                 data: 'KATEGORI',
-                name: 'kategori'
+                name: 'KATEGORI'
             },
             {
-                data: 'TANGGAL_KUNJUNGAN',
-                name: 'tgl_kunjungan'
+                data: 'JENIS_USAHA',
+                name: 'JENIS_USAHA'
             },
+            
             {
                 data: 'CP',
-                name: 'cp'
+                name: 'CP'
             },
             {
                 data: 'TELEPON',
-                name: 'telp'
+                name: 'TELEPON'
             },
             {
-                data: 'TANGGAL_BUAT',
-                name: 'lat'
+                data: 'TANGGAL_KUNJUNGAN',
+                name: 'TANGGAL_KUNJUNGAN'
             },
             {
                 data: 'AKSI',
-                name: 'aksi'
+                name: 'AKSI'
             }
-        ]
+        ],
+        order: [[7, 'desc']],
+        columnDefs: [
+            { orderable: false, targets: [0, 4, 8] }
+        ],
+    });
+
+    $('#filterForm').on('submit', function(e) {
+        console.log($('#f_kategori').val())
+        oTable.draw();
+        e.preventDefault();
+    });
+
+    $('#refresh').on('click', function(e) {
+        $('#filterForm')[0].reset();
+        $('.select2').val('').change()
+        oTable.draw();
+        e.preventDefault();
     });
 </script>
 @endpush

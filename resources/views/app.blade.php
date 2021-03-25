@@ -45,6 +45,7 @@
     <link href="assets/plugin/select2/select2.css" rel="stylesheet" />
 
     {{-- Datepicker --}}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="assets/plugin/datepicker/css/bootstrap-material-datetimepicker.css">
 
     {{-- Datatable --}}
@@ -321,7 +322,7 @@
                     <span>Map</span></a>
             </li>
             <li class="nav-item" >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/list') }}">
+                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list') }}">
                     <i class="fas fa-fw fa-list-ul"></i>
                     <span>Daftar Lokasi</span></a>
             </li>

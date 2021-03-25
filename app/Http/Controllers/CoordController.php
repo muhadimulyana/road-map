@@ -6,6 +6,7 @@ use App\Models\Coord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Image;
 use File;
 use DataTables;
@@ -457,7 +458,7 @@ class CoordController extends Controller
     public function list()
     {
         $keys = DB::table('key_api')->where('aktif', 1)->get();
-
+        $jenis_usaha = DB::table('m_jenis_usaha')->get();
         foreach($keys as $row){
             $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
             if($request->successful()){
@@ -469,13 +470,14 @@ class CoordController extends Controller
         }
         
         
-        return view('list')->with('key', $key);
+        return view('list')->with('key', $key)->with('jenis_usaha', $jenis_usaha);
     }
 
-    public function getAllCoords()
+    public function getFilterRecord(Request $request)
     {
-        $coords = DB::table('tempat')->get();
-        return Datatables::of($coords)
+        $coords =  DB::table('tempat as A')->selectRaw('A.*, (SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) as JENIS_USAHA');
+        //dd($coords);
+        $datatables = Datatables::of($coords)
         ->addIndexColumn()
         ->editColumn("NAMA_USAHA", function($data){
             $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary">' . $data->NAMA_USAHA .'</a> ';
@@ -499,13 +501,18 @@ class CoordController extends Controller
             }
             return $kategori; 
         })
+        ->editColumn("JENIS_USAHA", function($data){
+            $jenis_usaha = $data->JENIS_USAHA;
+            $jenis_usaha = explode('-', $jenis_usaha);
+            $jenis = '';
+            foreach($jenis_usaha as $key => $value){
+                $jenis .= '<span class="badge badge-primary" style="text-transform: capitalize">' . $jenis_usaha[$key] .'</span>&nbsp;';
+            }
+            return $jenis;
+        })
         ->editColumn("TANGGAL_KUNJUNGAN", function($data){
             $tgl_kunjung = date('d M Y', strtotime($data->TANGGAL_KUNJUNGAN));
             return $tgl_kunjung;
-        })
-        ->editColumn("TANGGAL_BUAT", function($data){
-            $tgl_buat = date('d M Y', strtotime($data->TANGGAL_BUAT));
-            return $tgl_buat;
         })
         ->addColumn('AKSI', function($data){
             $aksi = 
@@ -515,8 +522,55 @@ class CoordController extends Controller
             </div>';
             return $aksi;
         })
-        ->rawColumns(['NAMA_USAHA', 'LOKASI', 'KATEGORI', 'AKSI'])
-        ->make(true);
+        ->rawColumns(['NAMA_USAHA', 'LOKASI', 'KATEGORI', 'JENIS_USAHA', 'AKSI'])
+        ->filter(function ($query) use ($request) {
+
+            if ($request->has('KATEGORI')) {
+                if($request->get('KATEGORI') != ''){
+                    $query->where('A.KATEGORI', '=', $request->get('KATEGORI'));
+                }
+            }
+            if($request->has('TGL_DARI')) {
+                if($request->get('TGL_DARI') != ''){
+                    $query->where('A.TANGGAL_KUNJUNGAN', '>=', date('Y-m-d', strtotime($request->get('TGL_DARI'))));
+                }
+            }
+            if($request->has('TGL_SAMPAI')) {
+                if($request->get('TGL_SAMPAI') != ''){
+                    $query->where('A.TANGGAL_KUNJUNGAN', '<=', date('Y-m-d', strtotime($request->get('TGL_SAMPAI'))));
+                }
+            }
+            if ($request->has('LOKASI')) {
+                if($request->get('LOKASI') != ''){
+                    if($request->get('LOKASI') == 1) {
+                        $query->whereNotNull('A.LAT');
+                        $query->whereNotNull('A.LNG');
+                    } else {
+                        $query->whereNull('A.LAT');
+                        $query->whereNull('A.LNG');
+                    }
+                }
+            }
+            if ($request->has('JENIS')) {
+                if($request->get('JENIS') != ''){
+                    $jenis = $request->get('JENIS');
+                    //$query->where('tempat_jenis_usaha.JENIS_USAHA', '=', $request->get('JENIS'));
+                    $query->whereRaw('(SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) like ?', ["%$jenis%"]);
+                }
+            }
+            if($request->has('KEYWORD')) {
+                if($request->get('KEYWORD') != ''){
+                    $keyword = $request->get('KEYWORD');
+                    $query->where('A.NAMA_USAHA', 'like', "%$keyword%");
+                    $query->orWhere('A.CP', 'like', "%$keyword%");
+                    $query->orWhere('A.TELEPON', 'like', "%$keyword%");
+                    $query->orWhere('A.ALAMAT', 'like', "%$keyword%");
+                }
+            }
+        });
+
+
+        return $datatables->make(true);
 
     }
 }
