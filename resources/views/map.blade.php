@@ -777,7 +777,8 @@
         $('#overlay').delay(100).fadeOut();
         var csrf = $('meta[name="csrf-token"]').attr('content');
         var key = $('meta[name="key-api"]').attr('content');
-
+        var view = $('meta[name="view"]').attr('content');
+        var id_view = $('meta[name="view-id"]').attr('content');
 
         //  ============================= MAp ============================//
         var mymap = L.map('mapid').setView([-1, 117], 5);
@@ -1503,6 +1504,10 @@
                 }
             })
         });
+
+        if(view != 0) {
+            console.log('success')
+        }
 
     })
 
