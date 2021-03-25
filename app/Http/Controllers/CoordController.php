@@ -18,8 +18,15 @@ class CoordController extends Controller
         $this->middleware('auth');
     }
 
-    public function show()
+    public function show(Request $request)
     {
+        if($request->input('id')){
+            $id = $request->input('id');
+            $view = 1; 
+        } else {
+            $id = 0;
+            $view = 0;
+        }   
         $keys = DB::table('key_api')->where('aktif', 1)->get();
         $jenis_usaha = DB::table('m_jenis_usaha')->get();
         $jenis_bahan = DB::table('m_jenis_bahan')->get();
@@ -37,7 +44,9 @@ class CoordController extends Controller
             }
         }
 
-        return view('map')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0);
+        
+
+        return view('map')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id);
     }
     //
     public function getCoordinates(Request $request)
@@ -457,8 +466,14 @@ class CoordController extends Controller
 
     public function list()
     {
+        $id = 0;
+        $view = 0;
         $keys = DB::table('key_api')->where('aktif', 1)->get();
         $jenis_usaha = DB::table('m_jenis_usaha')->get();
+        $jenis_bahan = DB::table('m_jenis_bahan')->get();
+        $tempat_penjualan = DB::table('m_tempat_penjualan')->get();
+        $jenis_pembayaran = DB::table('m_jenis_pembayaran')->get();
+        $mesin = DB::table('m_mesin')->get();
         foreach($keys as $row){
             $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
             if($request->successful()){
@@ -470,7 +485,7 @@ class CoordController extends Controller
         }
         
         
-        return view('list')->with('key', $key)->with('jenis_usaha', $jenis_usaha);
+        return view('list')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id);
     }
 
     public function getFilterRecord(Request $request)
@@ -480,12 +495,12 @@ class CoordController extends Controller
         $datatables = Datatables::of($coords)
         ->addIndexColumn()
         ->editColumn("NAMA_USAHA", function($data){
-            $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary">' . $data->NAMA_USAHA .'</a> ';
+            $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnDetail">' . $data->NAMA_USAHA .'</a> ';
             return $nama_usaha; 
         })
         ->addColumn("LOKASI",  function($data) {
             if($data->LAT != null || $data->LNG != null ) {
-                $lokasi = '<a href="' . route('/') . '" class="text-primary">Lihat Lokasi</a>'; 
+                $lokasi = '<a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnView">Lihat Lokasi</a>'; 
             } else {
                 $lokasi = 'Belum Input';
             }
@@ -493,9 +508,9 @@ class CoordController extends Controller
         })
         ->editColumn("KATEGORI", function($data){
             if($data->KATEGORI == 'supplier') {
-                $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } elseif($data->KATEGORI == 'non supplier') {
                 $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            } elseif($data->KATEGORI == 'non supplier') {
+                $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
             } else {
                 $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
             }
@@ -517,8 +532,8 @@ class CoordController extends Controller
         ->addColumn('AKSI', function($data){
             $aksi = 
             '<div class="btn-group">
-            <a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
-            <a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger"><i class="fas fa-fw fa-trash-alt"></i></a>
+            <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success btnEdit"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
+            <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger btnDelete"><i class="fas fa-fw fa-trash-alt"></i></a>
             </div>';
             return $aksi;
         })

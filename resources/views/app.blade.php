@@ -10,6 +10,8 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="key-api" content="{{ $key }}">
+    <meta name="view" content="{{ $view }}">
+    <meta name="view-id" content="{{ $id }}">
     <title>Road Map</title>
 
     <!-- Custom fonts for this template-->
@@ -103,6 +105,15 @@
             pointer-events: auto;
         }
 
+        .location2 {
+            position: static;
+            margin-top: 40px;
+            margin-right: 40px;
+            top: 60px;
+            right: 150px;
+            pointer-events: auto;
+        }
+
         .btn-group-xs>.btn,
         .btn-xs {
             padding: .35rem .4rem;
@@ -127,6 +138,7 @@
             .menu-btn {
                 display: none;
             }
+            
         }
 
         .modal .modal-dialog-aside {
