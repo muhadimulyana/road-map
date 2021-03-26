@@ -296,7 +296,6 @@
                             </div>
                         </div>
                     </div>
-                    <br>
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat (Opsional)</h5>
                     <div class="form-group">

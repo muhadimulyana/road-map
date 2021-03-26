@@ -611,7 +611,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="mapModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -632,7 +632,7 @@
 @push('script')
 <script>
     $(function() {
-
+        var csrf = $('meta[name=csrf-token').attr('content');
         var key = $('meta[name="key-api"]').attr('content');
         var mymap = L.map('mapid').setView([-1, 117], 5);
         if ($(window).width() >= 993) {
@@ -697,6 +697,18 @@
 
         // ============================================= MAP ===========================================//
 
+        function mapMarker(data, show) {
+            L.marker([data.LAT, data.LNG], {
+                icon: newIcon,
+                place: data.NAMA_USAHA
+            }).addTo(marker).bindPopup(data.NAMA_USAHA);
+            //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
+            if (show) {
+                mymap.setView([data.LAT, data.LNG], 18);
+                //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
+            }
+        }
+
         function onAccuratePositionFound(e) {
             var radius = e.accuracy / 2;
             if (manMarker != undefined) {
@@ -759,10 +771,17 @@
 
         $('#mapModal').on('shown.bs.modal', function(){
             setTimeout(function() {
-                clearMarker();
                 mymap.invalidateSize();
             }, 10);
         });
+
+        $('#mapModal').on('hidden.bs.modal', function() {
+            clearMarker();
+            $('#content-wrapper').css('cursor', 'alias');
+            $('#content-wrapper').css('pointer-events', 'auto');
+            $('#mapid').css('cursor', 'alias');
+            sessionStorage.removeItem("clickOnMap")
+        })
 
         $('#addFromMap').on('click', function() {
             $('#mapModal').modal('show');
@@ -788,6 +807,25 @@
             });
 
         });
+
+        $(document).on('click', '.btnView', function(e){
+            //e.preventDefault();
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "{{ route('getDetailCoord') }}",
+                data: {
+                    "_token": csrf,
+                    "id": id
+                },
+                success: function(data){
+                    $('#mapModal').modal({
+                        'backdrop': 'dynamic',
+                        'keyboard': true
+                    });
+                    mapMarker(data.tempat, true)
+                }
+            });
+        })
 
         mymap.on('click', function (e) {
 
@@ -853,10 +891,6 @@
 
         $(document).on('click', '.btnConfirm', function () {
             $('#mapModal').modal('hide');
-            $('#content-wrapper').css('cursor', 'alias');
-            $('#content-wrapper').css('pointer-events', 'auto');
-            $('#mapid').css('cursor', 'alias');
-            sessionStorage.removeItem("clickOnMap")
         });
     })
 
@@ -1382,22 +1416,6 @@
             $("#detailMarkerModal").modal('show');
         });
 
-        $(document).on('click', '.btnViews', function(e){
-            e.preventDefault();
-            var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{{ route('getDetailCoord') }}",
-                data: {
-                    "_token": csrf,
-                    "id": id
-                },
-                success: function(){
-                    $('#mapModal').modal('show');
-                }
-            });
-        })
-
-        
 
     });
 </script>
