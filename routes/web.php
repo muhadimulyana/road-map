@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CoordController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,10 +16,16 @@ use Illuminate\Support\Facades\Route;
  */
 
 Auth::routes([
+    'login' => false,
     'register' => false, // Registration Routes...
     'reset' => false, // Password Reset Routes...
     'verify' => false, // Email Verification Routes...
 ]);
+
+// Login
+Route::get('/login', [LoginController::class, 'show_login_form'])->name('login');
+Route::post('/login', [LoginController::class, 'process_login'])->name('login');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/getCoord', [CoordController::class, 'getCoordinates'])->name('getCoord')->middleware('auth');
