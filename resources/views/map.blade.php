@@ -337,7 +337,7 @@
             <div class="modal-body" style="height: 80vh; overflow-y: auto;">
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Kategori</label><br>
-                    <p id="kategoriText" class="font-weight-bold badge badge-primary"
+                    <p id="kategoriText" class=""
                         style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
                 </div>
                 <div class="form-group border-bottom">
@@ -803,8 +803,30 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var newIcon = L.icon({
-            iconUrl: 'assets/img/new.png',
+        var suppIcon = L.icon({
+            iconUrl: 'assets/img/supplier.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var nonsupIcon = L.icon({
+            iconUrl: 'assets/img/non-supplier.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var compIcon = L.icon({
+            iconUrl: 'assets/img/competitor.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -860,8 +882,11 @@
             var place = this.options.place;
             var lat = this.options.LAT;
             var lng = this.options.LNG;
+            var badge =this.options.KATEGORI == 'supplier' ? 'font-weight-bold badge badge-success' : (this.options.KATEGORI == 'kompetitor' ? 'font-weight-bold badge badge-danger' : 'font-weight-bold badge badge-primary' )
             $("#placeName").html(place);
             $('#kategoriText').html(this.options.KATEGORI);
+            $('#kategoriText').removeClass();
+            $('#kategoriText').addClass(badge);
             $('#tglKunjunganText').html(moment(this.options.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
             $('#cpText').html(this.options.CP);
             $('#teleponText').html(this.options.TELEPON);
@@ -956,8 +981,9 @@
 
         function mapMarker(data, show) {
             for (var i = 0; i < data.length; i++) {
+                var icon = data[i].KATEGORI == 'supplier' ? suppIcon : ( data[i].KATEGORI == 'kompetitor' ? compIcon : nonsupIcon )
                 L.marker([data[i].LAT, data[i].LNG], {
-                    icon: newIcon,
+                    icon: icon,
                     ID_TEMPAT: data[i].ID_TEMPAT,
                     place: data[i].NAMA_USAHA,
                     KATEGORI: data[i].KATEGORI,
@@ -1395,6 +1421,7 @@
                     "id": id
                 },
                 success: function (data) {
+                    console.log(data)
                     $('input[name="kategori"][value="' + data.tempat.KATEGORI + '"]').prop("checked", true);
                     $('#nama_usaha').val(data.tempat.NAMA_USAHA);
                     $('#tgl_kunjungan').val(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));

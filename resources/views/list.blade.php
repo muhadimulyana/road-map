@@ -657,8 +657,30 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var newIcon = L.icon({
-            iconUrl: 'assets/img/new.png',
+        var suppIcon = L.icon({
+            iconUrl: 'assets/img/supplier.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var nonsupIcon = L.icon({
+            iconUrl: 'assets/img/non-supplier.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var compIcon = L.icon({
+            iconUrl: 'assets/img/competitor.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -698,8 +720,9 @@
         // ============================================= MAP ===========================================//
 
         function mapMarker(data, show) {
+            var icon = data.KATEGORI == 'supplier' ? suppIcon : ( data.KATEGORI == 'kompetitor' ? compIcon : nonsupIcon )
             L.marker([data.LAT, data.LNG], {
-                icon: newIcon,
+                icon: icon,
                 place: data.NAMA_USAHA
             }).addTo(marker).bindPopup(data.NAMA_USAHA);
             //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
@@ -1351,8 +1374,11 @@
                     "id": id
                 },
                 success: function (data) {
+                    var badge = data.tempat.KATEGORI == 'supplier' ? 'font-weight-bold badge badge-success' : (data.tempat.KATEGORI == 'kompetitor' ? 'font-weight-bold badge badge-danger' : 'font-weight-bold badge badge-primary' )
                     $("#placeName").html(data.tempat.NAMA_USAHA);
                     $('#kategoriText').html(data.tempat.KATEGORI);
+                    $('#kategoriText').removeClass();
+                    $('#kategoriText').addClass(badge);
                     $('#tglKunjunganText').html(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
                     $('#cpText').html(data.tempat.CP);
                     $('#teleponText').html(data.tempat.TELEPON);
