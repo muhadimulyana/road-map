@@ -12,7 +12,7 @@
     <meta name="key-api" content="{{ $key }}">
     <meta name="view" content="{{ $view }}">
     <meta name="view-id" content="{{ $id }}">
-    <title>Road Map</title>
+    <title>Road Map PAN ERA GROUP</title>
 
     <!-- Custom fonts for this template-->
     <link href="assets/sbadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -23,6 +23,11 @@
     <link href="assets/sbadmin/css/sb-admin-2.min.css" rel="stylesheet">
     {{-- <link rel="stylesheet" href="assets/leaflet/leaflet.css">
     <script src="assets/leaflet/leaflet.js"></script> --}}
+    {{-- <link rel="stylesheet" href="assets/plugin/leaflet/leaflet.css">
+    <script src="assets/plugin/leaflet/leaflet.js"></script>
+    <script src="assets/plugin/leaflet/esri-leaflet.js"></script>
+    <link rel="stylesheet" href="assets/plugin/leaflet/esri-leaflet-geocoder.css">
+    <script src="assets/plugin/leaflet/esri-leaflet-geocoder.js"></script> --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin="" />
@@ -386,9 +391,6 @@
     <script src="assets/sbadmin/js/sb-admin-2.js"></script>
     <script src="assets/plugin/magnific/magnific-popup.min.js"></script>
 
-    {{-- Validate --}}
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
     {{-- Moment --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
         integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="

@@ -15,7 +15,7 @@ class LoginController extends Controller
     
     public function show_login_form()
     {
-        return view('login');
+        return view('logins');
     }
 
     public function process_login(Request $request)
