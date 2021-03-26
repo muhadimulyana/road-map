@@ -521,7 +521,7 @@ class CoordController extends Controller
             $jenis_usaha = explode('-', $jenis_usaha);
             $jenis = '';
             foreach($jenis_usaha as $key => $value){
-                $jenis .= '<span class="badge badge-primary" style="text-transform: capitalize">' . $jenis_usaha[$key] .'</span>&nbsp;';
+                $jenis .= '<span class="badge badge-secondary" style="text-transform: capitalize">' . $jenis_usaha[$key] .'</span>&nbsp;';
             }
             return $jenis;
         })
