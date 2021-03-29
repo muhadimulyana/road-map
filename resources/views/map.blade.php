@@ -1007,7 +1007,7 @@
                     LAT: data[i].LAT,
                     LNG: data[i].LNG,
                     USERNAME: data[i].USERNAME
-                }).addTo(marker).on('click', markerOnClick);
+                }).bindPopup(data[i].NAMA_USAHA).addTo(marker).on('click', markerOnClick);
                 //marker.bindPopup(data[i].NAMA_USAHA);
                 //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
                 if (show) {
