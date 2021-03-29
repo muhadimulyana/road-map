@@ -345,12 +345,12 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item" >
+            <li class="nav-item {{ Route::is('/') ? 'active' : '' }}" >
                 <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
                     <i class="fas fa-fw fa-map-marker-alt"></i>
                     <span>Map</span></a>
             </li>
-            <li class="nav-item" >
+            <li class="nav-item {{ Route::is('list') ? 'active' : '' }}" >
                 <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list') }}">
                     <i class="fas fa-fw fa-list-ul"></i>
                     <span>Daftar Lokasi</span></a>
@@ -361,9 +361,8 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item"  >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('logout') }}" onclick="event.preventDefault();
-                              document.getElementById('logout-form').submit();">
-                    <i class=" fas fa-door-closed"></i>
+                <a class="nav-link" id="btnLogout" style="padding: 0.2rem 1rem;" href="javascript:void(0)">
+                    <i class=" fas fa-sign-out-alt"></i>
                     <span> {{ __('Logout') }}</span></a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
@@ -416,6 +415,28 @@
     <script src="assets/plugin/datatables/dataTables.bootstrap4.min.js"></script>
 
     @stack('script')
+
+    <script>
+        $(function() {
+            $('#btnLogout').on('click', function(e) {
+                Swal.fire({
+                title: 'Apakah anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#logout-form').submit();
+                }
+            })
+            })
+
+        });
+
+    </script>
     
 
 </body>
