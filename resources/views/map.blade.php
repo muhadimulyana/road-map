@@ -891,6 +891,7 @@
             var lat = this.options.LAT;
             var lng = this.options.LNG;
             var badge =this.options.KATEGORI == 'supplier' ? 'font-weight-bold badge badge-success' : (this.options.KATEGORI == 'kompetitor' ? 'font-weight-bold badge badge-danger' : 'font-weight-bold badge badge-primary' )
+            markerPopup(this._leaflet_id, false);
             $("#placeName").html(place);
             $('#kategoriText').html(this.options.KATEGORI);
             $('#kategoriText').removeClass();
@@ -988,6 +989,7 @@
             });
         }
 
+
         function mapMarker(data, show) {
             for (var i = 0; i < data.length; i++) {
                 var icon = data[i].KATEGORI == 'supplier' ? suppIcon : ( data[i].KATEGORI == 'kompetitor' ? compIcon : nonsupIcon )
@@ -1007,7 +1009,7 @@
                     LAT: data[i].LAT,
                     LNG: data[i].LNG,
                     USERNAME: data[i].USERNAME
-                }).bindPopup(data[i].NAMA_USAHA).addTo(marker).on('click', markerOnClick);
+                }).bindPopup(data[i].NAMA_USAHA).addTo(marker).on('click', markerOnClick).on('mouseover', markerOnHover).on('mouseout', markerOnOut);
                 //marker.bindPopup(data[i].NAMA_USAHA);
                 //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
                 if (show) {
@@ -1017,6 +1019,26 @@
                     //marker.bindPopup(data[i].place);
                 }
             }
+        }
+
+        function markerPopup(id, status){
+            marker.eachLayer(function(layer) {
+                if (layer._leaflet_id == id){
+                    if(status){
+                        layer.openPopup();
+                    } else {
+                        layer.closePopup();
+                    }
+                };
+            });
+        }
+
+        function markerOnHover(e) {
+            markerPopup(this._leaflet_id, true)
+        }
+
+        function markerOnOut(e) {
+            markerPopup(this._leaflet_id, false)
         }
 
         // Tidak digunakan
@@ -1204,15 +1226,30 @@
 
         });
 
-        // mymap.on('moveend zoomend', function(e) { 
-        //     var zoom = mymap.getZoom();
-        //     if(zoom > 14) {
-        //         marker.openPopup();
-        //     } else {
-        //         marker.closePopup();
-        //     }
+       
 
-        // })
+        // markersDisplayed = false;
+        // mymap.on('moveend zoomend', function(e) {
+        //     bounds = mymap.getBounds();
+        //     zoom = mymap.getZoom();
+        //     //console.log(zoom)
+        //     if (zoom > 14) {
+        //         marker.eachLayer(function (layer) {
+        //             if (bounds.contains(layer.getLatLng())) {
+        //                 markersDisplayed = true;
+        //                 layer.openPopup();
+        //             }
+        //         });
+        //     }
+        //     else if (markersDisplayed) {
+        //         markersDisplayed = false;
+        //         marker.eachLayer(function (layer) {
+        //             if (bounds.contains(layer.getLatLng())) {
+        //                 layer.closePopup();
+        //             }
+        //         });
+        //     }
+        // });
 
 
         $('.location').on('click', function () {
