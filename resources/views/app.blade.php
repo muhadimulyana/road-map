@@ -298,6 +298,23 @@
             border-radius: .2rem;
         }
 
+        .color-pin { 
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* IMAGE STYLES */
+        .color-pin + img {
+            cursor: pointer;
+        }
+
+        /* CHECKED STYLES */
+        .color-pin:checked + img {
+            outline: 2px solid #108de1;
+        }
+
         /* Open 2 modal */
         /* .modal:nth-of-type(even) {
             z-index: 1052 !important;

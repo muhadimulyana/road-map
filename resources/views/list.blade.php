@@ -238,7 +238,7 @@
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
                     <div class="form-group">
-                        <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="text-success"
+                        <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="badge badge-primary"
                                 data-toggle="modal" data-target="#addBahanModal">Pilih</a></label>
                         <div id="cBahanBaku">
                             <div class="row">
@@ -255,7 +255,7 @@
                     </div>
                     <div class="form-group">
                         <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#" data-toggle="modal"
-                                data-target="#addPenjualanModal" class="text-success">Pilih</a></label>
+                                data-target="#addPenjualanModal" class="badge badge-primary">Pilih</a></label>
                         <div id="cPenjualanBahan">
                             <div class="row">
                                 <div class="col-md-5 mb-2 mb-md-0">
@@ -303,7 +303,7 @@
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                     <div class="form-group">
-                        <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="text-success"
+                        <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="badge badge-primary"
                                 data-toggle="modal" data-target="#addMesinModal">Pilih</a></label>
                         <div id="cMesin">
                             <div class="row">
@@ -335,7 +335,32 @@
                         <input type="text" class="form-control" id="lng" autocomplete="off"
                             placeholder="Masukkan koordinat longitude" name="lng">
                     </div>
-                    <a href="#" class="text-success" id="addFromMap">Pilih dari map</a>
+                    <a href="#" class="badge badge-primary" id="addFromMap">Pilih dari map</a>
+                    <hr>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Warna Pin</label><br>
+                        <label>
+                            <input type="radio" name="pin" class="color-pin" value="green">
+                            <img width="50px" src="assets/img/marker/green.png">
+                        </label>
+                        
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="blue">
+                            <img width="50px" src="assets/img/marker/blue.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="red">
+                            <img width="50px" src="assets/img/marker/red.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="yellow">
+                            <img width="50px" src="assets/img/marker/yellow.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="purple">
+                            <img width="50px" src="assets/img/marker/purple.png">
+                        </label>
+                    </div>
                 </div>
                 <input type="hidden" name="id_tempat" id="id_tempat">
                 <input type="hidden" name="id_marker" id="id_marker">
@@ -663,8 +688,8 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var suppIcon = L.icon({
-            iconUrl: 'assets/img/supplier.png',
+        var greenIcon = L.icon({
+            iconUrl: 'assets/img/marker/green.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -674,8 +699,8 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var nonsupIcon = L.icon({
-            iconUrl: 'assets/img/non-supplier.png',
+        var blueIcon = L.icon({
+            iconUrl: 'assets/img/marker/blue.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -685,8 +710,30 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var compIcon = L.icon({
-            iconUrl: 'assets/img/competitor.png',
+        var redIcon = L.icon({
+            iconUrl: 'assets/img/marker/red.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var yellowIcon = L.icon({
+            iconUrl: 'assets/img/marker/yellow.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var purpleIcon = L.icon({
+            iconUrl: 'assets/img/marker/purple.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -731,12 +778,12 @@
         // ============================================= MAP ===========================================//
 
         function mapMarker(data, show) {
-            var icon = data.KATEGORI == 'supplier' ? suppIcon : ( data.KATEGORI == 'kompetitor' ? compIcon : nonsupIcon )
+            var icon = data.MARKER == 'red' ? redIcon : ( data.MARKER == 'blue' ? blueIcon : ( data.MARKER == 'green' ? greenIcon : ( data.MARKER == 'yellow' ? yellowIcon : purpleIcon)))
             L.marker([data.LAT, data.LNG], {
                 icon: icon,
                 place: data.NAMA_USAHA
             }).addTo(marker).bindPopup(data.NAMA_USAHA);
-            //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
+            //L.marker([data.LAT, data[i].LNG]).addTo(results);
             if (show) {
                 mymap.setView([data.LAT, data.LNG], 18);
                 //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
@@ -991,7 +1038,6 @@
     });
 
     $('#filterForm').on('submit', function(e) {
-        console.log($('#f_kategori').val())
         oTable.draw();
         e.preventDefault();
     });
@@ -1017,7 +1063,6 @@
         });
 
         $('.btnEdit').on('click', function() {
-            console.log('a');
         })
 
         $(document).on('keydown paste focus mousedown', '.readonly', function(e){
@@ -1218,7 +1263,7 @@
         $('.add').on('click', function () {
             $('#addMarkerModal').modal('show');
             $('#formCoord').attr('action', "{{ route('addCoord') }}");
-            $('#addMarkerJudul').html('Tambah Tempat');
+            $('#addMarkerJudul').html('Tambah Lokasi');
             $('#cExistImage').hide();
             clearFormAdd();
         });
@@ -1284,6 +1329,7 @@
                     $("#lng").val(data.tempat.LNG)
                     $("#id_tempat").val(data.tempat.ID_TEMPAT);
                     $('#id_marker').val(id_marker);
+                    $('.color-pin[value=' + data.tempat.MARKER).prop('checked', true);
                     // Foto
                     if(data.image.length > 0){
                         $('#cExistImage').show();

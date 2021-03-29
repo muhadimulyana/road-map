@@ -51,7 +51,7 @@ class CoordController extends Controller
     //
     public function getCoordinates(Request $request)
     {
-        $coords = DB::table('tempat')->whereNotNull('LAT')->get();
+        $coords = DB::table('tempat')->whereNotNull('LAT')->where('AKTIF', 1)->get();
         return response()->json($coords, 200, []);
 
     }
@@ -103,7 +103,8 @@ class CoordController extends Controller
             'LNG' => $request->lng,
             'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
             'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-            'USERNAME' => $request->session()->get('username')
+            'USERNAME' => $request->session()->get('username'),
+            'MARKER' => $request->pin
         ];
 
         // jenis usaha
@@ -298,7 +299,8 @@ class CoordController extends Controller
             'LAT' => $request->lat,
             'LNG' => $request->lng,
             'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-            'USERNAME' => 'mamulyana'
+            'USERNAME' => 'mamulyana',
+            'MARKER' => $request->pin
         ];
 
         // jenis usaha
@@ -404,6 +406,7 @@ class CoordController extends Controller
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
                 'USERNAME' => 'mamulyana',
                 'KOSONG' => $request->lat == null ? true :  false,
+                'MARKER' => $request->pin,
                 'AKSI' => 'ubah',
                 'code' => 200,
             ];
@@ -490,7 +493,7 @@ class CoordController extends Controller
 
     public function getFilterRecord(Request $request)
     {
-        $coords =  DB::table('tempat as A')->selectRaw('A.*, (SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) as JENIS_USAHA');
+        $coords =  DB::table('tempat as A')->selectRaw('A.*, (SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) as JENIS_USAHA')->where('AKTIF', 1);
         //dd($coords);
         $datatables = Datatables::of($coords)
         ->addIndexColumn()

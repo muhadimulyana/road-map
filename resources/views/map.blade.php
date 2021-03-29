@@ -60,13 +60,6 @@
                     <h5 class="text-primary mb-3" style="text-decoration: underline;">Lokasi Usaha</h5>
                     <div class="form-group">
                         <label for="kategori">Kategori</label>
-                        {{-- <select class="form-control select2" required data-placeholder="Pilih Kategori"
-                              name="kategori" id="kategori">
-                              <option value=""></option>
-                              <option value="supplier">Supplier</option>
-                              <option value="non supplier">Non Supplier</option>
-                              <option value="kompetitor">Kompetitor</option>
-                          </select> --}}
                         <div class="row">
                             <div class="col-lg-3 col-6">
                                 <div class="custom-control custom-radio" style="display: inline-block;">
@@ -134,12 +127,6 @@
                     </div>
                     <div class="form-group">
                         <label for="status_tempat">Status Tempat Usaha</label>
-                        {{-- <select class="form-control select2" name="status_tempat"
-                              data-placeholder="Pilih Status Tempat Usaha" required id="status_tempat">
-                              <option value=""></option>
-                              <option value="milik sendiri">Milik Sendiri</option>
-                              <option value="kontrak/sewa">Kontrak/Sewa</option>
-                          </select> --}}
                         <div class="row">
                             <div class="col-lg-3 col-6">
                                 <div class="custom-control custom-radio" style="display: inline-block;">
@@ -176,19 +163,11 @@
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
                     <div class="form-group">
-                        <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="text-success"
+                        <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#" class="badge badge-primary text-md"
                                 data-toggle="modal" data-target="#addBahanModal">Pilih</a></label>
                         <div id="cBahanBaku">
                             <div class="row">
                                 <div class="col-md-5 mb-2 mb-md-0">
-                                    {{-- <select class="form-control select2 bahan-baku"
-                                          data-placeholder="Pilih Jenis Bahan Baku" required name="bahan_baku[]"
-                                          id="bahan_baku">
-                                          <option value=""></option>
-                                          @foreach ($jenis_bahan as $row)
-                                          <option value="{{ $row->JENIS_BAHAN }}">{{ $row->JENIS_BAHAN }}</option>
-                                    @endforeach
-                                    </select> --}}
                                     <input type="text" class="form-control readonly" placeholder="Jenis bahan baku"
                                         required id="bahan_baku" name="bahan_baku[]">
                                 </div>
@@ -201,20 +180,10 @@
                     </div>
                     <div class="form-group">
                         <label for="penjualan_bahan">Penjualan Bahan Baku | <a href="#" data-toggle="modal"
-                                data-target="#addPenjualanModal" class="text-success">Pilih</a></label>
+                                data-target="#addPenjualanModal" class="badge badge-primary text-md">Pilih</a></label>
                         <div id="cPenjualanBahan">
                             <div class="row">
                                 <div class="col-md-5 mb-2 mb-md-0">
-                                    {{-- <select class="form-control penjualan-bahan select2" required
-                                          data-placeholder="Pilih Penjualan Bahan Baku" name="penjualan_bahan[]"
-                                          id="penjualan_bahan">
-                                          <option value=""></option>
-                                          @foreach ($tempat_penjualan as $row)
-                                          <option value="{{ strtolower($row->TEMPAT_PENJUALAN) }}">
-                                    {{ $row->TEMPAT_PENJUALAN }}
-                                    </option>
-                                    @endforeach
-                                    </select> --}}
                                     <input type="text" class="form-control readonly" placeholder="Penjualan bahan baku"
                                         required id="penjualan_bahan" name="penjualan_bahan[]">
                                 </div>
@@ -228,12 +197,6 @@
                     </div>
                     <div class="form-group">
                         <label for="proses_penjualan">Proses Penjualan</label>
-                        {{-- <select class="form-control select2" data-placeholder="Pilih Proses Penjualan"
-                              name="proses_penjualan" required id="proses_penjualan">
-                              <option value=""></option>
-                              <option value="dikirim">Dikirim</option>
-                              <option value="diambil">Diambil</option>
-                          </select> --}}
                         <div class="row">
                             <div class="col-lg-3 col-6">
                                 <div class="custom-control custom-radio" style="display: inline-block;">
@@ -265,28 +228,15 @@
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                     <div class="form-group">
-                        <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="text-success"
+                        <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#" class="badge badge-primary text-md"
                                 data-toggle="modal" data-target="#addMesinModal">Pilih</a></label>
                         <div id="cMesin">
                             <div class="row">
                                 <div class="col-md-5 mb-2 mb-md-3">
-                                    {{-- <select class="form-control mesin select2" style="width: 100%;"
-                                          data-placeholder="Pilih Mesin" required name="mesin[]" id="mesin">
-                                          <option value=""></option>
-                                          @foreach ($mesin as $row)
-                                          <option value="{{ strtolower($row->MESIN) }}">{{ $row->MESIN }}</option>
-                                    @endforeach
-                                    </select> --}}
                                     <input type="text" class="form-control readonly" placeholder="Mesin" required
                                         id="mesin" name="mesin[]">
                                 </div>
                                 <div class="col-md-5 mb-2 mb-md-0">
-                                    {{-- <select class="form-control select2" required data-placeholder="Kepemilikan"
-                                          name="kepemilikan[]" id="kepemilikan">
-                                          <option value=""></option>
-                                          <option value="milik sendiri">Milik Sendiri</option>
-                                          <option value="dipinjamkan">Dipinjamkan</option>
-                                      </select> --}}
                                     <input type="text" class="form-control readonly" placeholder="Kepemilikan" required
                                         id="kepemilikan" name="kepemilikan[]">
                                 </div>
@@ -309,7 +259,32 @@
                         <input type="text" class="form-control" id="lng" autocomplete="off"
                             placeholder="Masukkan koordinat longitude" name="lng">
                     </div>
-                    <a href="#" class="text-success" id="addFromMap">Pilih dari map</a>
+                    <a href="#" class="badge badge-primary text-md" id="addFromMap">Pilih dari map</a>
+                    <hr>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Warna Pin</label><br>
+                        <label>
+                            <input type="radio" name="pin" class="color-pin" value="green">
+                            <img width="50px" src="assets/img/marker/green.png">
+                        </label>
+                        
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="blue">
+                            <img width="50px" src="assets/img/marker/blue.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="red">
+                            <img width="50px" src="assets/img/marker/red.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="yellow">
+                            <img width="50px" src="assets/img/marker/yellow.png">
+                        </label>
+                        <label>
+                            <input type="radio" class="color-pin" name="pin" value="purple">
+                            <img width="50px" src="assets/img/marker/purple.png">
+                        </label>
+                    </div>
                 </div>
                 <input type="hidden" name="id_tempat" id="id_tempat">
                 <input type="hidden" name="id_marker" id="id_marker">
@@ -810,8 +785,8 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var suppIcon = L.icon({
-            iconUrl: 'assets/img/supplier.png',
+        var greenIcon = L.icon({
+            iconUrl: 'assets/img/marker/green.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -821,8 +796,8 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var nonsupIcon = L.icon({
-            iconUrl: 'assets/img/non-supplier.png',
+        var blueIcon = L.icon({
+            iconUrl: 'assets/img/marker/blue.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -832,8 +807,30 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var compIcon = L.icon({
-            iconUrl: 'assets/img/competitor.png',
+        var redIcon = L.icon({
+            iconUrl: 'assets/img/marker/red.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var yellowIcon = L.icon({
+            iconUrl: 'assets/img/marker/yellow.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var purpleIcon = L.icon({
+            iconUrl: 'assets/img/marker/purple.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -975,7 +972,7 @@
         $(document).on('click', '.btnAdd', function () {
             $('#addMarkerModal').modal('show');
             $('#formCoord').attr('action', "{{ route('addCoord') }}");
-            $('#addMarkerJudul').html('Tambah Tempat');
+            $('#addMarkerJudul').html('Tambah Lokasi');
             $('#cExistImage').hide();
         });
 
@@ -984,7 +981,7 @@
             $(document).on('click', '.btnAdd', function () {
                 $('#addMarkerModal').modal('show');
                 $('#formCoord').attr('action', "{{ route('addCoord') }}");
-                $('#addMarkerJudul').html('Tambah Tempat');
+                $('#addMarkerJudul').html('Tambah Lokasi');
                 $('#cExistImage').hide();
             });
         }
@@ -992,7 +989,7 @@
 
         function mapMarker(data, show) {
             for (var i = 0; i < data.length; i++) {
-                var icon = data[i].KATEGORI == 'supplier' ? suppIcon : ( data[i].KATEGORI == 'kompetitor' ? compIcon : nonsupIcon )
+                var icon = data[i].MARKER == 'red' ? redIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : purpleIcon)))
                 L.marker([data[i].LAT, data[i].LNG], {
                     icon: icon,
                     ID_TEMPAT: data[i].ID_TEMPAT,
@@ -1383,7 +1380,6 @@
                     $('.btnClose').prop('disabled', false);
                     $("#addMarkerModal").modal('hide');
                     clearFormAdd();
-                    console.log(response);
                     if(response[0].AKSI == 'tambah'){ // Jika aksinya tambah 
                         mapMarker(response, true); // tambahkan 1 marker
                     } else { // jika update
@@ -1432,7 +1428,7 @@
         $('.add').on('click', function () {
             $('#addMarkerModal').modal('show');
             $('#formCoord').attr('action', "{{ route('addCoord') }}");
-            $('#addMarkerJudul').html('Tambah Tempat');
+            $('#addMarkerJudul').html('Tambah Lokasi');
             $('#cExistImage').hide();
             clearFormAdd();
         });
@@ -1479,7 +1475,6 @@
                     "id": id
                 },
                 success: function (data) {
-                    console.log(data)
                     $('input[name="kategori"][value="' + data.tempat.KATEGORI + '"]').prop("checked", true);
                     $('#nama_usaha').val(data.tempat.NAMA_USAHA);
                     $('#tgl_kunjungan').val(moment(data.tempat.TANGGAL_KUNJUNGAN).format('DD-MM-YYYY'));
@@ -1494,6 +1489,7 @@
                     $("#lng").val(data.tempat.LNG)
                     $("#id_tempat").val(data.tempat.ID_TEMPAT);
                     $('#id_marker').val(id_marker);
+                    $('.color-pin[value=' + data.tempat.MARKER).prop('checked', true);
                     // Foto
                     if(data.image.length > 0){
                         $('#cExistImage').show();
@@ -1588,11 +1584,6 @@
                 }
             })
         });
-
-        if(view != 0) {
-            console.log('success')
-        }
-
     })
 
 </script>
