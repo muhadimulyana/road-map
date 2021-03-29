@@ -32,6 +32,7 @@ class LoginController extends Controller
         $user = User::where('User_Name',$request->username)->where('Pass', $request->password)->first();
 
         if ($user) {
+            $request->session()->put('username', $user->User_Name);
             auth()->login($user, true);
             return redirect()->route('/');
 
@@ -42,9 +43,10 @@ class LoginController extends Controller
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         auth()->logout();
+        $request->session()->forget('username');
         return redirect()->route('login');
     }
 }

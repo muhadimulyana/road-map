@@ -103,7 +103,7 @@ class CoordController extends Controller
             'LNG' => $request->lng,
             'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
             'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-            'USERNAME' => 'mamulyana'
+            'USERNAME' => $request->session()->get('username')
         ];
 
         // jenis usaha

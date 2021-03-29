@@ -18,11 +18,12 @@
         <!-- Begin Page Content -->
         <div class="">
             <!-- Page Heading -->
-            <div id="mapid"></div>
-            <div class="leaflet-top leaflet-right">
-                <a id="sidebarToggleTop" href="javascript:void" class="menu-btn btn btn-primary btn-circle widget">
-                    <i style="font-size: 15px;" class="fa fa-bars"></i>
-                </a>
+            <div id="mapid">
+                <div class="leaflet-top leaflet-left">
+                    <a id="sidebarToggleTop" href="javascript:void(0)" class="menu-btn btn btn-primary btn-circle widget text-white mt-3 ml-3" style="pointer-events: auto;">
+                        <i style="font-size: 15px;" class="fa fa-bars"></i>
+                    </a>
+                </div>
             </div>
             <div class="leaflet-bottom leaflet-right">
                 <a href="javascript:void" class="location btn btn-info btn-circle btn-lg widget">
@@ -123,7 +124,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Telepon</label>
-                        <input type="tel" class="form-control numeric" autocomplete="off"
+                        <input type="tel" class="form-control" autocomplete="off"
                             placeholder="Masukkan nomor telepon" required id="telepon" name="telepon">
                     </div>
                     <div class="form-group">
@@ -405,6 +406,10 @@
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Longitude</label>
                     <p id="lngText" class="font-weight-bold">Memuat...</p>
+                </div>
+                <div class="form-group border-bottom">
+                    <label for="exampleInputPassword1">User Input</label>
+                    <p id="userText" class="font-weight-bold">Memuat...</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -780,7 +785,9 @@
         var id_view = $('meta[name="view-id"]').attr('content');
 
         //  ============================= MAp ============================//
-        var mymap = L.map('mapid').setView([-1, 117], 5);
+        var mymap = L.map('mapid', {
+            zoomControl: false
+        }).setView([-1, 117], 5);
         if ($(window).width() >= 993) {
             L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -844,7 +851,8 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+        L.control.zoom({position: 'topright'}).addTo(mymap);
+        var searchControl = L.esri.Geocoding.geosearch({ position: 'topright'}).addTo(mymap);
         //var results = L.layerGroup();
         var marker = L.layerGroup().addTo(mymap);
         var circle;
@@ -903,6 +911,7 @@
             $('#btnDelete').attr('data-marker', id_marker)
             $("#latText").html(lat)
             $("#lngText").html(lng)
+            $('#userText').html(this.options.USERNAME)
             //console.log(id);
             $.ajax({
                 url: "{{ route('getDetailCoord') }}",
@@ -996,8 +1005,10 @@
                     PROSES_PEMBAYARAN: data[i].PROSES_PEMBAYARAN,
                     TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
                     LAT: data[i].LAT,
-                    LNG: data[i].LNG
+                    LNG: data[i].LNG,
+                    USERNAME: data[i].USERNAME
                 }).addTo(marker).on('click', markerOnClick);
+                //marker.bindPopup(data[i].NAMA_USAHA);
                 //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
                 if (show) {
                     mymap.setView([data[i].LAT, data[i].LNG], 18);
@@ -1192,6 +1203,16 @@
 
 
         });
+
+        // mymap.on('moveend zoomend', function(e) { 
+        //     var zoom = mymap.getZoom();
+        //     if(zoom > 14) {
+        //         marker.openPopup();
+        //     } else {
+        //         marker.closePopup();
+        //     }
+
+        // })
 
 
         $('.location').on('click', function () {

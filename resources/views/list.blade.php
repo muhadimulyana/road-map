@@ -18,7 +18,7 @@
         <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
             <!-- Sidebar Toggle (Topbar) -->
-            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <button id="sidebarToggleTop" class="btn btn-primary d-md-none rounded-circle mr-3">
                 <i class="fa fa-bars"></i>
             </button>
 
@@ -192,7 +192,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail1">Telepon</label>
-                        <input type="tel" class="form-control numeric" autocomplete="off"
+                        <input type="tel" class="form-control" autocomplete="off"
                             placeholder="Masukkan nomor telepon" required id="telepon" name="telepon">
                     </div>
                     <div class="form-group">
@@ -603,6 +603,10 @@
                     <label for="exampleInputPassword1">Longitude</label>
                     <p id="lngText" class="font-weight-bold">Memuat...</p>
                 </div>
+                <div class="form-group border-bottom">
+                    <label for="exampleInputPassword1">User Input</label>
+                    <p id="userText" class="font-weight-bold">Memuat...</p>
+                </div>
             </div>
             <div class="modal-footer">
                 <a href="#" class="btn btn-secondary" data-dismiss="modal">Tutup</a>
@@ -618,7 +622,7 @@
                 <div id="mapid" style="height: 580px !important; ">
 
                 </div>
-                <div class="leaflet-top leaflet-right">
+                <div class="leaflet-bottom leaflet-right">
                     <a href="javascript:void(0)" class="location2 btn btn-danger btn-circle btn-lg widget">
                         <i style="font-size: 25px;" class="fas fa-street-view"></i>
                     </a>
@@ -634,7 +638,9 @@
     $(function() {
         var csrf = $('meta[name=csrf-token').attr('content');
         var key = $('meta[name="key-api"]').attr('content');
-        var mymap = L.map('mapid').setView([-1, 117], 5);
+        var mymap = L.map('mapid', {
+            zoomControl: false
+        }).setView([-1, 117], 5);
         if ($(window).width() >= 993) {
             L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -698,7 +704,12 @@
                 35
             ] // point from which the popup should open relative to the iconAnchor
         });
-        var searchControl = L.esri.Geocoding.geosearch().addTo(mymap);
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(mymap);
+        var searchControl = L.esri.Geocoding.geosearch({
+            position: 'topright'
+        }).addTo(mymap);
         //var results = L.layerGroup();
         var marker = L.layerGroup().addTo(mymap);
         var circle;
@@ -1391,6 +1402,7 @@
                     var lng = data.tempat.LNG == null ? '-' : data.tempat.LNG;
                     $("#latText").html(lat)
                     $("#lngText").html(lng)
+                    $("#userText").html(data.tempat.USERNAME)
                     //Jenis Usaha
                     var jenis_usaha ='';
                     for(var i = 0; i < data.jenis_usaha.length; i++) {

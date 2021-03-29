@@ -84,11 +84,6 @@
         }
 
         .menu-btn {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            top: 10px;
-            right: 10px;
             pointer-events: auto;
         }
 
@@ -112,9 +107,9 @@
 
         .location2 {
             position: static;
-            margin-top: 40px;
+            margin-bottom: 40px;
             margin-right: 40px;
-            top: 60px;
+            bottom: 60px;
             right: 150px;
             pointer-events: auto;
         }
@@ -322,7 +317,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('/') }}">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-map-marked-alt"></i>
                 </div>
