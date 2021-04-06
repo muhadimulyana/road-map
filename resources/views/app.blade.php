@@ -1258,7 +1258,8 @@
             // ===============================MAP ==============================
 
             var mymap = L.map('mapid', {
-                zoomControl: false
+                zoomControl: false,
+                maxBoundsViscosity: 1.0
             }).setView([-1, 117], 5);
             if ($(window).width() >= 993) {
                 L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
@@ -1276,9 +1277,6 @@
                 }).addTo(mymap);
             }
             mymap.setMaxBounds([[-90,-180],   [90,180]])
-            mymap.on('drag', function() {
-                mymap.panInsideBounds([[-90,-180],   [90,180]], { animate: false });
-            });
             
             var manIcon = L.icon({
                 iconUrl: 'assets/img/placeholder2.png',
