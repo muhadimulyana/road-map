@@ -509,12 +509,16 @@ class CoordController extends Controller
             return $lokasi;
         })
         ->editColumn("KATEGORI", function($data){
-            if($data->KATEGORI == 'supplier') {
+            if($data->MARKER == 'green') {
                 $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } elseif($data->KATEGORI == 'non supplier') {
+            } elseif($data->MARKER == 'blue') {
                 $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } else {
+            } elseif($data->MARKER == 'red') {
                 $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            } elseif($data->MARKER == 'yellow') {
+                $kategori = '<span class="badge badge-warning" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+            } else {
+                $kategori = '<span class="badge badge-secondary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
             }
             return $kategori; 
         })
