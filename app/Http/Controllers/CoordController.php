@@ -87,6 +87,8 @@ class CoordController extends Controller
 
     public function store(Request $request)
     {
+
+        //dd($request);
         
         $data = [
             'ID_TEMPAT' => time(),
@@ -97,13 +99,11 @@ class CoordController extends Controller
             'ALAMAT' => $request->alamat,
             'STATUS_USAHA' => $request->status_tempat,
             'JUMLAH_PEKERJA' => $request->jml_pekerja,
-            'PROSES_PENJUALAN' => $request->proses_penjualan,
-            'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
             'LAT' => $request->lat,
             'LNG' => $request->lng,
             'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
             'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-            'USERNAME' => $request->session()->get('username'),
+            'USERNAME' => session()->get('username'),
             'MARKER' => $request->pin
         ];
 
@@ -127,7 +127,9 @@ class CoordController extends Controller
             $penjualan_bahan[] = [
                 'ID_TEMPAT' => time(),
                 'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
-                'KETERANGAN' => $request->penjualan_bahan_ket[$key]
+                'KETERANGAN' => $request->penjualan_bahan_ket[$key],
+                'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
+                'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
             ];
         }
 
@@ -181,14 +183,13 @@ class CoordController extends Controller
                 'ALAMAT' => $request->alamat,
                 'STATUS_USAHA' => $request->status_tempat,
                 'JUMLAH_PEKERJA' => $request->jml_pekerja,
-                'PROSES_PENJUALAN' => $request->proses_penjualan,
-                'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
                 'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-                'USERNAME' => 'mamulyana',
+                'USERNAME' => session()->get('username'),
                 'KOSONG' => $request->lat == null ? true : false,
+                'MARKER' => $request->pin, 
                 'AKSI' => 'tambah',
                 'code' => 200,
             ];
@@ -294,12 +295,10 @@ class CoordController extends Controller
             'ALAMAT' => $request->alamat,
             'STATUS_USAHA' => $request->status_tempat,
             'JUMLAH_PEKERJA' => $request->jml_pekerja,
-            'PROSES_PENJUALAN' => $request->proses_penjualan,
-            'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
             'LAT' => $request->lat,
             'LNG' => $request->lng,
             'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-            'USERNAME' => 'mamulyana',
+            'USERNAME' => session()->get('username'),
             'MARKER' => $request->pin
         ];
 
@@ -321,17 +320,19 @@ class CoordController extends Controller
 
         foreach($request->penjualan_bahan as $key => $value) {
             $penjualan_bahan[] = [
-                'ID_TEMPAT' => $request->id_tempat,
-                'TEMPAT_PENJUALAN' => strtolower($request->penjualan_bahan[$key]),
-                'KETERANGAN' => $request->penjualan_bahan_ket[$key]
+                'ID_TEMPAT' =>  $request->id_tempat,
+                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                'KETERANGAN' => $request->penjualan_bahan_ket[$key],
+                'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
+                'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
             ];
         }
 
         foreach($request->mesin as $key => $value) {
             $mesin[] = [
                 'ID_TEMPAT' => $request->id_tempat,
-                'MESIN' => strtolower($request->mesin[$key]),
-                'KEPEMILIKAN' => strtolower($request->kepemilikan[$key]),
+                'MESIN' => $request->mesin[$key],
+                'KEPEMILIKAN' => $request->kepemilikan[$key],
                 'QTY' => $request->mesin_qty[$key]
             ];
         }
@@ -399,12 +400,10 @@ class CoordController extends Controller
                 'ALAMAT' => $request->alamat,
                 'STATUS_USAHA' => $request->status_tempat,
                 'JUMLAH_PEKERJA' => $request->jml_pekerja,
-                'PROSES_PENJUALAN' => $request->proses_penjualan,
-                'PROSES_PEMBAYARAN' => $request->proses_pembayaran,
                 'LAT' => $request->lat == '' ? null : $request->lat, 
                 'LNG' => $request->lng == '' ? null : $request->lng,
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-                'USERNAME' => 'mamulyana',
+                'USERNAME' => session()->get('username'),
                 'KOSONG' => $request->lat == null ? true :  false,
                 'MARKER' => $request->pin,
                 'AKSI' => 'ubah',

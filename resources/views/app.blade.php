@@ -363,7 +363,7 @@
             <li class="nav-item"  >
                 <a class="nav-link" id="btnLogout" style="padding: 0.2rem 1rem;" href="javascript:void(0)">
                     <i class=" fas fa-sign-out-alt"></i>
-                    <span> {{ __('Logout') }}</span></a>
+                    <span>Logout</span></a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>

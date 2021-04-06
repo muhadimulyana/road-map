@@ -183,19 +183,29 @@
                                 data-target="#addPenjualanModal" class="badge badge-primary text-md">Pilih</a></label>
                         <div id="cPenjualanBahan">
                             <div class="row">
-                                <div class="col-md-5 mb-2 mb-md-0">
+                                <div class="col-md-3 mb-2 mb-md-0">
                                     <input type="text" class="form-control readonly" placeholder="Penjualan bahan baku"
                                         required id="penjualan_bahan" name="penjualan_bahan[]">
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-3 mb-2 mb-md-0">
                                     <input type="text" class="form-control readonly"
                                         placeholder="Keterangan penjualan bahan baku" required id="penjualan_bahan_ket"
                                         name="penjualan_bahan_ket[]">
                                 </div>
+                                <div class="col-md-3 mb-2 mb-md-0">
+                                    <input type="text" class="form-control readonly"
+                                        placeholder="Proses penjualan bahan baku" required id="proses_penjualan"
+                                        name="proses_penjualan[]">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control readonly"
+                                        placeholder="Proses pembayaran bahan baku" required id="proses_pembayaran"
+                                        name="proses_pembayaran[]">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="proses_penjualan">Proses Penjualan</label>
                         <div class="row">
                             <div class="col-lg-3 col-6">
@@ -224,7 +234,7 @@
                             </option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
                     <hr>
                     <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
                     <div class="form-group">
@@ -265,24 +275,24 @@
                         <label for="exampleInputEmail1">Warna Pin</label><br>
                         <label>
                             <input type="radio" name="pin" class="color-pin" value="green">
-                            <img width="50px" src="assets/img/marker/green.png">
+                            <img width="50px" src="assets/img/marker/green-1.png">
                         </label>
                         
                         <label>
                             <input type="radio" class="color-pin" name="pin" value="blue">
-                            <img width="50px" src="assets/img/marker/blue.png">
+                            <img width="50px" src="assets/img/marker/blue-2.png">
                         </label>
                         <label>
                             <input type="radio" class="color-pin" name="pin" value="red">
-                            <img width="50px" src="assets/img/marker/red.png">
+                            <img width="50px" src="assets/img/marker/red-1.png">
                         </label>
                         <label>
                             <input type="radio" class="color-pin" name="pin" value="yellow">
-                            <img width="50px" src="assets/img/marker/yellow.png">
+                            <img width="50px" src="assets/img/marker/yellow-1.png">
                         </label>
                         <label>
-                            <input type="radio" class="color-pin" name="pin" value="purple">
-                            <img width="50px" src="assets/img/marker/purple.png">
+                            <input type="radio" class="color-pin" name="pin" value="black">
+                            <img width="50px" src="assets/img/marker/black-2.png">
                         </label>
                     </div>
                 </div>
@@ -353,26 +363,47 @@
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Jenis & Kapasitas Bahan</label>
-                    <p id="jenisBahanText" class="font-weight-bold">Memuat...</p>
+                    <div class='table-responsive'>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Jenis</th>
+                                <th scope="col">Kapasitas</th>
+                            </tr>
+                            </thead>
+                            <tbody id="jenisBahanTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
-                    <p id="penjualanBahanBakuText" style="text-transform: capitalize;" class="font-weight-bold">
-                        Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Proses Penjualan</label>
-                    <p id="prosesPenjualanText" style="text-transform: capitalize;" class="font-weight-bold">
-                        Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Proses Pembayaran</label>
-                    <p id="prosesPembayaranText" style="text-transform: capitalize;" class="font-weight-bold">
-                        Memuat...</p>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Tempat Penj.</th>
+                            <th scope="col">Ket</th>
+                            <th scope="col">Proses Penj.</th>
+                            <th scope="col">Proses Pemb.</th>
+                        </tr>
+                        </thead>
+                        <tbody id="penjualanBahanBakuTable">
+                        </tbody>
+                    </table>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Kepemilikan Mesin</label>
-                    <p id="mesinText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...</p>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mesin</th>
+                            <th scope="col">Kepemilikan</th>
+                            <th scope="col">Qty</th>
+                        </tr>
+                        </thead>
+                        <tbody id="mesinTable">
+                        </tbody>
+                    </table>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Latitude</label>
@@ -451,48 +482,72 @@
 
 <div class="modal fade modal-child" id="addPenjualanModal" tabindex="-1" role="dialog" data-backdrop="static"
     data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" data-modal-parent="#addMarkerModal">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Pilih Penjualan Bahan Baku</h5>
             </div>
             <form id="addPenjualanForm">
                 <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col" width="3%">
-                                    <div class="custom-control custom-checkbox" style="display: inline-block;">
-                                        <input type="checkbox" id="checkAllPenjualan" class="custom-control-input">
-                                        <label class="custom-control-label" for="checkAllPenjualan"></label>
-                                    </div>
-                                </th>
-                                <th scope="col">Penjualan Bahan Baku</th>
-                                <th scope="col">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($tempat_penjualan as $row)
-                            <tr>
-                                <th scope="row">
-                                    <div class="custom-control custom-checkbox" style="display: inline-block;">
-                                        <input type="checkbox" value="{{ $row->TEMPAT_PENJUALAN }}"
-                                            data-id="{{ $row->ID_TEMPAT_PENJUALAN }} " name="c_penjualan_bahan[]"
-                                            required id="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"
-                                            class="custom-control-input c-penjualan-bahan">
-                                        <label class="custom-control-label"
-                                            for="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"></label>
-                                    </div>
-                                </th>
-                                <td style="text-transform: capitalize;">{{ $row->TEMPAT_PENJUALAN }}</td>
-                                <td><input type="text" placeholder="Keterangan"
-                                        data-value="{{ $row->TEMPAT_PENJUALAN }}" name="c_penjualan_bahan_ket[]"
-                                        id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off"
-                                        class="form-control c-penjualan-bahan-ket" readonly></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="3%">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" id="checkAllPenjualan" class="custom-control-input">
+                                            <label class="custom-control-label" for="checkAllPenjualan"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Penjualan Bahan Baku</th>
+                                    <th scope="col">Keterangan</th>
+                                    <th scope="col">Proses Penjualan</th>
+                                    <th scope="col" width="15%">Proses Pembayaran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($tempat_penjualan as $row)
+                                <tr>
+                                    <th scope="row">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" value="{{ $row->TEMPAT_PENJUALAN }}"
+                                                data-id="{{ $row->ID_TEMPAT_PENJUALAN }} " name="c_penjualan_bahan[]"
+                                                required id="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"
+                                                class="custom-control-input c-penjualan-bahan">
+                                            <label class="custom-control-label"
+                                                for="c_penjualan_bahan{{ $row->ID_TEMPAT_PENJUALAN }}"></label>
+                                        </div>
+                                    </th>
+                                    <td style="text-transform: capitalize;">{{ $row->TEMPAT_PENJUALAN }}</td>
+                                    <td><input type="text" placeholder="Keterangan"
+                                            data-value="{{ $row->TEMPAT_PENJUALAN }}" name="c_penjualan_bahan_ket[]"
+                                            id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off"
+                                            class="form-control c-penjualan-bahan-ket" readonly></td>
+                                    <td>
+                                        <select class="form-control c-proses-penjualan select2" required
+                                            data-placeholder="Proses Penjualan" name="c_proses_penjualan[]"
+                                            data-value="{{ $row->TEMPAT_PENJUALAN }}" disabled
+                                            id="c_proses_penjualan{{ $row->ID_TEMPAT_PENJUALAN }}">
+                                            <option value=""></option>
+                                            <option value="dikirim">Dikirim</option>
+                                            <option value="diambil">Diambil</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control c-proses-pembayaran select2" data-placeholder="Pilih Proses Pembayaran" data-value="{{ $row->TEMPAT_PENJUALAN }}"
+                                            name="c_proses_pembayaran[]" required id="c_proses_pembayaran{{ $row->ID_TEMPAT_PENJUALAN }}" disabled>
+                                            <option value=""></option>
+                                            @foreach ($jenis_pembayaran as $row)
+                                            <option value="{{ strtolower($row->JENIS_PEMBAYARAN) }}">{{ $row->JENIS_PEMBAYARAN }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-primary" id="okPenjualanBahan" href="#">OK</a>
@@ -650,9 +705,15 @@
             var id = $(this).attr('data-id');
             if($(this).is(':checked')) {
                 $('#c_penjualan_bahan_ket' + id).prop('readonly', false)
+                $('#c_proses_penjualan' + id).prop('disabled', false);
+                $('#c_proses_pembayaran' + id).prop('disabled', false);
             } else {
                 $('#c_penjualan_bahan_ket' + id).prop('readonly', true);
                 $('#c_penjualan_bahan_ket' + id).val('');
+                $('#c_proses_penjualan' + id).prop('disabled', true);
+                $('#c_proses_pembayaran' + id).prop('disabled', true);
+                $('#c_proses_penjualan' + id).val('').change();
+                $('#c_proses_pembayaran' + id).val('').change();
             }
         })
 
@@ -674,10 +735,12 @@
                     var value = $(obj).val();
                     var id = $(obj).attr('data-id');
                     var value_ket = $('#c_penjualan_bahan_ket' + id).val() ;
-                    $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Penjualan bahan baku" style="text-transform: capitalize;" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + value_ket + '" required name="penjualan_bahan_ket[]"></div></div>');
+                    var value_penjualan = $('#c_proses_penjualan' + id).val();
+                    var value_pembayaran = $('#c_proses_pembayaran' + id).val();
+                    $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + value + '" placeholder="Penjualan bahan baku" style="text-transform: capitalize;" required name="penjualan_bahan[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + value_ket + '" required name="penjualan_bahan_ket[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Proses penjualan bahan baku" style="text-transform: capitalize;" value="' + value_penjualan + '" required name="proses_penjualan[]"></div><div class="col-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Proses pembayaran bahan baku" value="' + value_pembayaran + '" required name="proses_pembayaran[]"></div></div>');
                 });
             } else {
-                $('#cPenjualanBahan').append('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required id="bahan_baku" name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div></div>');
+                $('#cPenjualanBahan').append('<div class="row"><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required id="bahan_baku" name="penjualan_bahan[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Proses penjualan bahan baku" style="text-transform: capitalize;" required name="proses_penjualan[]"></div><div class="col-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Proses pembayaran bahan baku" required name="proses_pembayaran[]"></div</div>');
             }
             $('#addPenjualanModal').modal('hide');
         });
@@ -744,7 +807,7 @@
             $('#cPenjualanBahan').html('');
             $('#cMesin').html('');
             $('#cBahanBaku').html('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Jenis bahan baku" required name="bahan_baku[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Kapasitas (KG/Bulan)" required name="bahan_baku_kg[]"></div></div>');
-            $('#cPenjualanBahan').html('<div class="row"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div></div>');
+            $('#cPenjualanBahan').html('<div class="row"><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Penjualan bahan baku" required id="bahan_baku" name="penjualan_bahan[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" required name="penjualan_bahan_ket[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Proses penjualan bahan baku" style="text-transform: capitalize;" required name="proses_penjualan[]"></div><div class="col-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Proses pembayaran bahan baku" required name="proses_pembayaran[]"></div</div>');
             $('#cMesin').html('<div class="row"><div class="col-md-5 mb-2 mb-md-3"><input type="text" class="form-control readonly" placeholder="Mesin" required name="mesin[]"></div><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Kepemilikan" required  name="kepemilikan[]"></div><div class="col-md-2"><input type="text" class="form-control readonly" placeholder="Kuantitas" required name="mesin_qty[]"></div></div>');
             $('#cExistImage').hide();
         }
@@ -786,7 +849,7 @@
             ] // point from which the popup should open relative to the iconAnchor
         });
         var greenIcon = L.icon({
-            iconUrl: 'assets/img/marker/green.png',
+            iconUrl: 'assets/img/marker/green-1.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -797,7 +860,7 @@
             ] // point from which the popup should open relative to the iconAnchor
         });
         var blueIcon = L.icon({
-            iconUrl: 'assets/img/marker/blue.png',
+            iconUrl: 'assets/img/marker/blue-2.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -808,7 +871,7 @@
             ] // point from which the popup should open relative to the iconAnchor
         });
         var redIcon = L.icon({
-            iconUrl: 'assets/img/marker/red.png',
+            iconUrl: 'assets/img/marker/red-1.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -819,7 +882,7 @@
             ] // point from which the popup should open relative to the iconAnchor
         });
         var yellowIcon = L.icon({
-            iconUrl: 'assets/img/marker/yellow.png',
+            iconUrl: 'assets/img/marker/yellow-1.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -831,6 +894,17 @@
         });
         var purpleIcon = L.icon({
             iconUrl: 'assets/img/marker/purple.png',
+            shadowUrl: 'assets/img/shadow.png',
+            iconSize: [35, 35], // size of the icon
+            shadowSize: [32, 35], // size of the shadow
+            iconAnchor: [18, 35], // point of the icon which will correspond to marker's location
+            shadowAnchor: [8, 37], // the same for the shadow
+            popupAnchor: [0, -
+                35
+            ] // point from which the popup should open relative to the iconAnchor
+        });
+        var blackIcon = L.icon({
+            iconUrl: 'assets/img/marker/black-2.png',
             shadowUrl: 'assets/img/shadow.png',
             iconSize: [35, 35], // size of the icon
             shadowSize: [32, 35], // size of the shadow
@@ -887,7 +961,7 @@
             var place = this.options.place;
             var lat = this.options.LAT;
             var lng = this.options.LNG;
-            var badge =this.options.KATEGORI == 'supplier' ? 'font-weight-bold badge badge-success' : (this.options.KATEGORI == 'kompetitor' ? 'font-weight-bold badge badge-danger' : 'font-weight-bold badge badge-primary' )
+            var badge =this.options.MARKER == 'green' ? 'font-weight-bold badge badge-success' : (this.options.MARKER == 'red' ? 'font-weight-bold badge badge-danger' : (this.options.MARKER == 'yellow' ? 'font-weight-bold badge badge-warning' : (this.options.MARKER == 'blue' ? 'font-weight-bold badge badge-primary' : 'font-weight-bold badge badge-secondary')))
             markerPopup(this._leaflet_id, false);
             $("#placeName").html(place);
             $('#kategoriText').html(this.options.KATEGORI);
@@ -899,8 +973,6 @@
             $('#alamatText').html(this.options.ALAMAT);
             $('#statusTempatText').html(this.options.STATUS_USAHA);
             $('#jmlPekerjaText').html(this.options.JUMLAH_PEKERJA);
-            $('#prosesPenjualanText').html(this.options.PROSES_PENJUALAN);
-            $('#prosesPembayaranText').html(this.options.PROSES_PEMBAYARAN);
             $('#btnEdit').attr('data-id', id)
             $('#btnEdit').attr('data-marker', id_marker)
             $('#btnDelete').attr('data-id', id)
@@ -910,6 +982,7 @@
             $("#latText").html(lat)
             $("#lngText").html(lng)
             $('#userText').html(this.options.USERNAME)
+            //mymap.setView([lat, lng], 18);
             //console.log(id);
             $.ajax({
                 url: "{{ route('getDetailCoord') }}",
@@ -929,28 +1002,28 @@
                     //Jenis Bahan & Kapasitas
                     var jenis_bahan ='';
                     for(var i = 0; i < data.jenis_bahan.length; i++) {
-                        jenis_bahan += '- ' + data.jenis_bahan[i].JENIS_BAHAN + ' (' + data.jenis_bahan[i].KAPASITAS + ' KG/Bulan)' + '<br>'
+                        jenis_bahan += '<tr><td>' + data.jenis_bahan[i].JENIS_BAHAN +'</td><td>' + data.jenis_bahan[i].KAPASITAS +'KG/Bulan</td></tr>'
                     }
 
-                    $('#jenisBahanText').html(jenis_bahan);
+                    $('#jenisBahanTable').html(jenis_bahan);
 
                     //Penjualan Bahan Baku
 
                     var penjualan ='';
                     for(var i = 0; i < data.penjualan.length; i++) {
-                        penjualan += '- ' + data.penjualan[i].TEMPAT_PENJUALAN + ' (' + data.penjualan[i].KETERANGAN + ')' + '<br>'
+                        penjualan += '<tr><td style="text-transform: capitalize;">' + data.penjualan[i].TEMPAT_PENJUALAN +'</td><td>' + data.penjualan[i].KETERANGAN +'</td><td style="text-transform: capitalize;">' + data.penjualan[i].PROSES_PENJUALAN +'</td><td style="text-transform: capitalize;">' + data.penjualan[i].PROSES_PEMBAYARAN +'</td></tr>'
                     }
 
-                    $('#penjualanBahanBakuText').html(penjualan);
+                    $('#penjualanBahanBakuTable').html(penjualan);
 
                     //Mesin
 
                     var mesin ='';
                     for(var i = 0; i < data.mesin.length; i++) {
-                        mesin += '- ' + data.mesin[i].MESIN + ' ' + data.mesin[i].QTY + ' (' + data.mesin[i].KEPEMILIKAN + ')' + '<br>'
+                        mesin += '<tr><td style="text-transform: capitalize;">' + data.mesin[i].MESIN +'</td><td style="text-transform: capitalize;">' + data.mesin[i].KEPEMILIKAN +'</td><td>' + data.mesin[i].QTY +'</td></tr>'
                     }
 
-                    $('#mesinText').html(mesin);
+                    $('#mesinTable').html(mesin);
 
                     //Image Handle
                     var img = '';
@@ -989,7 +1062,7 @@
 
         function mapMarker(data, show) {
             for (var i = 0; i < data.length; i++) {
-                var icon = data[i].MARKER == 'red' ? redIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : purpleIcon)))
+                var icon = data[i].MARKER == 'red' ? redIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
                 L.marker([data[i].LAT, data[i].LNG], {
                     icon: icon,
                     ID_TEMPAT: data[i].ID_TEMPAT,
@@ -1005,7 +1078,8 @@
                     TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
                     LAT: data[i].LAT,
                     LNG: data[i].LNG,
-                    USERNAME: data[i].USERNAME
+                    USERNAME: data[i].USERNAME,
+                    MARKER: data[i].MARKER
                 }).bindPopup(data[i].NAMA_USAHA).addTo(marker).on('click', markerOnClick).on('mouseover', markerOnHover).on('mouseout', markerOnOut);
                 //marker.bindPopup(data[i].NAMA_USAHA);
                 //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
@@ -1520,11 +1594,14 @@
                     $('#cPenjualanBahan').html('');
                     for(var i = 0; i < data.penjualan.length; i++) {
                         var margin = i == 0 ? '' : ' mt-3';
-                        $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" style="text-transform: capitalize;" value="' + data.penjualan[i].TEMPAT_PENJUALAN + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div></div>');
+                        // $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-5 mb-2 mb-md-0"><input type="text" class="form-control readonly" style="text-transform: capitalize;" value="' + data.penjualan[i].TEMPAT_PENJUALAN + '" placeholder="Penjualan bahan baku" required name="penjualan_bahan[]"></div><div class="col-md-7"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div></div>');
+                        $('#cPenjualanBahan').append('<div class="row' + margin + '"><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" value="' + data.penjualan[i].TEMPAT_PENJUALAN + '" placeholder="Penjualan bahan baku" style="text-transform: capitalize;" required name="penjualan_bahan[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Keterangan penjualan bahan baku" value="' + data.penjualan[i].KETERANGAN + '" required name="penjualan_bahan_ket[]"></div><div class="col-md-3 mb-2 mb-md-0"><input type="text" class="form-control readonly" placeholder="Proses penjualan bahan baku" style="text-transform: capitalize;" value="' + data.penjualan[i].PROSES_PENJUALAN + '" required name="proses_penjualan[]"></div><div class="col-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Proses pembayaran bahan baku" value="' + data.penjualan[i].PROSES_PEMBAYARAN + '" required name="proses_pembayaran[]"></div></div>')
 
                         //  =============== untuk modal bahan baku ==============//
                         $('.c-penjualan-bahan[value="' + data.penjualan[i].TEMPAT_PENJUALAN + '"]').prop('checked', true).change();
                         $('.c-penjualan-bahan-ket[data-value="' + data.penjualan[i].TEMPAT_PENJUALAN  + '"]').val(data.penjualan[i].KETERANGAN);
+                        $('.c-proses-penjualan[data-value="' + data.penjualan[i].TEMPAT_PENJUALAN  + '"]').val(data.penjualan[i].PROSES_PENJUALAN).change();
+                        $('.c-proses-pembayaran[data-value="' + data.penjualan[i].TEMPAT_PENJUALAN  + '"]').val(data.penjualan[i].PROSES_PEMBAYARAN).change();
                     }
 
                     $('#cMesin').html('');
