@@ -27,7 +27,8 @@
             </div>
             <div class="leaflet-bottom leaflet-right">
                 <a href="javascript:void" class="location btn btn-info btn-circle btn-lg widget">
-                    <i style="font-size: 25px;" class="fas fa-street-view"></i>
+                    {{-- <i style="font-size: 25px;" class="fas fa-street-view"></i> --}}
+                    <img src="assets/img/gps.png" width="35px" alt="">
                 </a>
                 <a href="javascript:void" data-toggle="modal" data-target="#addMarkerModal"
                     class="add btn btn-success btn-circle btn-lg widget">

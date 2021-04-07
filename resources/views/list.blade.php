@@ -242,7 +242,7 @@
                 </div>
                 <div class="leaflet-bottom leaflet-right">
                     <a href="javascript:void(0)" class="location2 btn btn-danger btn-circle btn-lg">
-                        <i style="font-size: 25px;" class="fas fa-street-view"></i>
+                        <img src="assets/img/gps.png" width="35px" alt="">
                     </a>
                 </div>
             </div>

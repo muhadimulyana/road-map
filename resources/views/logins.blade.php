@@ -31,7 +31,7 @@
                         </form>
                         @error('username')
                         <div class="other-links">
-                            <span style="font-weight: 700;">{{ $message }}</span>
+                            <span style="font-weight: 700; margin-right: 0 !important;">{{ $message }}</span>
                         </div>
                         @enderror
                     </div>
