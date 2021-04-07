@@ -12,7 +12,8 @@
     <meta name="key-api" content="{{ $key }}">
     <meta name="view" content="{{ $view }}">
     <meta name="view-id" content="{{ $id }}">
-    <title>Road Map PAN ERA GROUP</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Road Map | PAN ERA GROUP</title>
 
     <!-- Custom fonts for this template-->
     <link href="assets/sbadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -1241,12 +1242,12 @@
 
             $('#btnLogout').on('click', function(e) {
                 Swal.fire({
-                title: 'Apakah anda yakin ingin keluar?',
+                title: 'Apakah anda yakin ingin logout?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Hapus',
+                confirmButtonText: 'Logout',
                 cancelButtonText: 'Batal',
             }).then((result) => {
                 if (result.isConfirmed) {

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Road Map PAN ERA GROUP</title>
+    <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" type="text/css" href="assets/login/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/login/css/fontawesome-all.min.css">
     <link rel="stylesheet" type="text/css" href="assets/login/css/iofrm-style.css">
