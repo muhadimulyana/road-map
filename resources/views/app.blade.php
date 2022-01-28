@@ -399,7 +399,7 @@
                             </button>
                         </div>
                         <div class="modal-body" style="height: 70vh; overflow-y: auto;">
-                            <h5 class="text-primary mb-3" style="text-decoration: underline;">Lokasi Usaha</h5>
+                            <h5 class="text-primary mb-3">Lokasi Usaha</h5>
                             <div class="form-group">
                                 <label for="kategori">Kategori</label>
                                 <div class="row">
@@ -503,7 +503,7 @@
                                     multiple="multiple" id="file" name="file[]">
                             </div>
                             <hr>
-                            <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Bahan Baku</h5>
+                            <h5 class="text-primary mt-3 mb-3">Bahan Baku</h5>
                             <div class="form-group">
                                 <label for="bahan_baku">Jenis & Kapasitas Bahan Baku | <a href="#"
                                         class="badge badge-primary text-md" data-toggle="modal"
@@ -549,7 +549,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Mesin </h5>
+                            <h5 class="text-primary mt-3 mb-3">Mesin </h5>
                             <div class="form-group">
                                 <label for="proses_pembayaran">Kepemilikan Mesin | <a href="#"
                                         class="badge badge-primary text-md" data-toggle="modal"
@@ -572,7 +572,7 @@
                                 </div>
                             </div>
                             <hr>
-                            <h5 class="text-primary mt-3 mb-3" style="text-decoration: underline;">Koordinat (Opsional)</h5>
+                            <h5 class="text-primary mt-3 mb-3">Koordinat (Opsional)</h5>
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Latitude</label>
                                 <input type="text" class="form-control" id="lat" autocomplete="off"
