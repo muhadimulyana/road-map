@@ -11,8 +11,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'user_management.user_right';
+    //protected $table = 'user_management.user_right';
+    protected $table = 'user_2021.user';
     protected $rememberTokenName = false;
-    protected $primaryKey = 'nik';
+    protected $primaryKey = 'NIK';
 
 }
