@@ -24,10 +24,11 @@ Auth::routes([
 
 // Login
 Route::get('/login', [LoginController::class, 'show_login_form'])->name('login');
-Route::post('/login', [LoginController::class, 'process_login'])->name('login');
+Route::post('/login', [LoginController::class, 'process_login_2'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/getForm', [CoordController::class, 'getForm'])->name('getForm')->middleware('auth');
 Route::post('/getCoord', [CoordController::class, 'getCoordinates'])->name('getCoord')->middleware('auth');
 Route::post('/addCoord', [CoordController::class, 'store'])->name('addCoord')->middleware('auth');
 Route::post('/updateCoord', [CoordController::class, 'update'])->name('updateCoord')->middleware('auth');

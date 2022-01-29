@@ -54,89 +54,110 @@
                 </button>
             </div>
             <div class="modal-body" style="height: 80vh; overflow-y: auto;">
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Kategori</label><br>
-                    <p id="kategoriText" class=""
-                        style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
+                <div class="sourcing-detail d-none">
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kategori</label><br>
+                        <p id="kategoriText" class=""
+                            style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jenis Usaha</label>
+                        <p id="jenisUsahaText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
+                        </p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Tanggal Kunjungan</label>
+                        <p id="tglKunjunganText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Contact Person</label>
+                        <p id="cpText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Telepon</label>
+                        <p id="teleponText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Alamat</label>
+                        <p id="alamatText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Status Tempat Usaha</label>
+                        <p id="statusTempatText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...
+                        </p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jumlah Pekerja</label>
+                        <p id="jmlPekerjaText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jenis & Kapasitas Bahan</label>
+                        <div class='table-responsive'>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Jenis</th>
+                                    <th scope="col">Kapasitas</th>
+                                </tr>
+                                </thead>
+                                <tbody id="jenisBahanTable">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Tempat Penj.</th>
+                                <th scope="col">Ket</th>
+                                <th scope="col">Proses Penj.</th>
+                                <th scope="col">Proses Pemb.</th>
+                            </tr>
+                            </thead>
+                            <tbody id="penjualanBahanBakuTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kepemilikan Mesin</label>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Mesin</th>
+                                <th scope="col">Kepemilikan</th>
+                                <th scope="col">Qty</th>
+                            </tr>
+                            </thead>
+                            <tbody id="mesinTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Jenis Usaha</label>
-                    <p id="jenisUsahaText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
-                    </p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Tanggal Kunjungan</label>
-                    <p id="tglKunjunganText" class="font-weight-bold">Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Contact Person</label>
-                    <p id="cpText" class="font-weight-bold">Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Telepon</label>
-                    <p id="teleponText" class="font-weight-bold">Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Alamat</label>
-                    <p id="alamatText" class="font-weight-bold">Memuat...</p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Status Tempat Usaha</label>
-                    <p id="statusTempatText" style="text-transform: capitalize;" class="font-weight-bold">Memuat...
-                    </p>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Jumlah Pekerja</label>
-                    <p id="jmlPekerjaText" class="font-weight-bold">Memuat...</p>
+                <div class="loco-detail d-none">
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Alamat</label>
+                        <p id="alamatText2" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Tonase Per Bulan (Ton)</label>
+                        <p id="tonaseText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jumlah Pengiriman Per Bulan</label>
+                        <p id="jmlPengirimanText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jenis Kendaraan Pengiriman</label>
+                        <p id="jenisKendaraanText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
+                        </p>
+                    </div>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Foto</label>
                     <div class="row image-gallery">
                     </div>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Jenis & Kapasitas Bahan</label>
-                    <div class='table-responsive'>
-                        <table class="table table-sm table-bordered">
-                            <thead>
-                            <tr>
-                                <th scope="col">Jenis</th>
-                                <th scope="col">Kapasitas</th>
-                            </tr>
-                            </thead>
-                            <tbody id="jenisBahanTable">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                        <tr>
-                            <th scope="col">Tempat Penj.</th>
-                            <th scope="col">Ket</th>
-                            <th scope="col">Proses Penj.</th>
-                            <th scope="col">Proses Pemb.</th>
-                        </tr>
-                        </thead>
-                        <tbody id="penjualanBahanBakuTable">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="form-group border-bottom">
-                    <label for="exampleInputPassword1">Kepemilikan Mesin</label>
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                        <tr>
-                            <th scope="col">Mesin</th>
-                            <th scope="col">Kepemilikan</th>
-                            <th scope="col">Qty</th>
-                        </tr>
-                        </thead>
-                        <tbody id="mesinTable">
-                        </tbody>
-                    </table>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Latitude</label>
@@ -220,6 +241,7 @@
             L.marker([data[i].LAT, data[i].LNG], {
                 icon: icon,
                 ID_TEMPAT: data[i].ID_TEMPAT,
+                JENIS: data[i].JENIS,
                 place: data[i].NAMA_USAHA,
                 KATEGORI: data[i].KATEGORI,
                 CP: data[i].CP,
@@ -230,6 +252,8 @@
                 PROSES_PENJUALAN: data[i].PROSES_PENJUALAN,
                 PROSES_PEMBAYARAN: data[i].PROSES_PEMBAYARAN,
                 TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
+                TONASE: data[i].TONASE,
+                JUMLAH_PENGIRIMAN: data[i].JUMLAH_PENGIRIMAN,
                 LAT: data[i].LAT,
                 LNG: data[i].LNG,
                 USERNAME: data[i].USERNAME,
@@ -326,7 +350,7 @@
         sessionStorage.removeItem("clickOnMap")
     });
 
-    $('#addFromMap').on('click', function() {
+    $(document).on('click', '#addFromMap', function() {
         $('#addMarkerModal').modal('hide');
         $('html').css('cursor', 'not-allowed');
         $('html').css('pointer-events', 'none');

@@ -56,6 +56,16 @@ class CoordController extends Controller
 
     }
 
+    public function getForm(Request $request)
+    {
+        $form = strtolower($request->form);
+        $jenis_usaha = DB::table('m_jenis_usaha')->get();
+        
+        $form = view("form.$form", compact('jenis_usaha'))->render();
+
+        return $form;
+    }
+
     public function getApiKey()
     {
         $result = DB::table('key_api')->where('aktif', 1)->get();
@@ -89,58 +99,85 @@ class CoordController extends Controller
     {
 
         //dd($request);
+
+        if($request->jenis == 'SOURCING') {
+
+            $data = [
+                'ID_TEMPAT' => time(),
+                'JENIS' => $request->jenis,
+                'KATEGORI' => $request->kategori,
+                'NAMA_USAHA' => $request->nama_usaha,
+                'CP' => $request->cp,
+                'TELEPON' => $request->telepon,
+                'ALAMAT' => $request->alamat,
+                'STATUS_USAHA' => $request->status_tempat,
+                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
+                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
+                'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
+                'USERNAME' => session()->get('user')['USERNAME'],
+                'MARKER' => $request->pin
+            ];
+    
+            // jenis usaha
+            foreach($request->jenis_usaha as $key => $value) {
+                $jenis_usaha[] = [
+                    'ID_TEMPAT' => time(),
+                    'JENIS_USAHA' => $request->jenis_usaha[$key]
+                ];
+            }
+    
+            foreach($request->bahan_baku as $key => $value) {
+                $bahan_baku[] = [
+                    'ID_TEMPAT' => time(),
+                    'JENIS_BAHAN' => $request->bahan_baku[$key],
+                    'KAPASITAS' => $request->bahan_baku_kg[$key]
+                ];
+            }
+    
+            foreach($request->penjualan_bahan as $key => $value) {
+                $penjualan_bahan[] = [
+                    'ID_TEMPAT' => time(),
+                    'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                    'KETERANGAN' => $request->penjualan_bahan_ket[$key],
+                    'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
+                    'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
+                ];
+            }
+    
+            foreach($request->mesin as $key => $value) {
+                $mesin[] = [
+                    'ID_TEMPAT' => time(),
+                    'MESIN' => $request->mesin[$key],
+                    'KEPEMILIKAN' => $request->kepemilikan[$key],
+                    'QTY' => $request->mesin_qty[$key]
+                ];
+            }
+
+        } else {
+            $data = [
+                'ID_TEMPAT' => time(),
+                'JENIS' => $request->jenis,
+                'NAMA_USAHA' => $request->nama_usaha,
+                'ALAMAT' => $request->alamat,
+                'TONASE' => $request->tonase,
+                'JUMLAH_PENGIRIMAN' => $request->jumlah_pengiriman,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
+                'MARKER' => $request->pin,
+                'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
+                'USERNAME' => session()->get('user')['USERNAME']
+            ];
+
+            foreach($request->jenis_kendaraan as $key => $value) {
+                $jenis_kendaraan[] = [
+                    'ID_TEMPAT' => time(),
+                    'JENIS_KENDARAAN' => $request->jenis_kendaraan[$key]
+                ];
+            }
+        }
         
-        $data = [
-            'ID_TEMPAT' => time(),
-            'KATEGORI' => $request->kategori,
-            'NAMA_USAHA' => $request->nama_usaha,
-            'CP' => $request->cp,
-            'TELEPON' => $request->telepon,
-            'ALAMAT' => $request->alamat,
-            'STATUS_USAHA' => $request->status_tempat,
-            'JUMLAH_PEKERJA' => $request->jml_pekerja,
-            'LAT' => $request->lat,
-            'LNG' => $request->lng,
-            'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-            'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-            'USERNAME' => session()->get('username'),
-            'MARKER' => $request->pin
-        ];
-
-        // jenis usaha
-        foreach($request->jenis_usaha as $key => $value) {
-            $jenis_usaha[] = [
-                'ID_TEMPAT' => time(),
-                'JENIS_USAHA' => $request->jenis_usaha[$key]
-            ];
-        }
-
-        foreach($request->bahan_baku as $key => $value) {
-            $bahan_baku[] = [
-                'ID_TEMPAT' => time(),
-                'JENIS_BAHAN' => $request->bahan_baku[$key],
-                'KAPASITAS' => $request->bahan_baku_kg[$key]
-            ];
-        }
-
-        foreach($request->penjualan_bahan as $key => $value) {
-            $penjualan_bahan[] = [
-                'ID_TEMPAT' => time(),
-                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
-                'KETERANGAN' => $request->penjualan_bahan_ket[$key],
-                'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
-                'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
-            ];
-        }
-
-        foreach($request->mesin as $key => $value) {
-            $mesin[] = [
-                'ID_TEMPAT' => time(),
-                'MESIN' => $request->mesin[$key],
-                'KEPEMILIKAN' => $request->kepemilikan[$key],
-                'QTY' => $request->mesin_qty[$key]
-            ];
-        }
 
         //dd($data, $jenis_usaha, $bahan_baku, $penjualan_bahan, $mesin);
 
@@ -168,31 +205,43 @@ class CoordController extends Controller
         try {
 
             DB::table('tempat')->insert($data);
-            DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
-            DB::table('tempat_jenis_bahan')->insert($bahan_baku);
-            DB::table('tempat_penjualan')->insert($penjualan_bahan);
-            DB::table('tempat_mesin')->insert($mesin);
+
+            if($request->jenis == 'SOURCING') {
+                DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
+                DB::table('tempat_jenis_bahan')->insert($bahan_baku);
+                DB::table('tempat_penjualan')->insert($penjualan_bahan);
+                DB::table('tempat_mesin')->insert($mesin);
+
+                
+            } else {
+                DB::table('tempat_jenis_kendaraan')->insert($jenis_kendaraan);
+            }
+
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
             $response[] = [
-                'ID_TEMPAT' => time(),
-                'KATEGORI' => $request->kategori,
-                'NAMA_USAHA' => $request->nama_usaha,
-                'CP' => $request->cp,
-                'TELEPON' => $request->telepon,
-                'ALAMAT' => $request->alamat,
-                'STATUS_USAHA' => $request->status_tempat,
-                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'ID_TEMPAT' => $data['ID_TEMPAT'],
+                'JENIS' => $data['JENIS'],
+                'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
+                'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+                'CP' => (isset($data['CP'])) ? $data['CP'] : '',
+                'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
+                'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
+                'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
+                'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
+                'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
+                'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
+                'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
+                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : '',
+                'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
+                'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
-                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-                'TANGGAL_BUAT' => date('Y-m-d H:i:s'),
-                'USERNAME' => session()->get('username'),
                 'KOSONG' => $request->lat == null ? true : false,
-                'MARKER' => $request->pin, 
                 'AKSI' => 'tambah',
                 'code' => 200,
             ];
+            
             DB::commit();
 
         } catch (QueryException $e) {
@@ -268,6 +317,7 @@ class CoordController extends Controller
             $tempat = DB::table('tempat')->where('ID_TEMPAT', $id)->first();
             $jenis_usaha = DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $id)->get();
             $jenis_bahan = DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $id)->get();
+            $jenis_kendaraan = DB::table('tempat_jenis_kendaraan')->where('ID_TEMPAT', $id)->get();
             $penjualan = DB::table('tempat_penjualan')->where('ID_TEMPAT', $id)->get();
             $mesin = DB::table('tempat_mesin')->where('ID_TEMPAT', $id)->get();
             $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get();
@@ -275,6 +325,7 @@ class CoordController extends Controller
                 'tempat' => $tempat,
                 'jenis_usaha' => $jenis_usaha,
                 'jenis_bahan' => $jenis_bahan,
+                'jenis_kendaraan' => $jenis_kendaraan,
                 'penjualan' => $penjualan,
                 'mesin' => $mesin,
                 'image' => $image
@@ -287,54 +338,74 @@ class CoordController extends Controller
     public function update(Request $request)
     {
         //dd($request);
-        $data = [
-            'KATEGORI' => $request->kategori,
-            'NAMA_USAHA' => $request->nama_usaha,
-            'CP' => $request->cp,
-            'TELEPON' => $request->telepon,
-            'ALAMAT' => $request->alamat,
-            'STATUS_USAHA' => $request->status_tempat,
-            'JUMLAH_PEKERJA' => $request->jml_pekerja,
-            'LAT' => $request->lat,
-            'LNG' => $request->lng,
-            'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-            'USERNAME' => session()->get('username'),
-            'MARKER' => $request->pin
-        ];
-
-        // jenis usaha
-        foreach($request->jenis_usaha as $key => $value) {
-            $jenis_usaha[] = [
-                'ID_TEMPAT' => $request->id_tempat,
-                'JENIS_USAHA' => $request->jenis_usaha[$key]
+        if($request->jenis == 'SOURCING') {
+            $data = [
+                'KATEGORI' => $request->kategori,
+                'NAMA_USAHA' => $request->nama_usaha,
+                'CP' => $request->cp,
+                'TELEPON' => $request->telepon,
+                'ALAMAT' => $request->alamat,
+                'STATUS_USAHA' => $request->status_tempat,
+                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
+                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
+                'USERNAME' => session()->get('user')['USERNAME'],
+                'MARKER' => $request->pin
             ];
-        }
-
-        foreach($request->bahan_baku as $key => $value) {
-            $bahan_baku[] = [
-                'ID_TEMPAT' => $request->id_tempat,
-                'JENIS_BAHAN' => $request->bahan_baku[$key],
-                'KAPASITAS' => $request->bahan_baku_kg[$key]
+    
+            // jenis usaha
+            foreach($request->jenis_usaha as $key => $value) {
+                $jenis_usaha[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'JENIS_USAHA' => $request->jenis_usaha[$key]
+                ];
+            }
+    
+            foreach($request->bahan_baku as $key => $value) {
+                $bahan_baku[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'JENIS_BAHAN' => $request->bahan_baku[$key],
+                    'KAPASITAS' => $request->bahan_baku_kg[$key]
+                ];
+            }
+    
+            foreach($request->penjualan_bahan as $key => $value) {
+                $penjualan_bahan[] = [
+                    'ID_TEMPAT' =>  $request->id_tempat,
+                    'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
+                    'KETERANGAN' => $request->penjualan_bahan_ket[$key],
+                    'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
+                    'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
+                ];
+            }
+    
+            foreach($request->mesin as $key => $value) {
+                $mesin[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'MESIN' => $request->mesin[$key],
+                    'KEPEMILIKAN' => $request->kepemilikan[$key],
+                    'QTY' => $request->mesin_qty[$key]
+                ];
+            }
+        } else {
+            $data = [
+                'NAMA_USAHA' => $request->nama_usaha,
+                'ALAMAT' => $request->alamat,
+                'TONASE' => $request->tonase,
+                'JUMLAH_PENGIRIMAN' => $request->jumlah_pengiriman,
+                'LAT' => $request->lat,
+                'LNG' => $request->lng,
+                'MARKER' => $request->pin,
+                'USERNAME' => session()->get('user')['USERNAME']
             ];
-        }
 
-        foreach($request->penjualan_bahan as $key => $value) {
-            $penjualan_bahan[] = [
-                'ID_TEMPAT' =>  $request->id_tempat,
-                'TEMPAT_PENJUALAN' => $request->penjualan_bahan[$key],
-                'KETERANGAN' => $request->penjualan_bahan_ket[$key],
-                'PROSES_PENJUALAN' => $request->proses_penjualan[$key],
-                'PROSES_PEMBAYARAN' => $request->proses_pembayaran[$key]
-            ];
-        }
-
-        foreach($request->mesin as $key => $value) {
-            $mesin[] = [
-                'ID_TEMPAT' => $request->id_tempat,
-                'MESIN' => $request->mesin[$key],
-                'KEPEMILIKAN' => $request->kepemilikan[$key],
-                'QTY' => $request->mesin_qty[$key]
-            ];
+            foreach($request->jenis_kendaraan as $key => $value) {
+                $jenis_kendaraan[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'JENIS_KENDARAAN' => $request->jenis_kendaraan[$key]
+                ];
+            }
         }
 
         //For delete image
@@ -378,34 +449,44 @@ class CoordController extends Controller
 
             DB::table('tempat')->where('ID_TEMPAT', $request->id_tempat)->update($data);
 
-            DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $request->id_tempat)->delete();
-            DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $request->id_tempat)->delete();
-            DB::table('tempat_penjualan')->where('ID_TEMPAT', $request->id_tempat)->delete();
-            DB::table('tempat_mesin')->where('ID_TEMPAT', $request->id_tempat)->delete();
+            if($request->jenis === 'SOURCING') {
+                DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $request->id_tempat)->delete();
+                DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $request->id_tempat)->delete();
+                DB::table('tempat_penjualan')->where('ID_TEMPAT', $request->id_tempat)->delete();
+                DB::table('tempat_mesin')->where('ID_TEMPAT', $request->id_tempat)->delete();
+    
+                DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
+                DB::table('tempat_jenis_bahan')->insert($bahan_baku);
+                DB::table('tempat_penjualan')->insert($penjualan_bahan);
+                DB::table('tempat_mesin')->insert($mesin);
+            } else {
+                DB::table('tempat_jenis_kendaraan')->where('ID_TEMPAT', $request->id_tempat)->delete();
+                DB::table('tempat_jenis_kendaraan')->insert($jenis_kendaraan);
+            }
 
-            DB::table('tempat_jenis_usaha')->insert($jenis_usaha);
-            DB::table('tempat_jenis_bahan')->insert($bahan_baku);
-            DB::table('tempat_penjualan')->insert($penjualan_bahan);
-            DB::table('tempat_mesin')->insert($mesin);
 
             ($del_image) ? DB::table('tempat_gambar')->where('ID_TEMPAT', $request->id_tempat)->whereIn('GAMBAR', $request->del_image)->delete() : '';
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
             $response[] = [
                 'ID_TEMPAT' => $request->id_tempat,
-                'KATEGORI' => $request->kategori,
-                'NAMA_USAHA' => $request->nama_usaha,
-                'CP' => $request->cp,
-                'TELEPON' => $request->telepon,
-                'ALAMAT' => $request->alamat,
-                'STATUS_USAHA' => $request->status_tempat,
-                'JUMLAH_PEKERJA' => $request->jml_pekerja,
+                'JENIS' => $request->jenis,
+                'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
+                'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+                'CP' => (isset($data['CP'])) ? $data['CP'] : '',
+                'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
+                'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
+                'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
+                'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
+                'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
+                'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
+                'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
+                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : '',
+                'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
+                'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
                 'LAT' => $request->lat == '' ? null : $request->lat, 
                 'LNG' => $request->lng == '' ? null : $request->lng,
-                'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
-                'USERNAME' => session()->get('username'),
-                'KOSONG' => $request->lat == null ? true :  false,
-                'MARKER' => $request->pin,
+                'KOSONG' => $request->lat == null ? true : false,
                 'AKSI' => 'ubah',
                 'code' => 200,
             ];
