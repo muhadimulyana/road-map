@@ -1,7 +1,7 @@
 <div class="SOURCING-form">
     <h5 class="text-primary mb-3">Lokasi Usaha</h5>
     <div class="form-group">
-        <label for="kategori">Kategori</label>
+        <label for="kategori">Kategori Usaha</label>
         <div class="row">
             <div class="col-lg-3 col-6">
                 <div class="custom-control custom-radio" style="display: inline-block;">
@@ -170,43 +170,5 @@
                 </div>
             </div>
         </div>
-    </div>
-    <hr>
-    <h5 class="text-primary mt-3 mb-3">Koordinat (Opsional)</h5>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Latitude</label>
-        <input type="text" class="form-control" id="lat" autocomplete="off"
-            placeholder="Masukkan koordinat latitude" name="lat">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Longitude</label>
-        <input type="text" class="form-control" id="lng" autocomplete="off"
-            placeholder="Masukkan koordinat longitude" name="lng">
-    </div>
-    <a href="#" class="badge badge-primary text-md" id="addFromMap">Pilih dari map</a>
-    <hr>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Warna Pin</label><br>
-        <label>
-            <input type="radio" name="pin" class="color-pin" value="green">
-            <img width="50px" src="assets/img/marker/green-1.png">
-        </label>
-
-        <label>
-            <input type="radio" class="color-pin" name="pin" value="blue">
-            <img width="50px" src="assets/img/marker/blue-2.png">
-        </label>
-        <label>
-            <input type="radio" class="color-pin" name="pin" value="red">
-            <img width="50px" src="assets/img/marker/red-1.png">
-        </label>
-        <label>
-            <input type="radio" class="color-pin" name="pin" value="yellow">
-            <img width="50px" src="assets/img/marker/yellow-1.png">
-        </label>
-        <label>
-            <input type="radio" class="color-pin" name="pin" value="black">
-            <img width="50px" src="assets/img/marker/black-2.png">
-        </label>
     </div>
 </div>

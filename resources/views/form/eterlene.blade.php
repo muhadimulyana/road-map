@@ -1,12 +1,12 @@
 <div class="LOCO-form">
-    <h5 class="text-primary mb-3">Informasi @if($jenis == 'loco') Distributor @else Customer @endif</h5>
+    <h5 class="text-primary mb-3">Informasi Customer</h5>
     <div class="form-group">
         <label for="exampleInputEmail1">Label</label>
         <input type="text" class="form-control" autocomplete="off" placeholder="Masukkan label"
             required id="urut" name="urut">
     </div>
     <div class="form-group">
-        <label for="exampleInputEmail1">Nama @if($jenis == 'loco') Distributor @else Customer @endif</label>
+        <label for="exampleInputEmail1">Nama Customer</label>
         <input type="text" class="form-control" autocomplete="off" placeholder="Masukkan nama usaha"
             required id="nama_usaha" name="nama_usaha">
     </div>
@@ -49,20 +49,19 @@
     <h5 class="text-primary mt-3 mb-3">Jarak</h5>
     <div class="form-group">
         <label for="">Jarak Dari Plant | <a href="#"
-                class="badge badge-primary text-md" id="calculate">Hitung Jarak</a></label>
+                class="badge badge-primary text-md" data-toggle="modal"
+                data-target="#addJarakModal">Pilih</a></label>
         <div id="cJarak">
-            @foreach ($plant as $row)
-            <div class="row @if($loop->index > 0) mt-3 mt-md-0 @endif">
-                <div class="col-md-6 mb-mb-3 mb-2">
-                    <input type="text" name="plant_nama[]" value="{{ $row->NAMA }}" class="form-control readonly" required  readonly placeholder="Plant">
+            <div class="row">
+                <div class="col-md-6 mb-2 mb-md-3">
+                    <input type="text" class="form-control readonly" placeholder="Plant" required
+                        id="plant" name="plant[]">
                 </div>
                 <div class="col-md-6">
-                    <input type="text" class="form-control decimal jarak" placeholder="Jarak Km (Decimal)"
-                        id="jarak{{$row->KODE}}" name="jarak[]">
+                    <input type="text" class="form-control readonly" placeholder="Jarak" required
+                        id="jarak" name="jarak[]">
                 </div>
-                <input type="hidden" class="plants" id="plant{{$row->KODE}}" data-lat="{{ $row->LAT }}" data-lng="{{ $row->LNG }}" name="plant[]" value="{{ $row->KODE }}">
             </div>
-            @endforeach
         </div>
     </div>
 </div>
