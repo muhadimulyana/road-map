@@ -120,7 +120,8 @@ class LoginController extends Controller
                     $akses_input = [
                         'LOCO',
                         'ETERLENE',
-                        'SOURCING'
+                        'SOURCING',
+                        'PLANT'
                     ];
                 } else {
                     $akses_input = [];
@@ -129,6 +130,7 @@ class LoginController extends Controller
                         $v = str_replace(array('\'', '"'), '', $val);
                         array_push($akses_input, $v);
                     } 
+                    array_push($akses_input, 'PLANT');
                 }
 
                 $akses_module[$row->MODULE] = [
