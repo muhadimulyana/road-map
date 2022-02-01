@@ -33,6 +33,11 @@ class CoordController extends Controller
         $tempat_penjualan = DB::table('m_tempat_penjualan')->get();
         $jenis_pembayaran = DB::table('m_jenis_pembayaran')->get();
         $mesin = DB::table('m_mesin')->get();
+        $plant = DB::table('hrd_2021.m_plant as a')
+                ->selectRaw('a.*, b.LAT, b.LNG')
+                ->join('tempat as b', 'a.KODE', '=', 'b.KATEGORI', 'LEFT')
+                ->orderBy('a.NO_URUT')
+                ->get();
 
         foreach($keys as $row){
             $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
@@ -46,12 +51,29 @@ class CoordController extends Controller
 
         
 
-        return view('map')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id);
+        return view('map')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id)->with('plant', $plant)->with('jenis', session()->get('akses')['app']['AKSES_INPUT'][0]);
     }
     //
     public function getCoordinates(Request $request)
     {
-        $coords = DB::table('tempat')->whereNotNull('LAT')->where('AKTIF', 1)->get();
+        // $coords = DB::table('tempat as a')
+        //     ->selectRaw('*, (SELECT GROUP_CONCAT(KODE_PLANT SEPARATOR "|") FROM tempat_jarak as b WHERE b.ID_TEMPAT = a.ID_TEMPAT) AS KODE_PLANT, (SELECT GROUP_CONCAT(JARAK SEPARATOR "|") FROM tempat_jarak as c WHERE c.ID_TEMPAT = a.ID_TEMPAT) AS JARAK')
+        //     ->whereNotNull('a.LAT')
+        //     ->where('a.AKTIF', 1)
+        //     ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
+        //     ->get();
+
+        $coords = DB::table('tempat as a')
+            ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK')
+            ->join('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT', 'LEFT')
+            ->whereNotNull('a.LAT')
+            ->where('a.AKTIF', 1)
+            ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
+            ->groupBy('a.ID_TEMPAT')
+            ->orderBy('a.ID_TEMPAT')
+            ->get();
+            
+            
         return response()->json($coords, 200, []);
 
     }
@@ -60,8 +82,17 @@ class CoordController extends Controller
     {
         $form = strtolower($request->form);
         $jenis_usaha = DB::table('m_jenis_usaha')->get();
+        $plant = DB::table('hrd_2021.m_plant as a')
+                ->selectRaw('a.*, b.LAT, b.LNG')
+                ->join('tempat as b', 'a.KODE', '=', 'b.KATEGORI', 'LEFT')
+                ->orderBy('a.NO_URUT')
+                ->get();
+
+        $form = ($form === 'eterlene') ? 'loco' : $form;
+
+        $jenis = strtolower($request->form);
         
-        $form = view("form.$form", compact('jenis_usaha'))->render();
+        $form = view("form.$form", compact('jenis_usaha', 'plant', 'jenis'))->render();
 
         return $form;
     }
@@ -159,6 +190,7 @@ class CoordController extends Controller
             $data = [
                 'ID_TEMPAT' => time(),
                 'JENIS' => $request->jenis,
+                'URUT' => $request->urut,
                 'NAMA_USAHA' => $request->nama_usaha,
                 'ALAMAT' => $request->alamat,
                 'TONASE' => $request->tonase,
@@ -176,6 +208,18 @@ class CoordController extends Controller
                     'JENIS_KENDARAAN' => $request->jenis_kendaraan[$key]
                 ];
             }
+
+            foreach($request->plant as $key => $value) {
+                $plant_jarak[] = [
+                    'ID_TEMPAT' => time(),
+                    'KODE_PLANT' => $value,
+                    'PLANT' => $request->plant_nama[$key],
+                    'JARAK' => $request->jarak[$key]
+                ];
+            }
+
+            $kode_plant = implode("|", $request->plant);
+            $jarak = implode("|", $request->jarak);
         }
         
 
@@ -215,6 +259,7 @@ class CoordController extends Controller
                 
             } else {
                 DB::table('tempat_jenis_kendaraan')->insert($jenis_kendaraan);
+                DB::table('tempat_jarak')->insert($plant_jarak);
             }
 
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
@@ -224,6 +269,7 @@ class CoordController extends Controller
                 'JENIS' => $data['JENIS'],
                 'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
                 'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+                'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
                 'CP' => (isset($data['CP'])) ? $data['CP'] : '',
                 'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
                 'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
@@ -232,9 +278,11 @@ class CoordController extends Controller
                 'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
                 'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
                 'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
-                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : '',
+                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
                 'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
                 'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
+                'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
+                'JARAK' => (isset($jarak)) ? $jarak : [],
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
                 'KOSONG' => $request->lat == null ? true : false,
@@ -314,13 +362,23 @@ class CoordController extends Controller
         if($request->input('id')){
 
             $id = $request->input('id');
-            $tempat = DB::table('tempat')->where('ID_TEMPAT', $id)->first();
+            $tempat = DB::table('tempat as a')
+                    ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK')
+                    ->join('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT', 'LEFT')
+                    ->where('a.ID_TEMPAT', $id)
+                    ->first();
             $jenis_usaha = DB::table('tempat_jenis_usaha')->where('ID_TEMPAT', $id)->get();
             $jenis_bahan = DB::table('tempat_jenis_bahan')->where('ID_TEMPAT', $id)->get();
             $jenis_kendaraan = DB::table('tempat_jenis_kendaraan')->where('ID_TEMPAT', $id)->get();
             $penjualan = DB::table('tempat_penjualan')->where('ID_TEMPAT', $id)->get();
             $mesin = DB::table('tempat_mesin')->where('ID_TEMPAT', $id)->get();
             $image = DB::table('tempat_gambar')->where('ID_TEMPAT', $id)->get();
+            $jarak = DB::table('tempat_jarak as a')
+                    ->selectRaw('a.*, b.LAT, b.LNG')
+                    ->join('tempat as b', 'a.KODE_PLANT', '=', 'b.KATEGORI', 'LEFT')
+                    ->where('a.ID_TEMPAT', $id)
+                    ->get();
+
             $response = [
                 'tempat' => $tempat,
                 'jenis_usaha' => $jenis_usaha,
@@ -328,7 +386,8 @@ class CoordController extends Controller
                 'jenis_kendaraan' => $jenis_kendaraan,
                 'penjualan' => $penjualan,
                 'mesin' => $mesin,
-                'image' => $image
+                'image' => $image,
+                'jarak' => $jarak,
             ];
             
             return response()->json($response, 200, []);
@@ -391,6 +450,7 @@ class CoordController extends Controller
         } else {
             $data = [
                 'NAMA_USAHA' => $request->nama_usaha,
+                'URUT' => $request->urut,
                 'ALAMAT' => $request->alamat,
                 'TONASE' => $request->tonase,
                 'JUMLAH_PENGIRIMAN' => $request->jumlah_pengiriman,
@@ -406,6 +466,18 @@ class CoordController extends Controller
                     'JENIS_KENDARAAN' => $request->jenis_kendaraan[$key]
                 ];
             }
+
+            foreach($request->plant as $key => $value) {
+                $plant_jarak[] = [
+                    'ID_TEMPAT' => $request->id_tempat,
+                    'KODE_PLANT' => $value,
+                    'PLANT' => $request->plant_nama[$key],
+                    'JARAK' => $request->jarak[$key]
+                ];
+            }
+
+            $kode_plant = implode("|", $request->plant);
+            $jarak = implode("|", $request->jarak);
         }
 
         //For delete image
@@ -462,6 +534,9 @@ class CoordController extends Controller
             } else {
                 DB::table('tempat_jenis_kendaraan')->where('ID_TEMPAT', $request->id_tempat)->delete();
                 DB::table('tempat_jenis_kendaraan')->insert($jenis_kendaraan);
+
+                DB::table('tempat_jarak')->where('ID_TEMPAT', $request->id_tempat)->delete();
+                DB::table('tempat_jarak')->insert($plant_jarak);
             }
 
 
@@ -473,6 +548,7 @@ class CoordController extends Controller
                 'JENIS' => $request->jenis,
                 'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
                 'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+                'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
                 'CP' => (isset($data['CP'])) ? $data['CP'] : '',
                 'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
                 'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
@@ -481,9 +557,11 @@ class CoordController extends Controller
                 'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
                 'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
                 'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
-                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : '',
+                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
                 'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
                 'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
+                'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
+                'JARAK' => (isset($jarak)) ? $jarak : [],
                 'LAT' => $request->lat == '' ? null : $request->lat, 
                 'LNG' => $request->lng == '' ? null : $request->lng,
                 'KOSONG' => $request->lat == null ? true : false,
@@ -547,7 +625,7 @@ class CoordController extends Controller
 
     }
 
-    public function list()
+    public function list(Request $request)
     {
         $id = 0;
         $view = 0;
@@ -557,119 +635,204 @@ class CoordController extends Controller
         $tempat_penjualan = DB::table('m_tempat_penjualan')->get();
         $jenis_pembayaran = DB::table('m_jenis_pembayaran')->get();
         $mesin = DB::table('m_mesin')->get();
+        $plant = DB::table('hrd_2021.m_plant as a')
+                ->selectRaw('a.*, b.LAT, b.LNG')
+                ->join('tempat as b', 'a.KODE', '=', 'b.KATEGORI', 'LEFT')
+                ->orderBy('a.NO_URUT')
+                ->get();
         foreach($keys as $row){
-            $request = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
-            if($request->successful()){
+            $req = Http::get('https://api.maptiler.com/maps/streets/tiles.json?key=' . $row->key);
+            if($req->successful()){
                 $key = $row->key;
                 break;
             } else {
                 DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
             }
         }
+
+        //dd($key);
+
+        if($request->i === 'sourcing') {
+            $list = 'list';
+        } elseif($request->i === 'marketing') {
+            $list = 'list2';
+        } else {
+            abort(404);
+        }
         
         
-        return view('list')->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id);
+        return view($list)->with('key', $key)->with('jenis_usaha', $jenis_usaha)->with('jenis_bahan', $jenis_bahan)->with('jenis_pembayaran', $jenis_pembayaran)->with('tempat_penjualan', $tempat_penjualan)->with('mesin', $mesin)->with('i', 0)->with('view', $view)->with('id', $id)->with('plant', $plant)->with('jenis', session()->get('akses')['app']['AKSES_INPUT'][0]);
     }
 
     public function getFilterRecord(Request $request)
     {
-        $coords =  DB::table('tempat as A')->selectRaw('A.*, (SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) as JENIS_USAHA')->where('AKTIF', 1);
-        //dd($coords);
-        $datatables = Datatables::of($coords)
-        ->addIndexColumn()
-        ->editColumn("NAMA_USAHA", function($data){
-            $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnDetail">' . $data->NAMA_USAHA .'</a> ';
-            return $nama_usaha; 
-        })
-        ->addColumn("LOKASI",  function($data) {
-            if($data->LAT != null || $data->LNG != null ) {
-                $lokasi = '<a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnView">Lihat Lokasi</a>'; 
-            } else {
-                $lokasi = 'Belum Input';
-            }
-            return $lokasi;
-        })
-        ->editColumn("KATEGORI", function($data){
-            if($data->MARKER == 'green') {
-                $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } elseif($data->MARKER == 'blue') {
-                $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } elseif($data->MARKER == 'red') {
-                $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } elseif($data->MARKER == 'yellow') {
-                $kategori = '<span class="badge badge-warning" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            } else {
-                $kategori = '<span class="badge badge-secondary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-            }
-            return $kategori; 
-        })
-        ->editColumn("JENIS_USAHA", function($data){
-            $jenis_usaha = $data->JENIS_USAHA;
-            $jenis_usaha = explode('-', $jenis_usaha);
-            $jenis = '';
-            foreach($jenis_usaha as $key => $value){
-                $jenis .= '<span class="badge badge-secondary" style="text-transform: capitalize">' . $jenis_usaha[$key] .'</span>&nbsp;';
-            }
-            return $jenis;
-        })
-        ->editColumn("TANGGAL_KUNJUNGAN", function($data){
-            $tgl_kunjung = date('d M Y', strtotime($data->TANGGAL_KUNJUNGAN));
-            return $tgl_kunjung;
-        })
-        ->addColumn('AKSI', function($data){
-            $aksi = 
-            '<div class="btn-group">
-            <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success btnEdit"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
-            <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger btnDelete"><i class="fas fa-fw fa-trash-alt"></i></a>
-            </div>';
-            return $aksi;
-        })
-        ->rawColumns(['NAMA_USAHA', 'LOKASI', 'KATEGORI', 'JENIS_USAHA', 'AKSI'])
-        ->filter(function ($query) use ($request) {
+        if($request->JENIS_INPUT === 'sourcing') {
 
-            if ($request->has('KATEGORI')) {
-                if($request->get('KATEGORI') != ''){
-                    $query->where('A.KATEGORI', '=', $request->get('KATEGORI'));
+            $coords =  DB::table('tempat as A')->selectRaw('A.*, (SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) as JENIS_USAHA')->where('AKTIF', 1)->where('JENIS', $request->JENIS_INPUT)->where('JENIS', '<>', 'PLANT');
+            //dd($coords);
+            $datatables = Datatables::of($coords)
+            ->addIndexColumn()
+            ->editColumn("NAMA_USAHA", function($data){
+                $nama_usaha = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnDetail">' . $data->NAMA_USAHA .'</a> ';
+                return $nama_usaha; 
+            })
+            ->addColumn("LOKASI",  function($data) {
+                if($data->LAT != null || $data->LNG != null ) {
+                    $lokasi = '<a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnView">Lihat Lokasi</a>'; 
+                } else {
+                    $lokasi = 'Belum Input';
                 }
-            }
-            if($request->has('TGL_DARI')) {
-                if($request->get('TGL_DARI') != ''){
-                    $query->where('A.TANGGAL_KUNJUNGAN', '>=', date('Y-m-d', strtotime($request->get('TGL_DARI'))));
+                return $lokasi;
+            })
+            ->editColumn("KATEGORI", function($data){
+                if($data->MARKER == 'green') {
+                    $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+                } elseif($data->MARKER == 'blue') {
+                    $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+                } elseif($data->MARKER == 'red') {
+                    $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+                } elseif($data->MARKER == 'yellow') {
+                    $kategori = '<span class="badge badge-warning" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
+                } else {
+                    $kategori = '<span class="badge badge-secondary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
                 }
-            }
-            if($request->has('TGL_SAMPAI')) {
-                if($request->get('TGL_SAMPAI') != ''){
-                    $query->where('A.TANGGAL_KUNJUNGAN', '<=', date('Y-m-d', strtotime($request->get('TGL_SAMPAI'))));
+                return $kategori; 
+            })
+            ->editColumn("JENIS_USAHA", function($data){
+                $jenis_usaha = $data->JENIS_USAHA;
+                $jenis_usaha = explode('-', $jenis_usaha);
+                $jenis = '';
+                foreach($jenis_usaha as $key => $value){
+                    $jenis .= '<span class="badge badge-secondary" style="text-transform: capitalize">' . $jenis_usaha[$key] .'</span>&nbsp;';
                 }
-            }
-            if ($request->has('LOKASI')) {
-                if($request->get('LOKASI') != ''){
-                    if($request->get('LOKASI') == 1) {
-                        $query->whereNotNull('A.LAT');
-                        $query->whereNotNull('A.LNG');
-                    } else {
-                        $query->whereNull('A.LAT');
-                        $query->whereNull('A.LNG');
+                return $jenis;
+            })
+            ->editColumn("TANGGAL_KUNJUNGAN", function($data){
+                $tgl_kunjung = date('d M Y', strtotime($data->TANGGAL_KUNJUNGAN));
+                return $tgl_kunjung;
+            })
+            ->addColumn('AKSI', function($data){
+                $aksi = 
+                '<div class="btn-group">
+                <a href="javascript:void(0)" data-jenis="' . $data->JENIS . '" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success btnEdit"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
+                <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger btnDelete"><i class="fas fa-fw fa-trash-alt"></i></a>
+                </div>';
+                return $aksi;
+            })
+            ->rawColumns(['NAMA_USAHA', 'LOKASI', 'KATEGORI', 'JENIS_USAHA', 'AKSI'])
+            ->filter(function ($query) use ($request) {
+    
+                if ($request->has('KATEGORI')) {
+                    if($request->get('KATEGORI') != ''){
+                        $query->where('A.KATEGORI', '=', $request->get('KATEGORI'));
                     }
                 }
-            }
-            if ($request->has('JENIS')) {
-                if($request->get('JENIS') != ''){
-                    $jenis = $request->get('JENIS');
-                    //$query->where('tempat_jenis_usaha.JENIS_USAHA', '=', $request->get('JENIS'));
-                    $query->whereRaw('(SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) like ?', ["%$jenis%"]);
+                if($request->has('TGL_DARI')) {
+                    if($request->get('TGL_DARI') != ''){
+                        $query->where('A.TANGGAL_KUNJUNGAN', '>=', date('Y-m-d', strtotime($request->get('TGL_DARI'))));
+                    }
                 }
-            }
-            if($request->has('KEYWORD')) {
-                if($request->get('KEYWORD') != ''){
-                    $keyword = $request->get('KEYWORD');
-                    $query->where('A.NAMA_USAHA', 'like', "%$keyword%");
-                    $query->orWhere('A.CP', 'like', "%$keyword%");
-                    $query->orWhere('A.TELEPON', 'like', "%$keyword%");
-                    $query->orWhere('A.ALAMAT', 'like', "%$keyword%");
+                if($request->has('TGL_SAMPAI')) {
+                    if($request->get('TGL_SAMPAI') != ''){
+                        $query->where('A.TANGGAL_KUNJUNGAN', '<=', date('Y-m-d', strtotime($request->get('TGL_SAMPAI'))));
+                    }
                 }
-            }
-        });
+                if ($request->has('LOKASI')) {
+                    if($request->get('LOKASI') != ''){
+                        if($request->get('LOKASI') == 1) {
+                            $query->whereNotNull('A.LAT');
+                            $query->whereNotNull('A.LNG');
+                        } else {
+                            $query->whereNull('A.LAT');
+                            $query->whereNull('A.LNG');
+                        }
+                    }
+                }
+                if ($request->has('JENIS')) {
+                    if($request->get('JENIS') != ''){
+                        $jenis = $request->get('JENIS');
+                        //$query->where('tempat_jenis_usaha.JENIS_USAHA', '=', $request->get('JENIS'));
+                        $query->whereRaw('(SELECT GROUP_CONCAT(JENIS_USAHA SEPARATOR "-")  FROM tempat_jenis_usaha as B WHERE B.ID_TEMPAT = A.ID_TEMPAT) like ?', ["%$jenis%"]);
+                    }
+                }
+                if($request->has('KEYWORD')) {
+                    if($request->get('KEYWORD') != ''){
+                        $keyword = $request->get('KEYWORD');
+                        $query->where('A.NAMA_USAHA', 'like', "%$keyword%");
+                        $query->orWhere('A.CP', 'like', "%$keyword%");
+                        $query->orWhere('A.TELEPON', 'like', "%$keyword%");
+                        $query->orWhere('A.ALAMAT', 'like', "%$keyword%");
+                    }
+                }
+            });
+            
+        } else {
+            $coords =  DB::table('tempat')->where('AKTIF', 1)->whereIn('JENIS', session()->get('akses')['app']['AKSES_INPUT'])->whereNotIn('JENIS', ['PLANT', 'SOURCING']);
+
+            $datatables = Datatables::of($coords)
+            ->addIndexColumn()
+            ->editColumn("NAMA_USAHA", function($data){
+                $distributor = '<a href="javascript:void" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnDetail">' . $data->NAMA_USAHA .'</a> ';
+                return $distributor; 
+            })
+            ->addColumn("LOKASI",  function($data) {
+                if($data->LAT != null || $data->LNG != null ) {
+                    $lokasi = '<a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="text-primary btnView">Lihat Lokasi</a>'; 
+                } else {
+                    $lokasi = 'Belum Input';
+                }
+                return $lokasi;
+            })
+            ->editColumn("JENIS", function($data){
+                if($data->JENIS === 'LOCO') {
+                    $jenis = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->JENIS .'</span> ';
+                } elseif($data->JENIS === 'ETERLENE') {
+                    $jenis = '<span class="badge badge-info" style="text-transform: capitalize">' . $data->JENIS .'</span> ';
+                } else {
+                    $jenis = 'aa';
+                }
+                return $jenis; 
+            })
+            ->editColumn("TANGGAL_BUAT", function($data){
+                $tgl_buat = date('d M Y', strtotime($data->TANGGAL_BUAT));
+                return $tgl_buat;
+            })
+            ->addColumn('AKSI', function($data){
+                $aksi = 
+                '<div class="btn-group">
+                <a href="javascript:void(0)" data-jenis="' . $data->JENIS . '" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-success btnEdit"><i class="fas fa-fw fa-edit"></i></a>&nbsp;
+                <a href="javascript:void(0)" data-id="' . $data->ID_TEMPAT . '" class="btn btn-smx btn-danger btnDelete"><i class="fas fa-fw fa-trash-alt"></i></a>
+                </div>';
+                return $aksi;
+            })
+            ->rawColumns(['NAMA_USAHA', 'LOKASI', 'JENIS', 'TANGGAL_BUAT', 'AKSI'])
+            ->filter(function ($query) use ($request) {
+    
+                if ($request->has('KATEGORI')) {
+                    if($request->get('KATEGORI') != ''){
+                        $query->where('JENIS', '=', $request->get('KATEGORI'));
+                    }
+                }
+                if ($request->has('LOKASI')) {
+                    if($request->get('LOKASI') != ''){
+                        if($request->get('LOKASI') == 1) {
+                            $query->whereNotNull('LAT');
+                            $query->whereNotNull('LNG');
+                        } else {
+                            $query->whereNull('LAT');
+                            $query->whereNull('LNG');
+                        }
+                    }
+                }
+                if($request->has('KEYWORD')) {
+                    if($request->get('KEYWORD') != ''){
+                        $keyword = $request->get('KEYWORD');
+                        $query->where('NAMA_USAHA', 'like', "%$keyword%");
+                        $query->orWhere('ALAMAT', 'like', "%$keyword%");
+                    }
+                }
+            });
+        }
 
 
         return $datatables->make(true);

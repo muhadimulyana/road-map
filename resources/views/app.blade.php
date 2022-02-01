@@ -323,6 +323,107 @@
         .modal-backdrop.show:nth-of-type(even) {
             z-index: 1051 !important;
         } */
+
+        
+        /* ICON Classes Marker */
+        .custom-marker {
+            position: absolute;
+            border-radius: 50%;
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .custom-marker.loco-marker {
+            color: #fff;
+            background-color: rgba(192, 0, 0, 0.7);
+            border: 2px solid #fff;
+        }
+
+        .custom-marker.sourcing-marker {
+            color: #000;
+            background-color: rgba(49, 209, 89, 0.7);
+            border: 2px solid #fff;
+            /* border: 1px solid #5ace7d; */
+        }
+
+        .custom-marker.eterlene-marker {
+            color: #fff;
+            background-color: rgb(60, 98, 209, 0.7);
+            border: 2px solid #fff;
+            /* border: 1px solid #5b9bd5; */
+        }
+
+        .custom-marker.xs {
+            height: 30px;
+            width: 30px;
+            font-size: 10px;
+            line-height: 30px;
+        }
+
+        .custom-marker.sm {
+            height: 40px;
+            width: 40px;
+            font-size: 12px;
+            line-height: 40px;
+        }
+
+        .custom-marker.md {
+            height: 50px;
+            width: 50px;
+            font-size: 12px;
+            line-height: 50px;
+        }
+
+        .custom-marker.lg {
+            height: 60px;
+            width: 60px;
+            font-size: 12px;
+            line-height: 60px;
+        }
+
+        .custom-marker.xl {
+            height: 70px;
+            width: 70px;
+            font-size: 12px;
+            line-height: 70px;
+        }
+
+        .custom-marker-zoomend {
+            width: 5px !important;
+            height: 5px !important;
+            font-size: 0px !important;
+        }
+
+        .filter .dropdown-toggle::after {
+            display: none;
+        }
+
+        .legend {
+            width: 1em;
+            height: 1em;
+            float: left;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        .legend.legend-loco {
+            background-color: rgba(192, 0, 0);
+        }
+
+        .legend.legend-eterlene {
+            background-color: rgb(60, 98, 209);
+        }
+
+        .legend.legend-sourcing {
+            background-color: rgba(49, 209, 89);
+        }
+
+        .legend-img {
+            width: 20px;
+            margin: -5px 0 0 0;
+        }
+
     </style>
 
 </head>
@@ -334,48 +435,82 @@
         @yield('overlay')
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('/') }}">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-map-marked-alt"></i>
+            <div style="height: auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <!-- Sidebar - Brand -->
+                    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('/') }}">
+                        <div class="sidebar-brand-icon rotate-n-15">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="sidebar-brand-text mx-3" id="brand">Road Map</div>
+                    </a>
+
+                    <!-- Divider -->
+                    <hr class="sidebar-divider my-0">
+
+                    <!-- Nav Item - Dashboard -->
+                    <li class="nav-item {{ Route::is('/') ? 'active' : '' }}" >
+                        <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
+                            <i class="fas fa-fw fa-map-marker-alt"></i>
+                            <span>Map</span></a>
+                    </li>
+                    @if (in_array('SOURCING', session()->get('akses')['app']['AKSES_INPUT']))
+                    <li class="nav-item {{ (Route::is('list') && request()->input('i') === 'sourcing') ? 'active' : '' }}" >
+                        <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list', ['i' => 'sourcing']) }}">
+                            <i class="fas fa-fw fa-list-ul"></i>
+                            <span>Daftar Lokasi Sourcing</span></a>
+                    </li>
+                    @endif
+                    @if (in_array('LOCO', session()->get('akses')['app']['AKSES_INPUT']) || in_array('ETERLENE', session()->get('akses')['app']['AKSES_INPUT']))
+                    <li class="nav-item {{ (Route::is('list') && request()->input('i') === 'marketing') ? 'active' : '' }}" >
+                        <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list', ['i' => 'marketing']) }}">
+                            <i class="fas fa-fw fa-list-ul"></i>
+                            <span>Daftar Lokasi Sales</span></a>
+                    </li>
+                    @endif
+                    <!-- Divider -->
+                    <hr class="sidebar-divider d-none d-md-block">
+                    <!-- Heading -->
+
+                    <!-- Nav Item - Pages Collapse Menu -->
+                    <li class="nav-item"  >
+                        <a class="nav-link" id="btnLogout" style="padding: 0.2rem 1rem;" href="javascript:void(0)">
+                            <i class=" fas fa-sign-out-alt"></i>
+                            <span>Logout</span></a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </li>
+
+                    <!-- Divider -->
+                    <hr class="sidebar-divider d-none d-md-block">
+
+                    <div class="d-flex justify-content-center">
+                        <!-- Sidebar Toggler (Sidebar) -->
+                        <div class="text-center d-none d-md-inline">
+                            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                        </div>
+                    </div>
                 </div>
-                <div class="sidebar-brand-text mx-3" id="brand">Road Map</div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ Route::is('/') ? 'active' : '' }}" >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
-                    <i class="fas fa-fw fa-map-marker-alt"></i>
-                    <span>Map</span></a>
-            </li>
-            <li class="nav-item {{ Route::is('list') ? 'active' : '' }}" >
-                <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list') }}">
-                    <i class="fas fa-fw fa-list-ul"></i>
-                    <span>Daftar Lokasi</span></a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-            <!-- Heading -->
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item"  >
-                <a class="nav-link" id="btnLogout" style="padding: 0.2rem 1rem;" href="javascript:void(0)">
-                    <i class=" fas fa-sign-out-alt"></i>
-                    <span>Logout</span></a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                @if (Route::is('/'))
+                <div>
+                    <div class="bg-white text-dark m-2 p-2" style="border-radius: 10px;">
+                        <strong>Legend: </strong>
+                        <div class="d-lg-flex flex-column align-items-start w-100">
+                            <div>
+                                <li><div class="legend legend-loco"></div>&nbsp;&nbsp;Loco</li>
+                                <li><div class="legend legend-eterlene"></div>&nbsp;&nbsp;Eterlene</li>
+                                <li><div class="legend legend-sourcing"></div>&nbsp;&nbsp;Sourcing</li>
+                            </div>
+                            <div>
+                                <li><img src="assets/img/marker/red-1.png" class="legend-img" alt="">&nbsp;ERA</li>
+                                <li><img src="assets/img/marker/blue-1.png" class="legend-img">&nbsp;ERI</li>
+                                <li><img src="assets/img/marker/green-1.png" class="legend-img">&nbsp;ETR</li>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
 
         </ul>
@@ -399,39 +534,64 @@
                             </button>
                         </div>
                         <div class="modal-body" style="height: 70vh; overflow-y: auto;">
-
-                            @if (session()->get('akses')['app']['AKSES_INPUT_ALL'] == 1)
-                            <h5 class="text-primary mb-3">Jenis Inputan</h5>
+                            <h5 class="text-primary mb-3">Kategori</h5>
                             <div class="form-group">
-                                <label>Jenis</label>
+                                <label>Kategori</label>
                                 <div class="row">
+                                    @foreach (session()->get('akses')['app']['AKSES_INPUT'] as $key => $val)
+                                    @if ($val !== 'PLANT') 
                                     <div class="col-lg-3 col-6">
                                         <div class="custom-control custom-radio" style="display: inline-block;">
                                             <input type="radio" required name="jenis" class="custom-control-input jenis"
-                                                id="loco" value="LOCO">
-                                            <label class="custom-control-label" for="loco">LOCO</label>
+                                                id="{{ strtolower($val) }}" value="{{ $val }}">
+                                            <label class="custom-control-label" for="{{ strtolower($val) }}">{{ $val }}</label>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-6">
-                                        <div class="custom-control custom-radio" style="display: inline-block;">
-                                            <input type="radio" required name="jenis" class="custom-control-input jenis"
-                                                id="eterlene" value="ETERLENE">
-                                            <label class="custom-control-label" for="eterlene">ETERLENE</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-6">
-                                        <div class="custom-control custom-radio" style="display: inline-block;">
-                                            <input type="radio" required name="jenis" class="custom-control-input jenis"
-                                                id="sourcing" value="SOURCING">
-                                            <label class="custom-control-label" for="sourcing">SOURCING</label>
-                                        </div>
-                                    </div>
+                                    @endif
+                                    @endforeach
                                 </div>
                             </div>  
                             <hr>
-                            @endif
-                            <div id="form_container">
-                                @include('form.' . session()->get('akses')['app']['AKSES_INPUT'][0]);
+                            <div id="form_container" style="min-height: 100%">
+                                @include('form.' . strtolower(session()->get('akses')['app']['AKSES_INPUT'][0]))
+                            </div>
+                            <hr>
+                            <h5 class="text-primary mt-3 mb-3">Koordinat (Opsional)</h5>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Latitude</label>
+                                <input type="text" class="form-control" id="lat" autocomplete="off"
+                                    placeholder="Masukkan koordinat latitude" name="lat">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Longitude</label>
+                                <input type="text" class="form-control" id="lng" autocomplete="off"
+                                    placeholder="Masukkan koordinat longitude" name="lng">
+                            </div>
+                            <a href="#" class="badge badge-primary text-md" id="addFromMap">Pilih dari map</a>
+                            <hr>
+                            <div class="form-group d-none">
+                                <label for="exampleInputEmail1">Warna Pin</label><br>
+                                <label>
+                                    <input type="radio" name="pin" class="color-pin" value="green">
+                                    <img width="50px" src="assets/img/marker/green-1.png">
+                                </label>
+                        
+                                <label>
+                                    <input type="radio" class="color-pin" name="pin" value="blue">
+                                    <img width="50px" src="assets/img/marker/blue-2.png">
+                                </label>
+                                <label>
+                                    <input type="radio" class="color-pin" name="pin" value="red">
+                                    <img width="50px" src="assets/img/marker/red-1.png">
+                                </label>
+                                <label>
+                                    <input type="radio" class="color-pin" name="pin" value="yellow">
+                                    <img width="50px" src="assets/img/marker/yellow-1.png">
+                                </label>
+                                <label>
+                                    <input type="radio" class="color-pin" name="pin" value="black">
+                                    <img width="50px" src="assets/img/marker/black-2.png">
+                                </label>
                             </div>
                         </div>
                         
@@ -450,9 +610,7 @@
             </div>
         </div>
 
-        @if (in_array('SOURCING', session()->get('akses')['app']['AKSES_INPUT']))
-            @include('modal.sourcing')
-        @endif
+        @include('modal.sourcing')
 
         @yield('modal')
     </div>
@@ -517,6 +675,16 @@
                 if ((event.which < 48 || event.which > 57)) {
                     event.preventDefault();
                 }
+            });
+
+            $(document).on("keypress keyup blur", '.decimal', function(e){
+                var val = $(this).val();
+                if(isNaN(val)){
+                    val = val.replace(/[^0-9\.]/g,'');
+                    if(val.split('.').length>2) 
+                        val =val.replace(/\.+$/,"");
+                }
+                $(this).val(val); 
             });
 
             // Modal 2
@@ -653,6 +821,41 @@
                 $('#addMesinModal').modal('hide');
             });
 
+            $('.c-plant').on('change', function(e) {
+                var id = $(this).attr('data-id');
+                if($(this).is(':checked')) {
+                    $('#c_plant_jarak' + id).prop('readonly', false)
+                } else {
+                    $('#c_plant_jarak' + id).prop('readonly', true);
+                    $('#c_plant_jarak' + id).val('');
+                }
+            })
+
+            $("#checkAllPlant").change(function(){ // Ketika user men-cek checkbox all      
+                if($(this).is(":checked")) // Jika checkbox all diceklis
+                    $(".c-plant").prop("checked", true).change(); // ceklis semua checkbox siswa dengan class "c-mesin"
+                else // Jika checkbox all tidak diceklis
+                    $(".c-plant").prop("checked", false).change(); // un-ceklis semua checkbox siswa dengan class "c-mesin"
+            });
+
+            $('#okJarak').on('click', function(e) {
+                var cekJarak = $('.c-plant:checked').length
+                $('#cJarak').html('');
+                if(cekJarak > 0) {
+                    $('.c-plant:checked').each(function(i, obj) {
+                        var margin = i == 0 ? '' : ' mt-3 mt-md-0';
+                        var value = $(obj).val();
+                        var id = $(obj).attr('data-id');
+                        var value_jarak = !$('#c_plant_jarak' + id).val() ? '0' : $('#c_plant_jarak' + id).val();
+                        
+                        $('#cJarak').append('<div class="row ' + margin + '"><div class="col-md-6 mb-2 mb-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Plant" value="' + value + '" required name="plant[]"></div><div class="col-md-6"><input type="text" value="' + value_jarak + '" class="form-control readonly" placeholder="Jarak" required name="jarak[]"></div></div>');
+                    });
+                } else {
+                    $('#cMesin').append('<div class="row"><div class="col-md-6 mb-2 mb-md-3"><input type="text" class="form-control readonly" style="text-transform: capitalize;" placeholder="Plant" value="" required name="plant[]"></div><div class="col-md-6"><input type="text" value="" class="form-control readonly" placeholder="Jarak" required name="jarak[]"></div></div>');
+                }
+                $('#addJarakModal').modal('hide');
+            });
+
 
             //  ============================ //
 
@@ -705,6 +908,7 @@
                 if (foundMarker != undefined) {
                     mymap.removeLayer(foundMarker);
                 }
+                $('.jenis').attr('disabled', false);
             })
 
             $('.add').on('click', function () {
@@ -759,6 +963,7 @@
                         "id": id
                     },
                     success: function (data) {
+                        $('.jenis:not(:checked)').attr('disabled', true);
                         $('#nama_usaha').val(data.tempat.NAMA_USAHA);
                         $('#alamat').val(data.tempat.ALAMAT);
                         if(data.tempat.JENIS == 'SOURCING') {
@@ -810,19 +1015,40 @@
                                 $('.c-kepemilikan[data-value="' + data.mesin[i].MESIN + '"]').val(data.mesin[i].KEPEMILIKAN).change();
                                 $('.c-mesin-qty[data-value="' + data.mesin[i].MESIN  + '"]').val(data.mesin[i].QTY);
                             }
-                        } else {
+                        } else if(data.tempat.JENIS === 'LOCO' || data.tempat.JENIS === 'ETERLENE') {
+                            $('#urut').val(data.tempat.URUT);
                             $('#tonase').val(data.tempat.TONASE);
                             $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
-                            
+                            // $('#plant_terdekat').val(data.tempat.PLANT_TERDEKAT).change();
+                            // $('#jarak').val(data.tempat.JARAK_METER);
 
                             var jenis_kendaraan = [];
                             for(var i = 0; i < data.jenis_kendaraan.length; i++) {
                                 jenis_kendaraan.push(data.jenis_kendaraan[i].JENIS_KENDARAAN);
                             }
 
-                            console.log(jenis_kendaraan)
-
                             $('#jenis_kendaraan').val(jenis_kendaraan).change();
+
+                            $('#cJarak').html('');
+                            for(var i = 0; i < data.jarak.length; i++) {
+                                var margin = i == 0 ? '' : ' mt-3 mt-md-0';
+                                var kode_plant = data.jarak[i].KODE_PLANT;
+                                var plant = data.jarak[i].PLANT;
+                                var jarak = data.jarak[i].JARAK;
+                                var lat = data.jarak[i].LAT;
+                                var lng = data.jarak[i].LNG;
+
+                                $('#cJarak').append(`<div class="row ${margin}"><div class="col-md-6 mb-2 mb-md-3">
+                                    <input type="text" name="plant_nama[]" value="${plant}" class="form-control readonly" required  readonly placeholder="Plant">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control jarak decimal" placeholder="Jarak (Km)" id="jarak${kode_plant}" value="${jarak}" name="jarak[]">
+                                </div>
+                                <input type="hidden" data-lat="${lat}" data-lng="${lng}" class="plants" id="plant${kode_plant}" name="plant[]" value="${kode_plant}"></div>`);
+
+                                $('.c-plant[value="' + data.jarak[i].KODE_PLANT + '"]').prop('checked', true).change();
+                                $('.c-plant-jarak[data-value="' + data.jarak[i].KODE_PLANT  + '"]').val(data.jarak[i].JARAK);
+                            }
 
                         }
                         $("#lat").val(data.tempat.LAT)
@@ -893,7 +1119,7 @@
                 $('#addMarkerJudul').html('Tambah Lokasi');
                 $('#cExistImage').hide();
             });
-
+            
             $(document).on('change', '.jenis', function() {
                 var form = $(this).val();
                 $.ajax({
@@ -921,6 +1147,43 @@
                     }
                 });
             });
+
+            $(document).on('click', '#calculate', function() {
+                if($('#lat').val().length === 0 || $('#lng').val().length === 0) {
+                    alert('Harap isi koordinat latitude dan longitude');
+                    return false;
+                } else {
+                    $('.plants').each(function(i, obj) {
+                        var plantLatCoords = $(this).attr('data-lat');
+                        var plantLngCoords = $(this).attr('data-lng');
+                        var destinationLatCoords = $('#lat').val();
+                        var destinationLngCoords = $('#lng').val();
+
+                        var hitung = createInvMarker([plantLatCoords, plantLngCoords], [destinationLatCoords, destinationLngCoords])
+
+                        var jarak = Math.round(hitung*100)/100;
+
+                        $(`#jarak${$(this).val()}`).val(jarak);
+                    });
+                }
+            });
+
+            function createInvMarker (plant, destination) {
+                var plantMarker = L.marker(plant, {
+                    icon: foundIcon,
+                    opacity: 0
+                });
+
+                var destinationMarker = L.marker(destination, {
+                    icon: foundIcon,
+                    opacity: 0
+                });
+
+                var from = plantMarker.getLatLng();
+                var to = destinationMarker.getLatLng();
+
+                return from.distanceTo(to) / 1000;
+            }
 
             $('#btnLogout').on('click', function(e) {
                 Swal.fire({
@@ -959,7 +1222,7 @@
                     //zoomOffset: -1,
                 }).addTo(mymap);
             }
-            mymap.setMaxBounds([[-90,-180],   [90,180]])
+            mymap.setMaxBounds([[-90,-180],[90,180]])
             
             var manIcon = L.icon({
                 iconUrl: 'assets/img/placeholder2.png',
@@ -1043,6 +1306,7 @@
                     35
                 ] // point from which the popup should open relative to the iconAnchor
             });
+
             L.control.zoom({position: 'topright'}).addTo(mymap);
             var searchControl = L.esri.Geocoding.geosearch({ position: 'topright'}).addTo(mymap);
             //var results = L.layerGroup();
@@ -1060,7 +1324,7 @@
             //L.esri.basemapLayer('GrayLabels').addTo(mymap);
 
             mymap.setMaxZoom(18);
-            mymap.setMinZoom(3);
+            mymap.setMinZoom(5);
             L.control.scale().addTo(mymap);
 
             //Tidak dipakai
@@ -1093,15 +1357,19 @@
                 var place = this.options.place;
                 var lat = this.options.LAT;
                 var lng = this.options.LNG;
-                var badge =this.options.MARKER == 'green' ? 'font-weight-bold badge badge-success' : (this.options.MARKER == 'red' ? 'font-weight-bold badge badge-danger' : (this.options.MARKER == 'yellow' ? 'font-weight-bold badge badge-warning' : (this.options.MARKER == 'blue' ? 'font-weight-bold badge badge-primary' : 'font-weight-bold badge badge-secondary')))
+                var badge =this.options.KATEGORI == 'supplier' ? 'font-weight-bold badge badge-success' : (this.options.KATEGORI == 'kompetitor' ? 'font-weight-bold badge badge-danger' : (this.options.KATEGORI == 'non supplier' ? 'font-weight-bold badge badge-warning' : 'font-weight-bold badge badge-secondary'))
                 markerPopup(this._leaflet_id, false);
 
                 $("#placeName").html(place);
                 $('input[name="jenis"][value="' + jenis + '"]').prop("checked", true).change()
 
+                $("#btnEdit").removeClass("disabled")
+                $("#btnDelete").removeClass("disabled")
+
                 if(this.options.JENIS === 'SOURCING') {
                     $('.sourcing-detail').removeClass('d-none');
                     $('.loco-detail').addClass('d-none');
+                    $('.plant-detail').addClass('d-none');
                     $('#kategoriText').html(this.options.KATEGORI);
                     $('#kategoriText').removeClass();
                     $('#kategoriText').addClass(badge);
@@ -1111,12 +1379,22 @@
                     $('#alamatText').html(this.options.ALAMAT);
                     $('#statusTempatText').html(this.options.STATUS_USAHA);
                     $('#jmlPekerjaText').html(this.options.JUMLAH_PEKERJA);
-                } else {
+                } else if(this.options.JENIS === 'LOCO' || this.options.JENIS === 'ETERLENE') {
+                    $("#placeName").html(`(${this.options.URUT}) ${place}`);
                     $('.sourcing-detail').addClass('d-none');
+                    $('.plant-detail').addClass('d-none');
                     $('.loco-detail').removeClass('d-none');
                     $('#alamatText2').html(this.options.ALAMAT);
                     $('#tonaseText').html(this.options.TONASE);
                     $('#jmlPengirimanText').html(this.options.JUMLAH_PENGIRIMAN);
+                    //$('#jarakPlantText').html(`${this.options.PLANT_TERDEKAT} (${this.options.JARAK_METER} Meter)`);
+                } else {
+                    $('.sourcing-detail').addClass('d-none');
+                    $('.plant-detail').removeClass('d-none');
+                    $('.loco-detail').addClass('d-none');
+                    $("#btnEdit").addClass("disabled")
+                    $("#btnDelete").addClass("disabled")
+                    $('#alamatText3').html(this.options.ALAMAT);
                 }
 
                 $('#btnEdit').attr('data-id', id)
@@ -1172,15 +1450,19 @@
                             }
     
                             $('#mesinTable').html(mesin);
-                        } else {
+                        } else if(data.tempat.JENIS === 'LOCO' || data.tempat.JENIS === 'ETERLENE') {
                             //Jenis Kendaraan
-                            console.log(data.jenis_kendaraan);
                             var jenis_kendaraan ='';
                             for(var i = 0; i < data.jenis_kendaraan.length; i++) {
                                 jenis_kendaraan += '- ' + data.jenis_kendaraan[i].JENIS_KENDARAAN + '<br>'
                             }
-    
                             $('#jenisKendaraanText').html(jenis_kendaraan);
+
+                            var jarak ='';
+                            for(var i = 0; i < data.jarak.length; i++) {
+                                jarak += '<tr><td style="text-transform: capitalize;">' + data.jarak[i].KODE_PLANT +'</td><td>' + data.jarak[i].JARAK +' Km</td></tr>'
+                            }
+                            $('#jarakTable').html(jarak);
                         }
 
                         //Image Handle

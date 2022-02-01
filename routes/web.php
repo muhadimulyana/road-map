@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CoordController;
 use App\Http\Controllers\LoginController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,11 @@ Auth::routes([
     'reset' => false, // Password Reset Routes...
     'verify' => false, // Email Verification Routes...
 ]);
+
+Route::get('config-cache', function() {
+    $exitCode = Artisan::call('config:cache');
+    // return what you want
+});
 
 // Login
 Route::get('/login', [LoginController::class, 'show_login_form'])->name('login');

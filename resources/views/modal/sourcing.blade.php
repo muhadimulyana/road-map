@@ -195,3 +195,57 @@ data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" dat
         </div>
     </div>
 </div>
+
+<div class="modal fade modal-child" id="addJarakModal" tabindex="-1" role="dialog" data-backdrop="static"
+data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" data-modal-parent="#addMarkerModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Input Jarak</h5>
+            </div>
+            <form id="addJarakForm">
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="3%">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" id="checkAllPlant" class="custom-control-input">
+                                            <label class="custom-control-label" for="checkAllPlant"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col" width="67%">Plant</th>
+                                    <th scope="col" width="30%">Jarak (Meter)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($plant as $row)
+                                <tr>
+                                    <th scope="row">
+                                        <div class="custom-control custom-checkbox" style="display: inline-block;">
+                                            <input type="checkbox" value="{{ $row->KODE }}"
+                                                data-id="{{ $row->KODE }}" name="c_plant[]" required
+                                                id="c_plant{{ $row->KODE }}" class="custom-control-input c-plant">
+                                            <label class="custom-control-label"
+                                                for="c_plant{{ $row->KODE }}"></label>
+                                        </div>
+                                    </th>
+                                    <td style="text-transform: capitalize;">{{ $row->NAMA }}</td>
+                                    <td><input type="tel" placeholder="Jarak" name="c_plant_jarak[]"
+                                            id="c_plant_jarak{{ $row->KODE }}" autocomplete="off"
+                                            data-value="{{ $row->KODE }}" class="form-control c-plant-jarak numeric"
+                                            readonly></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" id="okJarak" href="#">OK</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

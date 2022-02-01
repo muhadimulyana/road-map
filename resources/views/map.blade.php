@@ -25,6 +25,23 @@
                     </a>
                 </div>
             </div>
+            <div class="leaflet-top leaflet-right">
+                <div style="margin-right: 10px; margin-top: 120px; pointer-events: auto;">
+                    <div class="dropdown show filter">
+                        <a class="btn btn-light btn-sm dropdown-toggle" style="border: 2px solid rgba(0, 0, 0, 0.3); height: 34px; line-height: 34px;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-filter" style="line-height: 22px;"></i>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item filter-map active" data-val="all" href="#">SEMUA</a>
+                            @foreach (session()->get('akses')['app']['AKSES_INPUT'] as $k => $val)
+                            @if ($val !== 'PLANT')
+                            <a class="dropdown-item filter-map" data-val="{{ strtolower($val) }}" href="#">{{ $val }}</a>
+                            @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="leaflet-bottom leaflet-right">
                 <a href="javascript:void" class="location btn btn-info btn-circle btn-lg widget">
                     {{-- <i style="font-size: 25px;" class="fas fa-street-view"></i> --}}
@@ -153,6 +170,25 @@
                         <p id="jenisKendaraanText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
                         </p>
                     </div>
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Jarak Dari Plant</label>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Plant</th>
+                                <th scope="col">Jarak</th>
+                            </tr>
+                            </thead>
+                            <tbody id="jarakTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="plant-detail d-none">
+                    <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Alamat</label>
+                        <p id="alamatText3" class="font-weight-bold">Memuat...</p>
+                    </div>
                 </div>
                 <div class="form-group border-bottom">
                     <label for="exampleInputPassword1">Foto</label>
@@ -236,10 +272,61 @@
     }
 
     function mapMarker(data, show) {
+        var icon;
+        var label = '';
+        var popUp;
+        var classJenis;
+        var arrayKodePlant;
+        var arrayJarak;
         for (var i = 0; i < data.length; i++) {
-            var icon = data[i].MARKER == 'red' ? redIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
+            //var icon = data[i].MARKER == 'red' ? locoIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
+            label = data[i].URUT === null ? '' : data[i].URUT;
+            popUp = `<b>${data[i].NAMA_USAHA}</b>`
+            if(data[i].JENIS !== 'PLANT') {
+                var halfSize;
+                var size = 30;
+                var sizeHeight;
+                var jarakText = '';
+                var jmlPengiriman = (data[i].JUMLAH_PENGIRIMAN !== undefined) ? data[i].JUMLAH_PENGIRIMAN : 0;
+                classJenis = data[i].JENIS.toLowerCase();
+                size += parseInt(jmlPengiriman);
+                size = size > 80 ? 80 : size;
+
+                if(data[i].JENIS !== 'SOURCING') {
+                    if(data[i].KODE_PLANT && data[i].JARAK) {
+                        arrayKodePlant = data[i].KODE_PLANT.split("|");
+                        arrayJarak = data[i].JARAK.split("|");
+                        for(var j = 0; j < arrayKodePlant.length; j++) {
+                            jarakText += `<br><b>Jarak dari ${arrayKodePlant[j]}:</b>&nbsp;${arrayJarak[j]} Km`
+                        }
+                    }
+                    popUp += jarakText
+                }
+
+                halfSize = size / 2;
+                sizeHeight = size - 3;
+                icon = L.divIcon({
+                    className: '',
+                    html: `<div class="custom-marker ${classJenis}-marker" style="width: ${size}px; height: ${size}px; line-height: ${sizeHeight}px;">${label}</div>`,
+                    iconSize: [halfSize, halfSize], // classSize of the icon,
+                    iconAnchor: [halfSize, halfSize], // point of the icon which will correspond to marker's location,
+                    popupAnchor: [0, -halfSize] // point from which the popup should open relative to the iconAnchor
+                });
+            } else {
+                if(data[i].KATEGORI === 'ERI') {
+                    icon = blueIcon;
+                } else if(data[i].KATEGORI === 'ETR') {
+                    icon = greenIcon;
+                } else if(data[i].KATEGORI === 'ERA') {
+                    icon = redIcon;
+                } else {
+                    icon = blackIcon;
+                }
+            }
+
             L.marker([data[i].LAT, data[i].LNG], {
                 icon: icon,
+                URUT: data[i].URUT,
                 ID_TEMPAT: data[i].ID_TEMPAT,
                 JENIS: data[i].JENIS,
                 place: data[i].NAMA_USAHA,
@@ -258,7 +345,7 @@
                 LNG: data[i].LNG,
                 USERNAME: data[i].USERNAME,
                 MARKER: data[i].MARKER
-            }).bindPopup(data[i].NAMA_USAHA).addTo(marker).on('click', markerOnClick).on('mouseover', markerOnHover).on('mouseout', markerOnOut);
+            }).bindPopup(popUp).addTo(marker).on('click', markerOnClick).on('mouseover', markerOnHover).on('mouseout', markerOnOut);
             //marker.bindPopup(data[i].NAMA_USAHA);
             //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
             if (show) {
@@ -357,8 +444,20 @@
         $('.widget').attr('style', 'pointer-events: none !important; cursor : now-allowed;');
         $('#mapid').css('cursor', 'crosshair');
         $('#mapid').css('pointer-events', 'auto');
+        $(".jarak").val('');
         sessionStorage.setItem("clickOnMap", 1);
     })
+
+    $(document).on('click', '.filter-map', function() {
+        var val = $(this).attr('data-val');
+        $('.dropdown-item').removeClass('active');
+        $(this).addClass('active');
+        $('.custom-marker').removeClass('d-none');
+        if(val !== 'all') {
+            $('.custom-marker').addClass('d-none');
+            $(`.${val}-marker`).removeClass('d-none');
+        }
+    });
 
 @endpush
 </script>
