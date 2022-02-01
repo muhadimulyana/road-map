@@ -39,32 +39,18 @@
                             <div class="col-md-4 mb-2">
                                 <select name="f_kategori" style="width: 100%;" data-placeholder="Pilih kategori" id="f_kategori" class="form-control select2">
                                     <option value=""></option>
-                                    <option value="supplier">Supplier</option>
-                                    <option value="non supplier">Non Supplier</option>
-                                    <option value="kompetitor">Kompetitor</option>
+                                    @foreach (session()->get('akses')['app']['AKSES_INPUT'] as $k => $val)
+                                    @if ($val !== 'PLANT' && $val !== 'SOURCING')
+                                    <option value="{{ $val }}">{{ $val }}</option>
+                                    @endif
+                                    @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" name="f_tgl_dari" id="f_tgl_dari" placeholder="Tanggal kunjungan dari" class="form-control datepicker">
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <input type="text" name="f_tgl_sampai" id="f_tgl_sampai" placeholder="Tanggal kunjungan sampai" class="form-control datepicker">
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4 mb-2">
                                 <select name="f_lokasi" style="width: 100%;" data-placeholder="Pilih status lokasi" id="f_lokasi" class="form-control select2">
                                     <option value=""></option>
                                     <option value="1">Sudah Input</option>
                                     <option value="0">Belum Input</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <select name="f_jenis_usaha" style="width: 100%;" data-placeholder="Pilih jenis usaha" id="f_jenis_usaha" class="form-control select2">
-                                    <option value=""></option>
-                                    @foreach ($jenis_usaha as $row)
-                                        <option value="{{ strtolower($row->JENIS_USAHA)}}">{{ $row->JENIS_USAHA }}</option>
-                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4 mb-2">
@@ -91,13 +77,10 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Nama Usaha</th>
+                                    <th>Distributor/Customer</th>
                                     <th>Lokasi</th>
                                     <th>Kategori</th>
-                                    <th>Jenis Usaha</th>
-                                    <th>CP</th>
-                                    <th>Telp</th>
-                                    <th>Tgl Kunjungan</th>
+                                    <th>Tgl Buat</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -490,16 +473,6 @@
         // }
     }, '.btnEdit')
 
-    // $(document).on('mouseover', '.btnEdit', function(e) {
-    //     var jenis = $(this).attr('data-jenis');
-    //     mouseenter: function () {
-    //         $('input[name="jenis"][value="' + jenis + '"]').prop("checked", true).change()
-    //     }
-    //     // mouseleave: function () {
-    //     //     $('input[name="jenis"][value="' + jenis + '"]').prop("checked", false).change()
-    //     // }
-    // })
-
     // Edit Section
     $(document).on('click', '.btnEdit', function(e) {
         e.preventDefault();
@@ -515,7 +488,6 @@
                 "id": id
             },
             success: function (data) {
-                console.log(data)
                 //$('input[name="jenis"][value="' + data.tempat.JENIS + '"]').prop("checked", true).change()
                 $('.jenis:not(:checked)').attr('disabled', true);
 
@@ -576,6 +548,7 @@
                     $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
                     $('#plant_terdekat').val(data.tempat.PLANT_TERDEKAT).change();
                     $('#jarak').val(data.tempat.JARAK_METER);
+
 
                     var jenis_kendaraan = [];
                     for(var i = 0; i < data.jenis_kendaraan.length; i++) {
@@ -789,10 +762,7 @@
             data: function (d) {
                 d.JENIS_INPUT = $('#jenis').val(),
                 d.KATEGORI = $('#f_kategori').val(),
-                d.TGL_DARI = $('#f_tgl_dari').val(),
-                d.TGL_SAMPAI = $('#f_tgl_sampai').val(),
                 d.LOKASI = $('#f_lokasi').val(),
-                d.JENIS = $('#f_jenis_usaha').val(),
                 d.KEYWORD = $('#keyword').val()
             }
         },
@@ -809,34 +779,21 @@
                 name: 'LOKASI'
             },
             {
-                data: 'KATEGORI',
-                name: 'KATEGORI'
+                data: 'JENIS',
+                name: 'JENIS'
             },
             {
-                data: 'JENIS_USAHA',
-                name: 'JENIS_USAHA'
-            },
-            
-            {
-                data: 'CP',
-                name: 'CP'
-            },
-            {
-                data: 'TELEPON',
-                name: 'TELEPON'
-            },
-            {
-                data: 'TANGGAL_KUNJUNGAN',
-                name: 'TANGGAL_KUNJUNGAN'
+                data: 'TANGGAL_BUAT',
+                name: 'TANGGAL_BUAT'
             },
             {
                 data: 'AKSI',
                 name: 'AKSI'
             }
         ],
-        order: [[7, 'desc']],
+        order: [[4, 'desc']],
         columnDefs: [
-            { orderable: false, targets: [0, 4, 8] }
+            { orderable: false, targets: [0, 2, 5] }
         ],
     });
 
@@ -853,5 +810,4 @@
     });
 @endpush
 </script>
-
 
