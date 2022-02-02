@@ -272,27 +272,35 @@
     }
 
     function mapMarker(data, show) {
+        mymap.removeLayer(marker);
+        marker = L.layerGroup().addTo(mymap);
         var icon;
         var label = '';
         var popUp;
         var classJenis;
         var arrayKodePlant;
         var arrayJarak;
+        var defaultSize = 25;
+        var maxWidthMarker = 80;
         for (var i = 0; i < data.length; i++) {
             //var icon = data[i].MARKER == 'red' ? locoIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
             label = data[i].URUT === null ? '' : data[i].URUT;
             popUp = `<b>${data[i].NAMA_USAHA}</b>`
             if(data[i].JENIS !== 'PLANT') {
-                var halfSize;
-                var size = 30;
-                var sizeHeight;
-                var jarakText = '';
-                var jmlPengiriman = (data[i].JUMLAH_PENGIRIMAN !== undefined) ? data[i].JUMLAH_PENGIRIMAN : 0;
+
                 classJenis = data[i].JENIS.toLowerCase();
-                size += parseInt(jmlPengiriman);
-                size = size > 80 ? 80 : size;
+                var size = defaultSize;
+                var halfSize;
+                var sizeHeight;
 
                 if(data[i].JENIS !== 'SOURCING') {
+                    var jarakText = '';
+                    var jmlPengiriman = (data[i].JUMLAH_PENGIRIMAN !== undefined) ? data[i].JUMLAH_PENGIRIMAN : 0;
+                    var maxPengiriman = data[i].MAX_KIRIM;
+                    var persenPengiriman = (jmlPengiriman / maxPengiriman); 
+                    size = maxWidthMarker * persenPengiriman;
+                    size = size < 25 ? 25 : (size > 80 ? 80 : size);
+
                     if(data[i].KODE_PLANT && data[i].JARAK) {
                         arrayKodePlant = data[i].KODE_PLANT.split("|");
                         arrayJarak = data[i].JARAK.split("|");
@@ -300,6 +308,7 @@
                             jarakText += `<br><b>Jarak dari ${arrayKodePlant[j]}:</b>&nbsp;${arrayJarak[j]} Km`
                         }
                     }
+                    popUp += ` (${data[i].JUMLAH_PENGIRIMAN})`
                     popUp += jarakText
                 }
 
@@ -349,10 +358,8 @@
             //marker.bindPopup(data[i].NAMA_USAHA);
             //L.marker([data[i].LAT, data[i].LNG]).addTo(results);
             if (show) {
-                mymap.setView([data[i].LAT, data[i].LNG], 18);
+                mymap.setView([data[0].LAT, data[0].LNG], 12);
                 //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
-            } else {
-                //marker.bindPopup(data[i].place);
             }
         }
     }
@@ -411,7 +418,7 @@
                 } else { // jika update
                     if($('#id_marker').val().length > 0){ // jika id marker memiliki value
                         marker.removeLayer($('#id_marker').val()); // remove marker berdasarkan id
-                        if(!response[0].KOSONG){ // jika respon empty false (ada data lat dan lng)
+                        if(response[0].LAT.length !== 0 && response[0].LAT.length !== 0){ // jika respon empty false (ada data lat dan lng)
                             mapMarker(response, true); // tambahkan 1 marker
                         }
                     }

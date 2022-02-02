@@ -64,16 +64,17 @@ class CoordController extends Controller
         //     ->get();
 
         $coords = DB::table('tempat as a')
-            ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK')
-            ->join('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT', 'LEFT')
+            ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM')
+            ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
+            ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
             ->whereNotNull('a.LAT')
             ->where('a.AKTIF', 1)
             ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
-            ->groupBy('a.ID_TEMPAT')
+            ->groupBy('a.ID_TEMPAT', 'a.KATEGORI')
             ->orderBy('a.ID_TEMPAT')
             ->get();
             
-            
+        //dd($coords);
         return response()->json($coords, 200, []);
 
     }
@@ -264,36 +265,48 @@ class CoordController extends Controller
 
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
-            $response[] = [
-                'ID_TEMPAT' => $data['ID_TEMPAT'],
-                'JENIS' => $data['JENIS'],
-                'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
-                'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
-                'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
-                'CP' => (isset($data['CP'])) ? $data['CP'] : '',
-                'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
-                'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
-                'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
-                'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
-                'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
-                'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
-                'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
-                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
-                'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
-                'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
-                'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
-                'JARAK' => (isset($jarak)) ? $jarak : [],
-                'LAT' => $request->lat,
-                'LNG' => $request->lng,
-                'KOSONG' => $request->lat == null ? true : false,
-                'AKSI' => 'tambah',
-                'code' => 200,
-            ];
+            // $response[] = [
+            //     'ID_TEMPAT' => $data['ID_TEMPAT'],
+            //     'JENIS' => $data['JENIS'],
+            //     'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
+            //     'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+            //     'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
+            //     'CP' => (isset($data['CP'])) ? $data['CP'] : '',
+            //     'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
+            //     'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
+            //     'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
+            //     'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
+            //     'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
+            //     'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
+            //     'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
+            //     'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
+            //     'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
+            //     'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
+            //     'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
+            //     'JARAK' => (isset($jarak)) ? $jarak : [],
+            //     'LAT' => $request->lat,
+            //     'LNG' => $request->lng,
+            //     'KOSONG' => $request->lat == null ? true : false,
+            //     'AKSI' => 'tambah',
+            //     'code' => 200,
+            // ];
+
+            $code = 200;
+            $response = DB::table('tempat as a')
+                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM, "tambah" as AKSI')
+                ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
+                ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
+                ->whereNotNull('a.LAT')
+                ->where('a.AKTIF', 1)
+                ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
+                ->groupBy('a.ID_TEMPAT', 'a.KATEGORI')
+                ->orderBy('a.ID_TEMPAT', 'DESC')
+                ->get();
             
             DB::commit();
 
         } catch (QueryException $e) {
-
+            $code = 500;
             $response[] = [
                 'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2],
                 'code' => 500,
@@ -304,7 +317,7 @@ class CoordController extends Controller
 
         //dd($response);
 
-        return response()->json($response, $response[0]['code'], []);
+        return response()->json($response, $code, []);
 
     }
 
@@ -377,6 +390,7 @@ class CoordController extends Controller
                     ->selectRaw('a.*, b.LAT, b.LNG')
                     ->join('tempat as b', 'a.KODE_PLANT', '=', 'b.KATEGORI', 'LEFT')
                     ->where('a.ID_TEMPAT', $id)
+                    ->orderBy('a.KODE_PLANT', 'ASC')
                     ->get();
 
             $response = [
@@ -410,7 +424,8 @@ class CoordController extends Controller
                 'LNG' => $request->lng,
                 'TANGGAL_KUNJUNGAN' => date('Y-m-d', strtotime($request->tgl_kunjungan)),
                 'USERNAME' => session()->get('user')['USERNAME'],
-                'MARKER' => $request->pin
+                'MARKER' => $request->pin,
+                'TANGGAL_UBAH' => date('Y-m-d H:i:s')
             ];
     
             // jenis usaha
@@ -457,7 +472,8 @@ class CoordController extends Controller
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
                 'MARKER' => $request->pin,
-                'USERNAME' => session()->get('user')['USERNAME']
+                'USERNAME' => session()->get('user')['USERNAME'],
+                'TANGGAL_UBAH' => date('Y-m-d H:i:s')
             ];
 
             foreach($request->jenis_kendaraan as $key => $value) {
@@ -543,44 +559,55 @@ class CoordController extends Controller
             ($del_image) ? DB::table('tempat_gambar')->where('ID_TEMPAT', $request->id_tempat)->whereIn('GAMBAR', $request->del_image)->delete() : '';
             ($files) ? DB::table('tempat_gambar')->insert($files) : '';
 
-            $response[] = [
-                'ID_TEMPAT' => $request->id_tempat,
-                'JENIS' => $request->jenis,
-                'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
-                'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
-                'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
-                'CP' => (isset($data['CP'])) ? $data['CP'] : '',
-                'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
-                'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
-                'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
-                'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
-                'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
-                'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
-                'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
-                'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
-                'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
-                'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
-                'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
-                'JARAK' => (isset($jarak)) ? $jarak : [],
-                'LAT' => $request->lat == '' ? null : $request->lat, 
-                'LNG' => $request->lng == '' ? null : $request->lng,
-                'KOSONG' => $request->lat == null ? true : false,
-                'AKSI' => 'ubah',
-                'code' => 200,
-            ];
+            // $response[] = [
+            //     'ID_TEMPAT' => $request->id_tempat,
+            //     'JENIS' => $request->jenis,
+            //     'KATEGORI' => (isset($data['KATEGORI'])) ? $data['KATEGORI'] : '',
+            //     'NAMA_USAHA' => (isset($data['NAMA_USAHA'])) ? $data['NAMA_USAHA'] : '',
+            //     'URUT' => (isset($data['URUT'])) ? $data['URUT'] : '',
+            //     'CP' => (isset($data['CP'])) ? $data['CP'] : '',
+            //     'TELEPON' => (isset($data['TELEPON'])) ? $data['TELEPON'] : '',
+            //     'ALAMAT' => (isset($data['ALAMAT'])) ? $data['ALAMAT'] : '',
+            //     'STATUS_USAHA' => (isset($data['STATUS_USAHA'])) ? $data['STATUS_USAHA'] : '',
+            //     'JUMLAH_PEKERJA' => (isset($data['JUMLAH_PEKERJA'])) ? $data['JUMLAH_PEKERJA'] : '',
+            //     'TANGGAL_KUNJUNGAN' => (isset($data['TANGGAL_KUNJUNGAN'])) ? $data['TANGGAL_KUNJUNGAN'] : '',
+            //     'TANGGAL_BUAT' => (isset($data['TANGGAL_BUAT'])) ? $data['TANGGAL_BUAT'] : '',
+            //     'TONASE' => (isset($data['TONASE'])) ? $data['TONASE'] : '',
+            //     'JUMLAH_PENGIRIMAN' => (isset($data['JUMLAH_PENGIRIMAN'])) ? $data['JUMLAH_PENGIRIMAN'] : 0,
+            //     'USERNAME' => (isset($data['USERNAME'])) ? $data['USERNAME'] : '',
+            //     'MARKER' => (isset($data['MARKER'])) ? $data['MARKER'] : '',
+            //     'KODE_PLANT' => (isset($kode_plant)) ? $kode_plant : [],
+            //     'JARAK' => (isset($jarak)) ? $jarak : [],
+            //     'LAT' => $request->lat == '' ? null : $request->lat, 
+            //     'LNG' => $request->lng == '' ? null : $request->lng,
+            //     'KOSONG' => $request->lat == null ? true : false,
+            //     'AKSI' => 'ubah',
+            //     'code' => 200,
+            // ];
+            $code = 200;
+            $response = DB::table('tempat as a')
+                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM, "update" as AKSI')
+                ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
+                ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
+                ->whereNotNull('a.LAT')
+                ->where('a.AKTIF', 1)
+                ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
+                ->groupBy('a.ID_TEMPAT', 'a.KATEGORI')
+                ->orderBy('a.TANGGAL_UBAH', 'DESC')
+                ->get();
             DB::commit();
 
         } catch (QueryException $e) {
 
             $response[] = [
-                'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2],
-                'code' => 500,
+                'message' => 'Error: ' . '[' . $e->errorInfo[1] . '] ' . $e->errorInfo[2]
             ];
+            $code = 500;
             DB::rollback();
 
         }
 
-        return response()->json($response, $response[0]['code'], []);
+        return response()->json($response, $code, []);
     }
 
     public function delCoord(Request $request)
