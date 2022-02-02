@@ -1,5 +1,8 @@
 <?php
 
+date_default_timezone_set('Asia/Jakarta');
+
+
 use App\Http\Controllers\CoordController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Artisan;

@@ -399,7 +399,7 @@
             display: none;
         }
 
-        .legend {
+        /* .legend {
             width: 1em;
             height: 1em;
             float: left;
@@ -422,6 +422,22 @@
         .legend-img {
             width: 20px;
             margin: -5px 0 0 0;
+        } */
+
+        .legend {
+            font-size: 1rem !important;
+        }
+
+        .text-loco {
+            color: rgba(192, 0, 0) !important;
+        }
+
+        .text-eterlene {
+           color: rgb(60, 98, 209) !important;
+        }
+
+        .text-sourcing {
+            color: rgba(49, 209, 89) !important;
         }
 
     </style>
@@ -493,7 +509,51 @@
                     </div>
                 </div>
                 @if (Route::is('/'))
-                <div>
+                <div class="bg-white text-dark" style="">
+                    <!-- Sidebar - Brand -->
+                    <a class="sidebar-brand text-dark d-flex align-items-center justify-content-center" href="javascript:void(0)" style="height: 2rem">
+                        <div class="sidebar-brand-text mx-3" id="brand">Legend</div>
+                    </a>
+
+                    <!-- Divider -->
+                    <hr class="sidebar-divider my-0" style="border-top: 1px solid rgb(14, 13, 13, 0.15) !important;">
+
+                    <!-- Nav Item - Dashboard -->
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-circle legend text-loco"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">Loco</span></a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-circle legend text-eterlene"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">Eterlene</span></a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-circle legend text-sourcing"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">Sourcing</span></a>
+                    </li>
+
+                    <hr class="sidebar-divider my-0" style="border-top: 1px solid rgb(14, 13, 13, 0.15) !important;">
+
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-map-marker-alt legend text-loco"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">ERA</span></a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-map-marker-alt legend text-eterlene"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">ERI</span></a>
+                    </li>
+                    <li class="nav-item" >
+                        <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
+                            <i class="fas fa-fw fa-map-marker-alt legend text-sourcing"></i>
+                            <span style="font-weight: 700; font-size: 0.9rem;">ETR</span></a>
+                    </li>
+                </div>
+                {{-- <div>
                     <div class="bg-white text-dark m-2 p-2" style="border-radius: 10px;">
                         <strong>Legend: </strong>
                         <div class="d-lg-flex flex-column align-items-start w-100">
@@ -509,7 +569,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 @endif
             </div>
 
