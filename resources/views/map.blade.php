@@ -216,10 +216,48 @@
         </div>
     </div> <!-- modal-bialog .// -->
 </div> <!-- modal.// -->
+
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="mapid2" style="height: 580px !important; ">
+
+                </div>
+                <div class="leaflet-bottom leaflet-right">
+                    {{-- <a href="javascript:void(0)" class="location2 btn btn-danger btn-circle btn-lg">
+                        <img src="assets/img/gps.png" width="35px" alt="">
+                    </a> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 <script>
 @push('script')
+
+    var mymap2 = L.map('mapid2', {
+        zoomControl: false,
+        maxBoundsViscosity: 1.0
+    }).setView([-1, 117], 5);
+    if ($(window).width() >= 993) {
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            tileSize: 512,
+            zoomOffset: -1,
+            noWrap: true
+        }).addTo(mymap2);
+    } else {
+        L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=' + key, {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            noWrap: true
+            //tileSize: 512,
+            //zoomOffset: -1,
+        }).addTo(mymap2);
+    }
+    mymap2.setMaxBounds([[-90,-180],[90,180]])
 
     function onAccuratePositionFound(e) {
         var radius = e.accuracy / 2;
@@ -282,6 +320,7 @@
         var arrayJarak;
         var defaultSize = 25;
         var maxWidthMarker = 80;
+        var range = maxWidthMarker - defaultSize;
         for (var i = 0; i < data.length; i++) {
             //var icon = data[i].MARKER == 'red' ? locoIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
             label = data[i].URUT === null ? '' : data[i].URUT;
@@ -298,8 +337,8 @@
                     var jmlPengiriman = (data[i].JUMLAH_PENGIRIMAN !== undefined) ? data[i].JUMLAH_PENGIRIMAN : 0;
                     var maxPengiriman = data[i].MAX_KIRIM;
                     var persenPengiriman = (jmlPengiriman / maxPengiriman); 
-                    size = maxWidthMarker * persenPengiriman;
-                    size = size < 25 ? 25 : (size > 80 ? 80 : size);
+                    size = (range * persenPengiriman) + defaultSize;
+                    //size = size < 25 ? 25 : (size > 80 ? 80 : size);
 
                     if(data[i].KODE_PLANT && data[i].JARAK) {
                         arrayKodePlant = data[i].KODE_PLANT.split("|");
@@ -378,6 +417,24 @@
             }
         });
     }
+
+    function clearMarker2(){
+        // $(".leaflet-marker-icon").remove();
+        // $(".leaflet-popup").remove();
+        // $(".leaflet-marker-shadow").remove();
+        if (manMarker != undefined) {
+            mymap2.removeLayer(manMarker);
+        }
+        if (circle != undefined) {
+            mymap2.removeLayer(circle);
+        }
+        if (newMarker != undefined) {
+            mymap2.removeLayer(newMarker);
+        }
+        if (foundMarker != undefined) {
+            mymap2.removeLayer(foundMarker);
+        }
+    }
         
     loadMarker();
 
@@ -435,25 +492,64 @@
         });
     });
 
-    $(document).on('click', '.btnConfirm', function () {
-        $('#addMarkerModal').modal('show');
-        $('html').css('cursor', 'alias');
-        $('html').css('pointer-events', 'auto');
-        $('#mapid').css('cursor', 'alias');
-        $('.widget').attr('style', 'pointer-events: auto !important; cursor : alias;');
-        sessionStorage.removeItem("clickOnMap")
+    // $(document).on('click', '.btnConfirm', function () {
+    //     $('#addMarkerModal').modal('show');
+    //     $('html').css('cursor', 'alias');
+    //     $('html').css('pointer-events', 'auto');
+    //     $('#mapid').css('cursor', 'alias');
+    //     $('.widget').attr('style', 'pointer-events: auto !important; cursor : alias;');
+    //     sessionStorage.removeItem("clickOnMap")
+    // });
+
+    // $(document).on('click', '#addFromMap', function() {
+    //     $('#addMarkerModal').modal('hide');
+    //     $('html').css('cursor', 'not-allowed');
+    //     $('html').css('pointer-events', 'none');
+    //     $('.widget').attr('style', 'pointer-events: none !important; cursor : now-allowed;');
+    //     $('#mapid').css('cursor', 'crosshair');
+    //     $('#mapid').css('pointer-events', 'auto');
+    //     $(".jarak").val('');
+    //     sessionStorage.setItem("clickOnMap", 1);
+    // })
+
+    $('#mapModal').on('shown.bs.modal', function(){
+        setTimeout(function() {
+            mymap2.invalidateSize();
+        }, 10);
     });
 
+    $('#mapModal').on('hidden.bs.modal', function() {
+        $('#content-wrapper').css('cursor', 'alias');
+        $('#content-wrapper').css('pointer-events', 'auto');
+        $('#mapid2').css('cursor', 'alias');
+        sessionStorage.removeItem("clickOnMap")
+    })
+
     $(document).on('click', '#addFromMap', function() {
-        $('#addMarkerModal').modal('hide');
-        $('html').css('cursor', 'not-allowed');
-        $('html').css('pointer-events', 'none');
-        $('.widget').attr('style', 'pointer-events: none !important; cursor : now-allowed;');
-        $('#mapid').css('cursor', 'crosshair');
-        $('#mapid').css('pointer-events', 'auto');
+        if (manMarker != undefined) {
+            mymap.removeLayer(manMarker);
+        }
+        if (circle != undefined) {
+            mymap.removeLayer(circle);
+        }
+        if (newMarker != undefined) {
+            mymap.removeLayer(newMarker);
+        }
+        if (foundMarker != undefined) {
+            mymap.removeLayer(foundMarker);
+        }
+        $('#mapModal').modal('show');
+        $('#content-wrapper').css('cursor', 'not-allowed');
+        $('#content-wrapper').css('pointer-events', 'none');
+        $('#mapid2').css('cursor', 'crosshair');
+        $('.location2').show();
         $(".jarak").val('');
         sessionStorage.setItem("clickOnMap", 1);
     })
+
+    $(document).on('click', '.btnConfirm', function () {
+        $('#mapModal').modal('hide');
+    });
 
     $(document).on('click', '.filter-map', function() {
         var val = $(this).attr('data-val');
@@ -464,6 +560,66 @@
             $('.custom-marker').addClass('d-none');
             $(`.${val}-marker`).removeClass('d-none');
         }
+    });
+
+    mymap2.on('click', function (e) {
+
+        if (manMarker != undefined) {
+            mymap2.removeLayer(manMarker);
+        }
+        if (circle != undefined) {
+            mymap2.removeLayer(circle);
+        }
+        if (newMarker != undefined) {
+            mymap2.removeLayer(newMarker);
+        }
+        if (foundMarker != undefined) {
+            mymap2.removeLayer(foundMarker);
+        }
+
+        if(sessionStorage["clickOnMap"]) {
+
+            newMarker = L.marker(e.latlng, {
+                    icon: foundIcon,
+                    draggable: true
+            }).addTo(mymap2);
+
+            geocodeService.reverse().latlng(e.latlng).run(function (error, result) {
+                if (error) {
+                    return;
+                }
+                
+                newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                    '<div class="text-center mt-1"><button class="btn btn-xs btn-success btnConfirm">Pilih Lokasi Ini</button></div>'
+                ).openPopup();
+                
+                //$('#place').val('');
+                $('#lat').val(e.latlng.lat);
+                $('#lng').val(e.latlng.lng);
+
+                //console.log(e.latlng);
+            });
+
+            newMarker.on('dragend', function () {
+                geocodeService2.reverse().latlng(newMarker.getLatLng()).run(function (error, result) {
+                    if (error) {
+                        return;
+                    }
+
+                    newMarker.bindPopup(result.address.Match_addr + '<br>' +
+                        '<div class="text-center mt-1"><button class="btn btn-xs btn-success btnConfirm">Pilih Lokasi Ini</button></div>'
+                    ).openPopup();
+                    
+                    //$('#place').val('');
+                    $('#lat').val(newMarker.getLatLng().lat);
+                    $('#lng').val(newMarker.getLatLng().lng);
+                    //console.log(newMarker.getLatLng());
+                });
+                
+            });
+
+        }
+
     });
 
 @endpush
