@@ -27,6 +27,7 @@ class CoordController extends Controller
             $id = 0;
             $view = 0;
         }   
+        $key = '';
         $keys = DB::table('key_api')->where('aktif', 1)->get();
         $jenis_usaha = DB::table('m_jenis_usaha')->get();
         $jenis_bahan = DB::table('m_jenis_bahan')->get();
@@ -64,9 +65,8 @@ class CoordController extends Controller
         //     ->get();
 
         $coords = DB::table('tempat as a')
-            ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM')
-            ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
-            ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
+            ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, (SELECT MAX(JUMLAH_PENGIRIMAN) FROM tempat) AS MAX_KIRIM')
+            ->leftJoin(DB::raw('(SELECT ID_TEMPAT, KODE_PLANT, JARAK FROM tempat_jarak ORDER BY KODE_PLANT) as b'), 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
             ->whereNotNull('a.LAT')
             ->where('a.AKTIF', 1)
             ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
@@ -110,6 +110,7 @@ class CoordController extends Controller
                 ];
                 break;
             } else {
+                $response = [];
                 DB::table('key_api')->where('key', $row->key)->update(['aktif' => 0]);
             }
         }
@@ -196,6 +197,7 @@ class CoordController extends Controller
                 'ALAMAT' => $request->alamat,
                 'TONASE' => $request->tonase,
                 'JUMLAH_PENGIRIMAN' => $request->jumlah_pengiriman,
+                'EKSPEDISI' => $request->ekspedisi,
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
                 'MARKER' => $request->pin,
@@ -215,7 +217,7 @@ class CoordController extends Controller
                     'ID_TEMPAT' => time(),
                     'KODE_PLANT' => $value,
                     'PLANT' => $request->plant_nama[$key],
-                    'JARAK' => $request->jarak[$key]
+                    'JARAK' => $request->jarak[$key] == '' ? 0 : $request->jarak[$key] 
                 ];
             }
 
@@ -293,7 +295,7 @@ class CoordController extends Controller
 
             $code = 200;
             $response = DB::table('tempat as a')
-                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM, "tambah" as AKSI')
+                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, (SELECT MAX(JUMLAH_PENGIRIMAN) FROM tempat) AS MAX_KIRIM, "tambah" as AKSI')
                 ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
                 ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
                 ->whereNotNull('a.LAT')
@@ -469,6 +471,7 @@ class CoordController extends Controller
                 'ALAMAT' => $request->alamat,
                 'TONASE' => $request->tonase,
                 'JUMLAH_PENGIRIMAN' => $request->jumlah_pengiriman,
+                'EKSPEDISI' => $request->ekspedisi,
                 'LAT' => $request->lat,
                 'LNG' => $request->lng,
                 'MARKER' => $request->pin,
@@ -488,7 +491,7 @@ class CoordController extends Controller
                     'ID_TEMPAT' => $request->id_tempat,
                     'KODE_PLANT' => $value,
                     'PLANT' => $request->plant_nama[$key],
-                    'JARAK' => $request->jarak[$key]
+                    'JARAK' =>  $request->jarak[$key] == '' ? 0 : $request->jarak[$key] 
                 ];
             }
 
@@ -586,9 +589,8 @@ class CoordController extends Controller
             // ];
             $code = 200;
             $response = DB::table('tempat as a')
-                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, c.MAX_KIRIM, "update" as AKSI')
+                ->selectRaw('a.*, GROUP_CONCAT(b.KODE_PLANT SEPARATOR "|") AS KODE_PLANT, GROUP_CONCAT(b.JARAK SEPARATOR "|") AS JARAK, MAX(JUMLAH_PENGIRIMAN) AS MAX_WIDTH, (SELECT MAX(JUMLAH_PENGIRIMAN) FROM tempat) AS MAX_KIRIM, "update" as AKSI')
                 ->leftJoin('tempat_jarak as b', 'a.ID_TEMPAT', '=', 'b.ID_TEMPAT')
-                ->leftJoin(DB::raw('(SELECT JENIS, MAX(JUMLAH_PENGIRIMAN) AS MAX_KIRIM FROM tempat GROUP BY JENIS) as c'), 'a.JENIS', '=', 'c.JENIS')
                 ->whereNotNull('a.LAT')
                 ->where('a.AKTIF', 1)
                 ->whereIn('a.JENIS', session()->get('akses')['app']['AKSES_INPUT'])
@@ -656,6 +658,7 @@ class CoordController extends Controller
     {
         $id = 0;
         $view = 0;
+        $key = '';
         $keys = DB::table('key_api')->where('aktif', 1)->get();
         $jenis_usaha = DB::table('m_jenis_usaha')->get();
         $jenis_bahan = DB::table('m_jenis_bahan')->get();
@@ -712,13 +715,11 @@ class CoordController extends Controller
                 return $lokasi;
             })
             ->editColumn("KATEGORI", function($data){
-                if($data->MARKER == 'green') {
+                if($data->KATEGORI == 'supplier') {
                     $kategori = '<span class="badge badge-success" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-                } elseif($data->MARKER == 'blue') {
-                    $kategori = '<span class="badge badge-primary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-                } elseif($data->MARKER == 'red') {
+                } elseif($data->KATEGORI == 'kompetitor') {
                     $kategori = '<span class="badge badge-danger" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
-                } elseif($data->MARKER == 'yellow') {
+                } elseif($data->KATEGORI == 'non supplier') {
                     $kategori = '<span class="badge badge-warning" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
                 } else {
                     $kategori = '<span class="badge badge-secondary" style="text-transform: capitalize">' . $data->KATEGORI .'</span> ';
@@ -864,5 +865,25 @@ class CoordController extends Controller
 
         return $datatables->make(true);
 
+    }
+
+    public function getFilterCoord(Request $request) {
+
+        $keyword = $request->get('searchTerm');
+        $coord = DB::table('tempat')
+                ->where('AKTIF', 1)->whereIn('JENIS', session()->get('akses')['app']['AKSES_INPUT'])
+                ->whereNotIn('JENIS', ['PLANT'])
+                ->where('NAMA_USAHA', 'like', "%$keyword%")
+                ->orderBy('NAMA_USAHA', 'ASC')
+                ->get();
+
+        foreach($coord as $row){
+            $data[] = [
+                'id' => $row->ID_TEMPAT . '|' . $row->LAT . '|' . $row->LNG,
+                'text' => $row->NAMA_USAHA
+            ];
+        }
+
+        return response()->json($data, 200);
     }
 }
