@@ -22,9 +22,11 @@
         rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="assets/sbadmin/css/sb-admin-2.min.css" rel="stylesheet">
-    {{-- <link rel="stylesheet" href="assets/leaflet/leaflet.css">
+    {{--
+    <link rel="stylesheet" href="assets/leaflet/leaflet.css">
     <script src="assets/leaflet/leaflet.js"></script> --}}
-    {{-- <link rel="stylesheet" href="assets/plugin/leaflet/leaflet.css">
+    {{--
+    <link rel="stylesheet" href="assets/plugin/leaflet/leaflet.css">
     <script src="assets/plugin/leaflet/leaflet.js"></script>
     <script src="assets/plugin/leaflet/esri-leaflet.js"></script>
     <link rel="stylesheet" href="assets/plugin/leaflet/esri-leaflet-geocoder.css">
@@ -139,7 +141,7 @@
             .menu-btn {
                 display: none;
             }
-            
+
         }
 
         .modal .modal-dialog-aside {
@@ -221,7 +223,7 @@
             color: #d6d5d5;
         }
 
-        .select2 {
+        .select2, .select_2 {
             width: 100%;
         }
 
@@ -292,14 +294,15 @@
             z-index: -1;
         }
 
-        .btn-group-sm>.btn, .btn-smx {
+        .btn-group-sm>.btn,
+        .btn-smx {
             padding: .25rem .3rem;
             font-size: .775rem;
             line-height: 1.5;
             border-radius: .2rem;
         }
 
-        .color-pin { 
+        .color-pin {
             position: absolute;
             opacity: 0;
             width: 0;
@@ -307,12 +310,12 @@
         }
 
         /* IMAGE STYLES */
-        .color-pin + img {
+        .color-pin+img {
             cursor: pointer;
         }
 
         /* CHECKED STYLES */
-        .color-pin:checked + img {
+        .color-pin:checked+img {
             outline: 2px solid #108de1;
         }
 
@@ -324,7 +327,7 @@
             z-index: 1051 !important;
         } */
 
-        
+
         /* ICON Classes Marker */
         .custom-marker {
             position: absolute;
@@ -352,6 +355,16 @@
             background-color: rgb(60, 98, 209, 0.7);
             border: 2px solid #fff;
             /* border: 1px solid #5b9bd5; */
+        }
+
+        .outer-marker {
+            background-color: rgb(242, 212, 63, 0.7);
+            border: 2px solid #fff;
+        }
+
+        .inner-marker {
+            color: #fff;
+            background-color: rgba(192, 0, 0, 0.7);
         }
 
         .custom-marker.xs {
@@ -433,11 +446,21 @@
         }
 
         .text-eterlene {
-           color: rgb(60, 98, 209) !important;
+            color: rgb(60, 98, 209) !important;
         }
 
         .text-sourcing {
             color: rgba(49, 209, 89) !important;
+        }
+
+        .leaflet-center {
+            left: 50%;
+            transform: translate(-50%, 0%);
+        }
+
+        .select2, .select_2 {
+            font-size: 15px !important;
+            font-family: 'Nunito', sans-serif !important;
         }
 
     </style>
@@ -451,7 +474,8 @@
         @yield('overlay')
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <div style="height: auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
+            <div
+                style="height: auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <!-- Sidebar - Brand -->
                     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('/') }}">
@@ -465,21 +489,26 @@
                     <hr class="sidebar-divider my-0">
 
                     <!-- Nav Item - Dashboard -->
-                    <li class="nav-item {{ Route::is('/') ? 'active' : '' }}" >
+                    <li class="nav-item {{ Route::is('/') ? 'active' : '' }}">
                         <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('/') }}">
                             <i class="fas fa-fw fa-map-marker-alt"></i>
                             <span>Map</span></a>
                     </li>
                     @if (in_array('SOURCING', session()->get('akses')['app']['AKSES_INPUT']))
-                    <li class="nav-item {{ (Route::is('list') && request()->input('i') === 'sourcing') ? 'active' : '' }}" >
-                        <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list', ['i' => 'sourcing']) }}">
+                    <li
+                        class="nav-item {{ (Route::is('list') && request()->input('i') === 'sourcing') ? 'active' : '' }}">
+                        <a class="nav-link" style="padding: 0.2rem 1rem;"
+                            href="{{ route('list', ['i' => 'sourcing']) }}">
                             <i class="fas fa-fw fa-list-ul"></i>
                             <span>Daftar Lokasi Sourcing</span></a>
                     </li>
                     @endif
-                    @if (in_array('LOCO', session()->get('akses')['app']['AKSES_INPUT']) || in_array('ETERLENE', session()->get('akses')['app']['AKSES_INPUT']))
-                    <li class="nav-item {{ (Route::is('list') && request()->input('i') === 'marketing') ? 'active' : '' }}" >
-                        <a class="nav-link" style="padding: 0.2rem 1rem;" href="{{ route('list', ['i' => 'marketing']) }}">
+                    @if (in_array('LOCO', session()->get('akses')['app']['AKSES_INPUT']) || in_array('ETERLENE',
+                    session()->get('akses')['app']['AKSES_INPUT']))
+                    <li
+                        class="nav-item {{ (Route::is('list') && request()->input('i') === 'marketing') ? 'active' : '' }}">
+                        <a class="nav-link" style="padding: 0.2rem 1rem;"
+                            href="{{ route('list', ['i' => 'marketing']) }}">
                             <i class="fas fa-fw fa-list-ul"></i>
                             <span>Daftar Lokasi Sales</span></a>
                     </li>
@@ -489,7 +518,7 @@
                     <!-- Heading -->
 
                     <!-- Nav Item - Pages Collapse Menu -->
-                    <li class="nav-item"  >
+                    <li class="nav-item">
                         <a class="nav-link" id="btnLogout" style="padding: 0.2rem 1rem;" href="javascript:void(0)">
                             <i class=" fas fa-sign-out-alt"></i>
                             <span>Logout</span></a>
@@ -511,7 +540,8 @@
                 @if (Route::is('/'))
                 <div class="bg-white text-dark" style="">
                     <!-- Sidebar - Brand -->
-                    <a class="sidebar-brand text-dark d-flex align-items-center justify-content-center" href="javascript:void(0)" style="height: 2rem">
+                    <a class="sidebar-brand text-dark d-flex align-items-center justify-content-center"
+                        href="javascript:void(0)" style="height: 2rem">
                         <div class="sidebar-brand-text mx-3" id="brand">Legend</div>
                     </a>
 
@@ -519,17 +549,17 @@
                     <hr class="sidebar-divider my-0" style="border-top: 1px solid rgb(14, 13, 13, 0.15) !important;">
 
                     <!-- Nav Item - Dashboard -->
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-circle legend text-loco"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">Loco</span></a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-circle legend text-eterlene"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">Eterlene</span></a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-circle legend text-sourcing"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">Sourcing</span></a>
@@ -537,17 +567,17 @@
 
                     <hr class="sidebar-divider my-0" style="border-top: 1px solid rgb(14, 13, 13, 0.15) !important;">
 
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-map-marker-alt legend text-loco"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">ERA</span></a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-map-marker-alt legend text-eterlene"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">ERI</span></a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a class="nav-link text-dark" style="padding: 0.2rem 1rem;" href="javacsript:void(0)">
                             <i class="fas fa-fw fa-map-marker-alt legend text-sourcing"></i>
                             <span style="font-weight: 700; font-size: 0.9rem;">ETR</span></a>
@@ -558,9 +588,15 @@
                         <strong>Legend: </strong>
                         <div class="d-lg-flex flex-column align-items-start w-100">
                             <div>
-                                <li><div class="legend legend-loco"></div>&nbsp;&nbsp;Loco</li>
-                                <li><div class="legend legend-eterlene"></div>&nbsp;&nbsp;Eterlene</li>
-                                <li><div class="legend legend-sourcing"></div>&nbsp;&nbsp;Sourcing</li>
+                                <li>
+                                    <div class="legend legend-loco"></div>&nbsp;&nbsp;Loco
+                                </li>
+                                <li>
+                                    <div class="legend legend-eterlene"></div>&nbsp;&nbsp;Eterlene
+                                </li>
+                                <li>
+                                    <div class="legend legend-sourcing"></div>&nbsp;&nbsp;Sourcing
+                                </li>
                             </div>
                             <div>
                                 <li><img src="assets/img/marker/red-1.png" class="legend-img" alt="">&nbsp;ERA</li>
@@ -579,10 +615,10 @@
         <!-- Content Wrapper -->
         @yield('content')
         <!-- End of Content Wrapper -->
-        
+
         <!-- Add Modal-->
-        <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addMarkerModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <form id="formCoord">
                     @csrf
@@ -599,18 +635,19 @@
                                 <label>Kategori</label>
                                 <div class="row">
                                     @foreach (session()->get('akses')['app']['AKSES_INPUT'] as $key => $val)
-                                    @if ($val !== 'PLANT') 
+                                    @if ($val !== 'PLANT')
                                     <div class="col-lg-3 col-6">
                                         <div class="custom-control custom-radio" style="display: inline-block;">
                                             <input type="radio" required name="jenis" class="custom-control-input jenis"
                                                 id="{{ strtolower($val) }}" value="{{ $val }}">
-                                            <label class="custom-control-label" for="{{ strtolower($val) }}">{{ $val }}</label>
+                                            <label class="custom-control-label" for="{{ strtolower($val) }}">{{ $val
+                                                }}</label>
                                         </div>
                                     </div>
                                     @endif
                                     @endforeach
                                 </div>
-                            </div>  
+                            </div>
                             <hr>
                             <div id="form_container" style="min-height: 100%">
                                 @include('form.' . strtolower(session()->get('akses')['app']['AKSES_INPUT'][0]))
@@ -635,7 +672,7 @@
                                     <input type="radio" name="pin" class="color-pin" value="green">
                                     <img width="50px" src="assets/img/marker/green-1.png">
                                 </label>
-                        
+
                                 <label>
                                     <input type="radio" class="color-pin" name="pin" value="blue">
                                     <img width="50px" src="assets/img/marker/blue-2.png">
@@ -654,7 +691,7 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <input type="hidden" name="id_tempat" id="id_tempat">
                         <input type="hidden" name="id_marker" id="id_marker">
                         <div class="modal-footer">
@@ -713,7 +750,7 @@
 
             $('input[name="jenis"][value="' + default_form + '"]').prop("checked", true).change();
 
-            $('.select2').select2({
+            $('.select_2').select2({
                 allowClear: true
             });
             $('.datepicker').bootstrapMaterialDatePicker({
@@ -923,7 +960,7 @@
                 $("#formCoord")[0].reset();
                 $('input[name="jenis"][value="' + default_form + '"]').prop("checked", true).change();
                 $("label.error").hide();
-                $('.select2').val('').change();
+                $('.select_2').val('').change();
                 $('.d-bahan-baku').val('').change();
                 $('.d-mesin').val('').change();
                 $('.d-penjualan-bahan').val('').change();
@@ -1079,6 +1116,7 @@
                             $('#urut').val(data.tempat.URUT);
                             $('#tonase').val(data.tempat.TONASE);
                             $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
+                            $('#ekspedisi').val(data.tempat.EKSPEDISI).change();
                             // $('#plant_terdekat').val(data.tempat.PLANT_TERDEKAT).change();
                             // $('#jarak').val(data.tempat.JARAK_METER);
 
@@ -1195,7 +1233,7 @@
                     success: function(response) {
                         $("#form_container").html(response);
 
-                        $('.select2').select2({
+                        $('.select_2').select2({
                             allowClear: true
                         });
                         $('.datepicker').bootstrapMaterialDatePicker({
@@ -1447,6 +1485,7 @@
                     $('#alamatText2').html(this.options.ALAMAT);
                     $('#tonaseText').html(this.options.TONASE);
                     $('#jmlPengirimanText').html(this.options.JUMLAH_PENGIRIMAN);
+                    $('#ekspedisiText').html(this.options.EKSPEDISI);
                     //$('#jarakPlantText').html(`${this.options.PLANT_TERDEKAT} (${this.options.JARAK_METER} Meter)`);
                 } else {
                     $('.sourcing-detail').addClass('d-none');
@@ -1739,9 +1778,9 @@
         });
 
     </script>
-    
 
-    
+
+
 
 </body>
 

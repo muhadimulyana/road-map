@@ -95,7 +95,7 @@ data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" dat
                                             id="c_penjualan_bahan_ket{{ $row->ID_TEMPAT_PENJUALAN }}" autocomplete="off"
                                             class="form-control c-penjualan-bahan-ket" readonly></td>
                                     <td>
-                                        <select class="form-control c-proses-penjualan select2" required
+                                        <select class="form-control c-proses-penjualan select_2" required
                                             data-placeholder="Proses Penjualan" name="c_proses_penjualan[]"
                                             data-value="{{ $row->TEMPAT_PENJUALAN }}" disabled
                                             id="c_proses_penjualan{{ $row->ID_TEMPAT_PENJUALAN }}">
@@ -105,7 +105,7 @@ data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" dat
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control c-proses-pembayaran select2"
+                                        <select class="form-control c-proses-pembayaran select_2"
                                             data-placeholder="Pilih Proses Pembayaran"
                                             data-value="{{ $row->TEMPAT_PENJUALAN }}" name="c_proses_pembayaran[]"
                                             required id="c_proses_pembayaran{{ $row->ID_TEMPAT_PENJUALAN }}" disabled>
@@ -169,7 +169,7 @@ data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true" dat
                                     </th>
                                     <td style="text-transform: capitalize;">{{ $row->MESIN }}</td>
                                     <td>
-                                        <select class="form-control c-kepemilikan select2" required
+                                        <select class="form-control c-kepemilikan select_2" required
                                             data-placeholder="Kepemilikan" name="c_kepemilikan[]"
                                             data-value="{{ $row->MESIN }}" disabled
                                             id="c_kepemilikan{{ $row->ID_MESIN }}">

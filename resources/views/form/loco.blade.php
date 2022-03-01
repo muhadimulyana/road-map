@@ -26,8 +26,16 @@
             required id="jumlah_pengiriman" name="jumlah_pengiriman">
     </div>
     <div class="form-group">
+        <label for="exampleInputEmail1">Ekspedisi</label>
+        <select class="form-control ekspedisi select_2" data-placeholder="Pilih jenis ekspedisi" required name="ekspedisi" id="ekspedisi">
+            <option value=""></option>
+            <option value="1">Ya</option>
+            <option value="0">Tidak</option>
+        </select>
+    </div>
+    <div class="form-group">
         <label for="exampleInputEmail1">Jenis Kendaraan Pengiriman</label>
-        <select class="form-control jenis-kendaraan select2" multiple required name="jenis_kendaraan[]" id="jenis_kendaraan">
+        <select class="form-control jenis-kendaraan select_2" multiple required name="jenis_kendaraan[]" id="jenis_kendaraan">
             <option value="box 150">Box 150</option>
             <option value="box 300">Box 300</option>
             <option value="truk 300">Truk 300</option>

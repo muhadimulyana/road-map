@@ -51,6 +51,8 @@ Route::get('/checkApi', [CoordController::class, 'checkApi'])->name('checkApi');
 Route::get('/getApiKey', [CoordController::class, 'getApiKey'])->name('getApiKey');
 Route::get('/list', [CoordController::class, 'list'])->name('list')->middleware('auth');
 Route::get('/getFilterRecord', [CoordController::class, 'getFilterRecord'])->name('getFilterRecord')->middleware('auth');
+Route::get('/getFilterCoord', [CoordController::class, 'getFilterCoord'])->name('getFilterCoord')->middleware('auth');
+
 
 //API getallMastertoForm
 Route::get('/getJenisUsaha', [CoordController::class, 'getJenisUsaha'])->name('getJenisUsaha')->middleware('auth');

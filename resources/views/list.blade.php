@@ -574,8 +574,9 @@
                     $('#urut').val(data.tempat.URUT);
                     $('#tonase').val(data.tempat.TONASE);
                     $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
-                    $('#plant_terdekat').val(data.tempat.PLANT_TERDEKAT).change();
-                    $('#jarak').val(data.tempat.JARAK_METER);
+                    $('#ekspedisi').val(data.tempat.EKSPEDISI).change();
+                    //$('#plant_terdekat').val(data.tempat.PLANT_TERDEKAT).change();
+                    //$('#jarak').val(data.tempat.JARAK_METER);
 
                     var jenis_kendaraan = [];
                     for(var i = 0; i < data.jenis_kendaraan.length; i++) {

@@ -20,22 +20,37 @@
             <!-- Page Heading -->
             <div id="mapid">
                 <div class="leaflet-top leaflet-left">
-                    <a id="sidebarToggleTop" href="javascript:void(0)" class="menu-btn btn btn-primary btn-circle widget text-white mt-3 ml-3" style="pointer-events: auto;">
+                    <a id="sidebarToggleTop" href="javascript:void(0)"
+                        class="menu-btn btn btn-primary btn-circle widget text-white mt-3 ml-3"
+                        style="pointer-events: auto;">
                         <i style="font-size: 15px;" class="fa fa-bars"></i>
                     </a>
+                </div>
+                <div class="leaflet-top leaflet-left ml-3 mt-3" style="min-width: 300px;">
+                    <div style="pointer-events: auto;">
+                        <select name="search" class="form-control search" data-placeholder="Cari lokasi customer, distributor atau sourcing" id="search">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    {{-- <input type="email" class="form-control form-control-user" id="search"
+                        placeholder="Ketikkan kata kunci disini"> --}}
                 </div>
             </div>
             <div class="leaflet-top leaflet-right">
                 <div style="margin-right: 10px; margin-top: 120px; pointer-events: auto;">
                     <div class="dropdown show filter">
-                        <a class="btn btn-light btn-sm dropdown-toggle" style="border: 2px solid rgba(0, 0, 0, 0.3); height: 34px; line-height: 34px;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="btn btn-light btn-sm dropdown-toggle"
+                            style="border: 2px solid rgba(0, 0, 0, 0.3); height: 34px; line-height: 34px;" href="#"
+                            role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
                             <i class="fas fa-filter" style="line-height: 22px;"></i>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item filter-map active" data-val="all" href="#">SEMUA</a>
                             @foreach (session()->get('akses')['app']['AKSES_INPUT'] as $k => $val)
                             @if ($val !== 'PLANT')
-                            <a class="dropdown-item filter-map" data-val="{{ strtolower($val) }}" href="#">{{ $val }}</a>
+                            <a class="dropdown-item filter-map" data-val="{{ strtolower($val) }}" href="#">{{ $val
+                                }}</a>
                             @endif
                             @endforeach
                         </div>
@@ -74,8 +89,7 @@
                 <div class="sourcing-detail d-none">
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Kategori</label><br>
-                        <p id="kategoriText" class=""
-                            style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
+                        <p id="kategoriText" class="" style="font-size: 100%; text-transform: capitalize;">Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Jenis Usaha</label>
@@ -112,10 +126,10 @@
                         <div class='table-responsive'>
                             <table class="table table-sm table-bordered">
                                 <thead>
-                                <tr>
-                                    <th scope="col">Jenis</th>
-                                    <th scope="col">Kapasitas</th>
-                                </tr>
+                                    <tr>
+                                        <th scope="col">Jenis</th>
+                                        <th scope="col">Kapasitas</th>
+                                    </tr>
                                 </thead>
                                 <tbody id="jenisBahanTable">
                                 </tbody>
@@ -126,12 +140,12 @@
                         <label for="exampleInputPassword1">Penjualan Bahan Baku</label>
                         <table class="table table-sm table-bordered">
                             <thead>
-                            <tr>
-                                <th scope="col">Tempat Penj.</th>
-                                <th scope="col">Ket</th>
-                                <th scope="col">Proses Penj.</th>
-                                <th scope="col">Proses Pemb.</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col">Tempat Penj.</th>
+                                    <th scope="col">Ket</th>
+                                    <th scope="col">Proses Penj.</th>
+                                    <th scope="col">Proses Pemb.</th>
+                                </tr>
                             </thead>
                             <tbody id="penjualanBahanBakuTable">
                             </tbody>
@@ -141,11 +155,11 @@
                         <label for="exampleInputPassword1">Kepemilikan Mesin</label>
                         <table class="table table-sm table-bordered">
                             <thead>
-                            <tr>
-                                <th scope="col">Mesin</th>
-                                <th scope="col">Kepemilikan</th>
-                                <th scope="col">Qty</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col">Mesin</th>
+                                    <th scope="col">Kepemilikan</th>
+                                    <th scope="col">Qty</th>
+                                </tr>
                             </thead>
                             <tbody id="mesinTable">
                             </tbody>
@@ -166,18 +180,25 @@
                         <p id="jmlPengirimanText" class="font-weight-bold">Memuat...</p>
                     </div>
                     <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Ekspedisi</label>
+                        <p id="ekspedisiText" class="font-weight-bold" style="text-transform: capitalize;">
+                            Memuat...
+                        </p>
+                    </div>
+                    <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Jenis Kendaraan Pengiriman</label>
-                        <p id="jenisKendaraanText" class="font-weight-bold" style="text-transform: capitalize;">Memuat...
+                        <p id="jenisKendaraanText" class="font-weight-bold" style="text-transform: capitalize;">
+                            Memuat...
                         </p>
                     </div>
                     <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Jarak Dari Plant</label>
                         <table class="table table-sm table-bordered">
                             <thead>
-                            <tr>
-                                <th scope="col">Plant</th>
-                                <th scope="col">Jarak</th>
-                            </tr>
+                                <tr>
+                                    <th scope="col">Plant</th>
+                                    <th scope="col">Jarak</th>
+                                </tr>
                             </thead>
                             <tbody id="jarakTable">
                             </tbody>
@@ -217,7 +238,8 @@
     </div> <!-- modal-bialog .// -->
 </div> <!-- modal.// -->
 
-<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -236,7 +258,7 @@
 @endsection
 
 <script>
-@push('script')
+    @push('script')
 
     var mymap2 = L.map('mapid2', {
         zoomControl: false,
@@ -312,7 +334,9 @@
     function mapMarker(data, show) {
         mymap.removeLayer(marker);
         marker = L.layerGroup().addTo(mymap);
+        var loc;
         var icon;
+        var htmlIcon;
         var label = '';
         var popUp;
         var classJenis;
@@ -321,6 +345,7 @@
         var defaultSize = 25;
         var maxWidthMarker = 80;
         var range = maxWidthMarker - defaultSize;
+        var innerSize;
         for (var i = 0; i < data.length; i++) {
             //var icon = data[i].MARKER == 'red' ? locoIcon : ( data[i].MARKER == 'blue' ? blueIcon : ( data[i].MARKER == 'green' ? greenIcon : ( data[i].MARKER == 'yellow' ? yellowIcon : blackIcon)))
             label = data[i].URUT === null ? '' : data[i].URUT;
@@ -353,9 +378,22 @@
 
                 halfSize = size / 2;
                 sizeHeight = size - 3;
+                if(data[i].EKSPEDISI === 0) {
+                    htmlIcon = `<div class="custom-marker ${classJenis}-marker" style="width: ${size}px; height: ${size}px; line-height: ${sizeHeight}px;"> ${label} </div>`;
+                } else {
+                    innerSize = size * 0.65;
+                    sizeHeight = innerSize;
+                    htmlIcon = `<div class="custom-marker outer-marker" style="width: ${size}px; height: ${size}px; display: flex; justify-content: center; align-items: center">
+                        <div class="custom-marker inner-marker" style="width: ${innerSize}px; height: ${innerSize}px; line-height: ${sizeHeight}px;">
+                            ${label}
+                        </div>
+                    </div>`;
+                }
+                
+
                 icon = L.divIcon({
                     className: '',
-                    html: `<div class="custom-marker ${classJenis}-marker" style="width: ${size}px; height: ${size}px; line-height: ${sizeHeight}px;">${label}</div>`,
+                    html: htmlIcon,
                     iconSize: [halfSize, halfSize], // classSize of the icon,
                     iconAnchor: [halfSize, halfSize], // point of the icon which will correspond to marker's location,
                     popupAnchor: [0, -halfSize] // point from which the popup should open relative to the iconAnchor
@@ -372,7 +410,7 @@
                 }
             }
 
-            L.marker([data[i].LAT, data[i].LNG], {
+            loc = L.marker([data[i].LAT, data[i].LNG], {
                 icon: icon,
                 URUT: data[i].URUT,
                 ID_TEMPAT: data[i].ID_TEMPAT,
@@ -389,6 +427,7 @@
                 TANGGAL_KUNJUNGAN: data[i].TANGGAL_KUNJUNGAN,
                 TONASE: data[i].TONASE,
                 JUMLAH_PENGIRIMAN: data[i].JUMLAH_PENGIRIMAN,
+                EKSPEDISI: data[i].EKSPEDISI,
                 LAT: data[i].LAT,
                 LNG: data[i].LNG,
                 USERNAME: data[i].USERNAME,
@@ -400,7 +439,10 @@
                 mymap.setView([data[0].LAT, data[0].LNG], 12);
                 //marker.bindPopup('<b>Added! </b>' + data[i].place).openPopup();
             }
+            L.DomUtil.addClass(loc._icon, `${data[i].ID_TEMPAT}`);
+
         }
+        console.log(marker._layers);
     }
 
     function loadMarker(e) {
@@ -621,6 +663,62 @@
         }
 
     });
+
+    $("#search").select2({
+        placeholder: "Pilih/Ketik Nama Pengguna",
+        allowClear: true,
+        //tags: true,
+        ajax: { 
+          url: "{{ route('getFilterCoord') }}",
+          type: "get",
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              searchTerm: params.term // search term
+            };
+          },
+          processResults: function (response) {
+            return {
+                results: response
+            };
+          },
+          cache: true
+        }
+    });
+
+    $("#search").on('change', function(e) {
+        e.preventDefault();
+        var objLocation = $(this).val();
+        var lat, lng;
+        objLocation = objLocation.split('|');
+        lat = objLocation[1];
+        lng = objLocation[2];
+
+        if (manMarker != undefined) {
+            mymap.removeLayer(manMarker);
+        }
+        if (circle != undefined) {
+            mymap.removeLayer(circle);
+        }
+        if (newMarker != undefined) {
+            mymap.removeLayer(newMarker);
+        }
+        if (foundMarker != undefined) {
+            mymap.removeLayer(foundMarker);
+        }
+
+        foundMarker = L.marker([lat, lng], {
+                        icon: foundIcon,
+                        opacity: 0
+                    }).addTo(mymap);
+
+        mymap.setView([lat, lng], 18);
+
+        if (foundMarker != undefined) {
+            mymap.removeLayer(foundMarker);
+        }
+    })
 
 @endpush
 </script>
