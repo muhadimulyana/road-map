@@ -191,6 +191,7 @@ class CoordController extends Controller
         } else {
             $data = [
                 'ID_TEMPAT' => time(),
+                'KODE' => $request->kode,
                 'JENIS' => $request->jenis,
                 'URUT' => $request->urut,
                 'NAMA_USAHA' => $request->nama_usaha,
@@ -467,6 +468,7 @@ class CoordController extends Controller
         } else {
             $data = [
                 'NAMA_USAHA' => $request->nama_usaha,
+                'KODE' => $request->kode,
                 'URUT' => $request->urut,
                 'ALAMAT' => $request->alamat,
                 'TONASE' => $request->tonase,

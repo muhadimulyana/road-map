@@ -213,6 +213,10 @@
                 </div>
                 <div class="loco-detail d-none">
                     <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kode</label>
+                        <p id="kodeText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Alamat</label>
                         <p id="alamatText2" class="font-weight-bold">Memuat...</p>
                     </div>
@@ -737,6 +741,7 @@
                     $('.sourcing-detail').addClass('d-none');
                     $('.plant-detail').addClass('d-none');
                     $('.loco-detail').removeClass('d-none');
+                    $('#kodeText').html(data.tempat.KODE);
                     $('#alamatText2').html(data.tempat.ALAMAT);
                     $('#tonaseText').html(data.tempat.TONASE);
                     $('#jmlPengirimanText').html(data.tempat.JUMLAH_PENGIRIMAN);

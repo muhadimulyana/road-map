@@ -1114,6 +1114,7 @@
                             }
                         } else if(data.tempat.JENIS === 'LOCO' || data.tempat.JENIS === 'ETERLENE') {
                             $('#urut').val(data.tempat.URUT);
+                            $('#kode').val(data.tempat.KODE);
                             $('#tonase').val(data.tempat.TONASE);
                             $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
                             $('#ekspedisi').val(data.tempat.EKSPEDISI).change();
@@ -1483,6 +1484,7 @@
                     $('.plant-detail').addClass('d-none');
                     $('.loco-detail').removeClass('d-none');
                     $('#alamatText2').html(this.options.ALAMAT);
+                    $('#kodeText').html(this.options.KODE);
                     $('#tonaseText').html(this.options.TONASE);
                     $('#jmlPengirimanText').html(this.options.JUMLAH_PENGIRIMAN);
                     $('#ekspedisiText').html(this.options.EKSPEDISI);

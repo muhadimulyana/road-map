@@ -1,6 +1,11 @@
 <div class="LOCO-form">
     <h5 class="text-primary mb-3">Informasi @if($jenis == 'loco') Distributor @else Customer @endif</h5>
     <div class="form-group">
+        <label for="exampleInputEmail1">Kode</label>
+        <input type="text" class="form-control" autocomplete="off" placeholder="Masukkan kode"
+            required id="kode" name="kode">
+    </div>
+    <div class="form-group">
         <label for="exampleInputEmail1">Label</label>
         <input type="text" class="form-control" autocomplete="off" placeholder="Masukkan label"
             required id="urut" name="urut">

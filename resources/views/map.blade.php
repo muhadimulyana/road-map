@@ -168,6 +168,10 @@
                 </div>
                 <div class="loco-detail d-none">
                     <div class="form-group border-bottom">
+                        <label for="exampleInputPassword1">Kode</label>
+                        <p id="kodeText" class="font-weight-bold">Memuat...</p>
+                    </div>
+                    <div class="form-group border-bottom">
                         <label for="exampleInputPassword1">Alamat</label>
                         <p id="alamatText2" class="font-weight-bold">Memuat...</p>
                     </div>
@@ -413,6 +417,7 @@
             loc = L.marker([data[i].LAT, data[i].LNG], {
                 icon: icon,
                 URUT: data[i].URUT,
+                KODE: data[i].KODE,
                 ID_TEMPAT: data[i].ID_TEMPAT,
                 JENIS: data[i].JENIS,
                 place: data[i].NAMA_USAHA,

@@ -543,6 +543,7 @@
                         $('.c-mesin-qty[data-value="' + data.mesin[i].MESIN  + '"]').val(data.mesin[i].QTY);
                     }
                 } else if(data.tempat.JENIS === 'LOCO' || data.tempat.JENIS === 'ETERLENE') {
+                    $('#kodeText').html(data.tempat.KODE);
                     $('#urut').val(data.tempat.URUT);
                     $('#tonase').val(data.tempat.TONASE);
                     $('#jumlah_pengiriman').val(data.tempat.JUMLAH_PENGIRIMAN);
